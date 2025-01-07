@@ -1,0 +1,173 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:aloka_mobile_app/src/modules/class_screen/bloc/class_has_category/class_has_category_bloc.dart';
+import '../../../res/color/app_color.dart';
+
+class ScheduleViewScreen extends StatefulWidget {
+  final int classId;
+  const ScheduleViewScreen({super.key, required this.classId});
+
+  @override
+  State<ScheduleViewScreen> createState() => _ScheduleViewScreenState();
+}
+
+class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<ClassHasCategoryBloc>()
+        .add(GetUniqueClassHasCatEvent(classId: widget.classId));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        title: const Text(
+          "Schedule View",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: ColorUtil.tealColor[10],
+      ),
+      body: BlocBuilder<ClassHasCategoryBloc, ClassHasCategoryState>(
+        builder: (context, state) {
+          if (state is ClassHasCategoryProcess) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is GetUniqueClassHasCatSuccess) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView.builder(
+                itemCount: state.uniqueClassHasCatList.length,
+                itemBuilder: (context, index) {
+                  final uniqueClassItem = state.uniqueClassHasCatList[index];
+                  return Card(
+                    elevation: 4.0,
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  uniqueClassItem.className!,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  uniqueClassItem.subjectName!,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 4.0),
+                                  decoration: BoxDecoration(
+                                    color: ColorUtil.tealColor[10],
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Text(
+                                    uniqueClassItem.categoryName!,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed('/schedule_screen',
+                                          arguments: {
+                                        'classCatId':
+                                            uniqueClassItem.classHasCatId,
+                                      });
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: ColorUtil.tealColor[10],
+                                  iconColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 8.0),
+                                ),
+                                child: Text(
+                                  'Class Schedule',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorUtil.whiteColor[10]),
+                                ),
+                              ),
+                              
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(
+                                      '/class_schedule_attendance_screen',
+                                      arguments: {
+                                        'classHasCatId':
+                                            uniqueClassItem.classHasCatId,
+                                        'classId': uniqueClassItem.classId,
+                                      });
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: ColorUtil.tealColor[10],
+                                  iconColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 8.0),
+                                ),
+                                child: Text(
+                                  'Class Details',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorUtil.whiteColor[10]),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          } else {
+            return const Center(
+              child: Text(
+                'Data not found',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
