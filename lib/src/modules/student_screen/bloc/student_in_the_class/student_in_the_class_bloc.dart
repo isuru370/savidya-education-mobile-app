@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:aloka_mobile_app/src/models/student/students_in_the_class_mode.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../models/student/students_in_the_class_mode.dart';
 import '../../../../services/student/students_service.dart';
 
 part 'student_in_the_class_event.dart';

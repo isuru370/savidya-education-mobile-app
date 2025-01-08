@@ -23,7 +23,7 @@ class _AddStudentAdmissionState extends State<AddStudentAdmission> {
   int? admissionId;
   double? admissionAmount;
   String? dateOnly;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
 
   @override
@@ -113,7 +113,7 @@ class _AddStudentAdmissionState extends State<AddStudentAdmission> {
                       selected: studentGradeId == grade.id,
                     ),
                   );
-                }).toList(),
+                }),
               ],
             );
           }

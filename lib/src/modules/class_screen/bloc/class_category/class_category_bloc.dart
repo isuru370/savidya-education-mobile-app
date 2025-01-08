@@ -1,7 +1,7 @@
-import 'package:aloka_mobile_app/src/models/category/category.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../models/category/category.dart';
 import '../../../../services/category/category_service.dart';
 
 part 'class_category_event.dart';

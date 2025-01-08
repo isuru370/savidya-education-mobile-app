@@ -1,10 +1,10 @@
-import 'package:aloka_mobile_app/src/components/slidable_details_view_widget.dart';
-import 'package:aloka_mobile_app/src/modules/teacher_screen/bloc/teacher_bloc/teacher_bloc.dart';
-import 'package:aloka_mobile_app/src/res/color/app_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
+import '../../../components/slidable_details_view_widget.dart';
+import '../../../res/color/app_color.dart';
+import '../bloc/teacher_bloc/teacher_bloc.dart';
 
 class TeacherAllScreen extends StatefulWidget {
   final bool editMode;

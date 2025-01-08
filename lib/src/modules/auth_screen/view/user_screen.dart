@@ -1,27 +1,27 @@
-import 'package:aloka_mobile_app/src/components/button/app_main_button.dart';
-import 'package:aloka_mobile_app/src/extensions/register_form.dart';
+
 import 'package:aloka_mobile_app/src/extensions/str_extensions.dart';
-import 'package:aloka_mobile_app/src/models/user/user_model.dart';
-import 'package:aloka_mobile_app/src/models/user/user_type_model.dart';
-import 'package:aloka_mobile_app/src/modules/auth_screen/bloc/user_bloc/user_login_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/auth_screen/bloc/user_type_bloc/user_type_bloc.dart';
-import 'package:aloka_mobile_app/src/res/color/app_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../components/app_text_field.dart';
 import '../../../components/body_text_widget.dart';
+import '../../../components/button/app_main_button.dart';
 import '../../../components/disable_text_field_widget.dart';
 import '../../../components/drop_down_button_widget.dart';
 import '../../../components/radio_button_widget.dart';
 import '../../../components/user_states_widget.dart';
+import '../../../extensions/register_form.dart';
+import '../../../models/user/user_model.dart';
+import '../../../models/user/user_type_model.dart';
 import '../../../provider/bloc_provider/date_picker_bloc/date_picker_bloc.dart';
 import '../../../provider/cubit_provider/check_box_list_cubit/checkbox_button_cubit.dart';
 import '../../../provider/cubit_provider/dropdown_button_cubit/dropdown_button_cubit.dart';
 import '../../../provider/cubit_provider/dropdown_button_cubit/dropdown_button_state.dart';
 import '../../../provider/cubit_provider/radio_button_cubit/radio_button_cubit.dart';
+import '../../../res/color/app_color.dart';
 import '../../student_screen/components/radio_group_widget.dart';
+import '../bloc/user_bloc/user_login_bloc.dart';
+import '../bloc/user_type_bloc/user_type_bloc.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});

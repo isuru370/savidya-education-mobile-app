@@ -77,7 +77,7 @@ class _StudentHalfPaymentScreenState extends State<StudentHalfPaymentScreen> {
   }
 
   void _showValidationPopup(LastPaymentModelClass student) {
-    TextEditingController _inputController = TextEditingController();
+    final TextEditingController inputController = TextEditingController();
 
     showDialog(
       context: context,
@@ -90,7 +90,7 @@ class _StudentHalfPaymentScreenState extends State<StudentHalfPaymentScreen> {
               const Text("Please enter the required code to proceed."),
               const SizedBox(height: 10),
               TextField(
-                controller: _inputController,
+                controller: inputController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Enter validation code",
@@ -107,7 +107,7 @@ class _StudentHalfPaymentScreenState extends State<StudentHalfPaymentScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (_inputController.text == "Tharanga7454") {
+                if (inputController.text == "Tharanga7454") {
                   Navigator.of(context).pop(); // Close the dialog
                   Navigator.of(context).pushNamed(
                     '/student_half_payment_update_screen',

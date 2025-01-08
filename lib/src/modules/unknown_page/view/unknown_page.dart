@@ -40,10 +40,12 @@ class UnknownPage extends StatelessWidget {
                 "Sorry, you don't have permission to view this page.",
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white
+                      .withAlpha((0.8 * 255).toInt()), // Replace withAlpha
                 ),
                 textAlign: TextAlign.center,
               ),
+
               const SizedBox(height: 20),
 
               // "Return to Home" button

@@ -7,12 +7,12 @@ class AttendanceCard extends StatelessWidget {
   final String whatsappMobile;
 
   const AttendanceCard({
-    Key? key,
+    super.key,
     required this.studentName,
     required this.attendanceStatus,
     required this.customId,
     required this.whatsappMobile,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatelessWidget {
-  final controller;
+  final TextEditingController controller;
   final String hintText;
   final bool obscureText;
   final Icon icon;
@@ -23,7 +23,7 @@ class MyTextField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8), borderSide: BorderSide()),
+              borderRadius: BorderRadius.circular(8), borderSide: const BorderSide()),
           hintText: hintText,
           suffixIcon: Align(
             widthFactor: 1.0,

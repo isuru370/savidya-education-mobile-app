@@ -1,12 +1,11 @@
-import 'package:aloka_mobile_app/src/components/button/app_main_button.dart';
-import 'package:aloka_mobile_app/src/modules/auth_screen/bloc/reset_password/reset_password_bloc.dart';
-import 'package:aloka_mobile_app/src/res/color/app_color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../components/app_text_field.dart';
+import '../../../components/button/app_main_button.dart';
+import '../../../res/color/app_color.dart';
+import '../bloc/reset_password/reset_password_bloc.dart';
 
 class PasswordResetScreen extends StatefulWidget {
   const PasswordResetScreen({super.key});
@@ -20,7 +19,6 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

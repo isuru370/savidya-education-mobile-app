@@ -13,8 +13,7 @@ import '../../../res/color/app_color.dart';
 
 class StudentViewScreen extends StatefulWidget {
   final StudentModelClass studentModel;
-  const StudentViewScreen(
-      {super.key,  required this.studentModel});
+  const StudentViewScreen({super.key, required this.studentModel});
 
   @override
   State<StudentViewScreen> createState() => _StudentViewScreenState();
@@ -26,7 +25,6 @@ class _StudentViewScreenState extends State<StudentViewScreen> {
   @override
   void initState() {
     super.initState();
-    
   }
 
   @override
@@ -272,7 +270,8 @@ class _StudentViewScreenState extends State<StudentViewScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color:
+                Colors.grey.withAlpha((0.2 * 255).toInt()), // Replace withAlpha
             spreadRadius: 2,
             blurRadius: 6,
             offset: const Offset(0, 3),

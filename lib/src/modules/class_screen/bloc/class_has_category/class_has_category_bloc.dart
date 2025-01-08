@@ -1,10 +1,11 @@
 import 'dart:developer';
 
-import 'package:aloka_mobile_app/src/models/class_schedule/class_has_category_model_class.dart';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:equatable/equatable.dart';
 
 import '../../../../models/category_has_class/category_has_class.dart';
+import '../../../../models/class_schedule/class_has_category_model_class.dart';
 import '../../../../services/class_has_category_service/class_has_category_service.dart';
 
 part 'class_has_category_event.dart';

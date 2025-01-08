@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:aloka_mobile_app/src/models/payment_model_class/student_half_payment_model.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../services/payment/payment_service.dart';
 

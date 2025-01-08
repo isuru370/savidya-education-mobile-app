@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:aloka_mobile_app/src/models/admission/admission_model_class.dart';
-import 'package:aloka_mobile_app/src/models/admission/admission_payment_model.dart';
-
+import '../../models/admission/admission_model_class.dart';
+import '../../models/admission/admission_payment_model.dart';
 import '../api/main_api.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 Future<Map<String, dynamic>> insertAdmissionData(
@@ -83,7 +83,7 @@ Future<Map<String, dynamic>> todayGetAdmissionPayment() async {
         .get(Uri.parse('${API.admission}/get_today_paid_admission.php'));
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      print(responseData);
+
       return responseData;
     } else {
       return {

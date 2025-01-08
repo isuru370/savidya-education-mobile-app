@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aloka_mobile_app/src/modules/admission_screen/bloc/admission_payment/admission_payment_bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../extensions/register_form.dart';
@@ -27,6 +24,7 @@ import '../../../provider/cubit_provider/dropdown_button_cubit/dropdown_button_s
 import '../../../provider/cubit_provider/radio_button_cubit/radio_button_cubit.dart';
 import '../../../res/color/app_color.dart';
 import '../../../res/strings/string.dart';
+import '../../admission_screen/bloc/admission_payment/admission_payment_bloc.dart';
 import '../../admission_screen/bloc/get_admission/get_admission_bloc.dart';
 import '../bloc/get_student/get_student_bloc.dart';
 import '../bloc/image_picker/image_picker_bloc.dart';
@@ -129,6 +127,7 @@ class _StudentScreenState extends State<StudentScreen> {
                 if (result != null &&
                     result is Map<String, dynamic> &&
                     mounted) {
+                  // ignore: use_build_context_synchronously
                   context.read<ImagePickerBloc>().add(QuickImageUpdateEvent(
                       quickSearchImage: result['imageUrl'],
                       quickImageId: result['quickImgId']));

@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:aloka_mobile_app/src/models/attendance/new%20_attendance_read_model.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../models/attendance/new _attendance_read_model.dart';
 import '../../../../services/attendance/attendance_service.dart';
 
 part 'new_attendance_read_event.dart';

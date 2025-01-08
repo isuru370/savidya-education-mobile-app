@@ -268,7 +268,8 @@ class _ViewStudentUniquePaymentState extends State<ViewStudentUniquePayment> {
           border: Border.all(color: Colors.teal[200]!), // Light border
           boxShadow: [
             BoxShadow(
-              color: Colors.teal.withOpacity(0.1),
+              color: Colors.teal
+                  .withAlpha((0.1 * 255).toInt()), // Replace withAlpha
               blurRadius: 8.0,
               offset: const Offset(0, 4),
             ),

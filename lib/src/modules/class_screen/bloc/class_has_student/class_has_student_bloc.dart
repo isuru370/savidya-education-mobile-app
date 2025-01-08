@@ -1,9 +1,9 @@
-import 'package:aloka_mobile_app/src/models/student/percentage_model_class.dart';
-import 'package:aloka_mobile_app/src/services/class_has_student_service.dart/class_has_student_service.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../models/student/percentage_model_class.dart';
 import '../../../../models/student_has_category_has_class/student_has_category_has_class_model.dart';
+import '../../../../services/class_has_student_service.dart/class_has_student_service.dart';
 import '../../../../services/student/students_service.dart';
 
 part 'class_has_student_event.dart';

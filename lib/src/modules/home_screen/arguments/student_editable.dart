@@ -10,7 +10,6 @@ class StudentEditable extends Equatable {
     required this.editable
   });
   @override
-  // TODO: implement props
   List<Object?> get props => [studentModelClass,editable];
 }
 
@@ -21,6 +20,5 @@ class ActiveStudentViewEditable extends Equatable {
     required this.editable
   });
   @override
-  // TODO: implement props
   List<Object?> get props => [editable];
 }

@@ -377,6 +377,7 @@ class _ReScheduleScreenState extends State<ReScheduleScreen> {
           classHallId: hallId,
           classDate: _scheduleDateController.text.trim(),
         );
+        // ignore: use_build_context_synchronously
         context
             .read<ClassAttendanceBloc>()
             .add(ClassAttendanceMarkEvent(attendanceModelClass: modelClass));

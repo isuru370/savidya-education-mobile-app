@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:aloka_mobile_app/src/models/class_attendance/today_classes_model.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../models/class_attendance/today_classes_model.dart';
 import '../../../../services/class_attendance_service/class_attendance_service.dart';
 
 part 'today_classes_event.dart';

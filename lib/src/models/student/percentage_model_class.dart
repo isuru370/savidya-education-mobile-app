@@ -14,15 +14,6 @@ class PercentageModelClass extends Equatable {
   });
 
   factory PercentageModelClass.fromJson(Map<String, dynamic> json) {
-    print(
-        "Parsing presentCount: ${json['present_count']} (${json['present_count']?.runtimeType})");
-    print(
-        "Parsing absentCount: ${json['absent_count']} (${json['absent_count']?.runtimeType})");
-    print(
-        "Parsing percentage: ${json['percentage']} (${json['percentage']?.runtimeType})");
-    print(
-        "Parsing attendancePercentage: ${json['attendance_percentage']} (${json['attendance_percentage']?.runtimeType})");
-
     return PercentageModelClass(
       presentCount: _parseInt(json['present_count']),
       absentCount: _parseInt(json['absent_count']),
@@ -37,11 +28,10 @@ class PercentageModelClass extends Equatable {
     } else if (value is String) {
       final result = int.tryParse(value);
       if (result == null) {
-        print("Failed to parse int from value: $value");
+       
       }
       return result;
     }
-    print("Unexpected type for int parsing: $value (${value.runtimeType})");
     return null;
   }
 
@@ -51,11 +41,11 @@ class PercentageModelClass extends Equatable {
     } else if (value is String) {
       final result = double.tryParse(value);
       if (result == null) {
-        print("Failed to parse double from value: $value");
+       
       }
       return result;
     }
-    print("Unexpected type for double parsing: $value (${value.runtimeType})");
+   
     return null;
   }
 

@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:aloka_mobile_app/src/models/teacher/teacher_class_category_model.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../models/teacher/teacher_class_category_model.dart';
 import '../../../../services/teacher/teacher.dart';
 
 part 'teacher_class_category_event.dart';

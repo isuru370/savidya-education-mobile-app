@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:aloka_mobile_app/src/services/class_attendance_service/class_attendance_service.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../models/class_attendance/class_attendance.dart';
+import '../../../../services/class_attendance_service/class_attendance_service.dart';
 
 part 'class_attendance_event.dart';
 part 'class_attendance_state.dart';

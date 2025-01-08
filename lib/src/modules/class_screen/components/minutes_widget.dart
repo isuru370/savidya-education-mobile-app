@@ -9,10 +9,10 @@ class MyMinutesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       child: Center(
         child: Text(
-          mins < 10 ? '0' + mins.toString() : mins.toString(),
+          mins < 10 ? '0$mins' : mins.toString(),
           style:  TextStyle(
               fontSize: 40, fontWeight: FontWeight.bold, color: ColorUtil.blackColor[10]),
         ),

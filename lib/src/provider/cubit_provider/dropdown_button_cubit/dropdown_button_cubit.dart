@@ -1,16 +1,17 @@
-import 'package:aloka_mobile_app/src/models/bank_details/bank_model.dart';
-import 'package:aloka_mobile_app/src/models/bank_details/branch_details.dart';
-import 'package:aloka_mobile_app/src/models/class_schedule/class_halle_model.dart';
-import 'package:aloka_mobile_app/src/models/user/user_type_model.dart';
-import 'package:bloc/bloc.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../models/admission/admission_model_class.dart';
+import '../../../models/bank_details/bank_model.dart';
+import '../../../models/bank_details/branch_details.dart';
 import '../../../models/category/category.dart';
+import '../../../models/class_schedule/class_halle_model.dart';
 import '../../../models/class_schedule/class_has_category_model_class.dart';
 import '../../../models/class_schedule/class_schedule.dart';
 import '../../../models/student/grade.dart';
 import '../../../models/student/subject.dart';
 import '../../../models/teacher/teacher.dart';
+import '../../../models/user/user_type_model.dart';
 import 'dropdown_button_state.dart';
 
 class DropdownButtonCubit extends Cubit<DropdownButtonState> {

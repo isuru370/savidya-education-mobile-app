@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-import 'package:aloka_mobile_app/src/models/attendance/attendance.dart';
 
+import '../../models/attendance/attendance.dart';
 import '../../models/attendance/class_student_attendance_mode.dart';
 import '../api/main_api.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 Future<Map<String, dynamic>> insertStudentData(

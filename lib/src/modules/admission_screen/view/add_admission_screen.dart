@@ -1,6 +1,4 @@
 import 'package:aloka_mobile_app/src/extensions/str_extensions.dart';
-import 'package:aloka_mobile_app/src/res/color/app_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart'; // Import intl package
@@ -8,6 +6,7 @@ import 'package:intl/intl.dart'; // Import intl package
 import '../../../components/app_text_field.dart';
 import '../../../components/button/app_main_button.dart';
 import '../../../models/admission/admission_model_class.dart';
+import '../../../res/color/app_color.dart';
 import '../bloc/admission/admission_bloc.dart';
 import '../bloc/get_admission/get_admission_bloc.dart';
 

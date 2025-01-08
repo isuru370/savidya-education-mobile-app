@@ -44,6 +44,7 @@ class _TodayClassScreenState extends State<TodayClassScreen> {
         _currentDate = DateFormat("yyyy-MM-dd").format(pickedDate);
         _selectDateController.text = _currentDate;
       });
+      // ignore: use_build_context_synchronously
       context
           .read<TodayClassesBloc>()
           .add(GetTodayClassEvent(selectDate: _currentDate));

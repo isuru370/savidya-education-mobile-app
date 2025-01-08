@@ -19,7 +19,7 @@ import '../../../models/category_has_class/category_has_class.dart';
 class ClassCategory extends StatefulWidget {
   final int? classId;
 
-  const ClassCategory({Key? key, this.classId}) : super(key: key);
+  const ClassCategory({super.key, this.classId});
 
   @override
   State<ClassCategory> createState() => _ClassCategoryState();
@@ -115,13 +115,17 @@ class _ClassCategoryState extends State<ClassCategory> {
       borderRadius: BorderRadius.circular(15),
       boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
+          color: Colors.grey
+              .withAlpha((0.3 * 255).toInt()), // Use withAlpha for opacity
           spreadRadius: 2,
           blurRadius: 5,
           offset: const Offset(0, 3),
         ),
       ],
-      border: Border.all(color: Colors.grey.withOpacity(0.5)),
+      border: Border.all(
+        color: Colors.grey
+            .withAlpha((0.5 * 255).toInt()), // Use withAlpha for opacity
+      ),
     );
   }
 
@@ -261,7 +265,8 @@ class _ClassCategoryState extends State<ClassCategory> {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
+              color: Colors.grey
+                  .withAlpha((0.3 * 255).toInt()), // Replaces withOpacity
               spreadRadius: 2,
               blurRadius: 5,
               offset: const Offset(0, 3),

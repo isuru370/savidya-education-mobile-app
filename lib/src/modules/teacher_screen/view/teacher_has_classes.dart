@@ -276,6 +276,7 @@ class _TeacherHasClassesState extends State<TeacherHasClasses> {
           filename: 'teacher_class_report.pdf',
         );
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error generating PDF: $e')),
         );

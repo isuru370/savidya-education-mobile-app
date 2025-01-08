@@ -193,7 +193,7 @@ class _SelectClassViewScreenState extends State<SelectClassViewScreen> {
                                                   classTR.classHasCatId,
                                               "classId": classTR.classId,
                                             });
-                                        print(classTR.classHasCatId);
+                                       
                                       } else {
                                         //payment screen
                                         // Navigator.of(context,

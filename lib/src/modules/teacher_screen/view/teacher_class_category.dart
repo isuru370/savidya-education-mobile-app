@@ -217,6 +217,6 @@ class _TeacherClassCategoryState extends State<TeacherClassCategory> {
 
 extension DateFormat on DateTime {
   String toShortDate() {
-    return "${this.day}/${this.month}/${this.year}";
+    return "$day/$month/$year";
   }
 }

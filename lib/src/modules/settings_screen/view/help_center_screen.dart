@@ -42,7 +42,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding:  EdgeInsets.all(16.0),
                     child: Text(
                       'Welcome to the Aloka IT Solution Help Center for Private Classes. Explore our comprehensive articles, tutorials, and FAQs to efficiently navigate the platform, solve common problems, and improve your teaching journey. At Aloka IT Solution, we are dedicated to making your private classes a success, and this help center is here to assist you every step of the way.',
                       style: TextStyle(
@@ -65,7 +65,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Divider(thickness: 1, color: Colors.teal),
+                const Divider(thickness: 1, color: Colors.teal),
                 const SizedBox(height: 20),
                 ContactButton(
                   onPressed: () async {
@@ -105,11 +105,12 @@ class ContactButton extends StatelessWidget {
   final String phoneNo;
 
   const ContactButton({
+    super.key,
     required this.onPressed,
     required this.name,
     required this.phoneNo,
-    Key? key,
-  }) : super(key: key);
+
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -120,10 +121,10 @@ class ContactButton extends StatelessWidget {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16),
-        leading: Icon(Icons.call, color: Colors.teal),
+        leading: const Icon(Icons.call, color: Colors.teal),
         title: Text(
           '$name: $phoneNo',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         onTap: onPressed,
       ),

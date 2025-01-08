@@ -58,15 +58,15 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
               pw.SizedBox(height: 10),
               pw.Text(
                 'Class Name: ${studentData.isNotEmpty ? studentData[0][0] : "N/A"}',
-                style: pw.TextStyle(fontSize: 18),
+                style: const pw.TextStyle(fontSize: 18),
               ),
               pw.Text(
                 'Grade Name: ${studentData.isNotEmpty ? studentData[0][1] : "N/A"}',
-                style: pw.TextStyle(fontSize: 18),
+                style: const pw.TextStyle(fontSize: 18),
               ),
               pw.Text(
                 'Teacher Name: ${studentData.isNotEmpty ? studentData[0][2] : "N/A"}',
-                style: pw.TextStyle(fontSize: 18),
+                style: const pw.TextStyle(fontSize: 18),
               ),
               pw.SizedBox(height: 20),
 

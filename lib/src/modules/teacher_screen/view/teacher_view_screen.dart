@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/teacher/teacher.dart';
@@ -49,10 +48,11 @@ class TeacherViewScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: Colors.grey
+                        .withAlpha((0.2 * 255).toInt()), // Replace withAlpha
                     spreadRadius: 2,
                     blurRadius: 8,
-                    offset: Offset(0, 2), // Shadow direction
+                    offset: const Offset(0, 2), // Shadow direction
                   ),
                 ],
               ),
@@ -214,4 +214,3 @@ class TeacherViewScreen extends StatelessWidget {
 }
 
 // Dummy View Classes Screen
-

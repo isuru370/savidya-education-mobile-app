@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../models/payment_model_class/last_payment_model_class.dart';
 import '../../../../models/qr_read/qr_read.dart';

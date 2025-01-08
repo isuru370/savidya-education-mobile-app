@@ -1,3 +1,4 @@
+
 import 'package:equatable/equatable.dart';
 
 class StudentIdData extends Equatable {

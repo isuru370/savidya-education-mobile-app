@@ -15,5 +15,5 @@ Future main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   FlutterNativeSplash.remove();
 
-  runApp(const AlokaMobileView());
+  runApp(const PrivateClassMobileApp());
 }

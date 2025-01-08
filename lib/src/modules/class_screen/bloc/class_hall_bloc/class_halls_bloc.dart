@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:aloka_mobile_app/src/services/class_shedule_service/class_shedule_service.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../models/class_schedule/class_halle_model.dart';
 

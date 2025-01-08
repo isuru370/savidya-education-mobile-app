@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:aloka_mobile_app/src/services/camera/quick_camera.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../services/camera/crop_image.dart';
 import '../../../../services/camera/image_gallery.dart';
+import '../../../../services/camera/quick_camera.dart';
 
 part 'image_picker_event.dart';
 part 'image_picker_state.dart';

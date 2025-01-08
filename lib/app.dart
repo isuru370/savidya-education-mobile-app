@@ -1,40 +1,41 @@
-import 'package:aloka_mobile_app/src/modules/admission_screen/bloc/admission/admission_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/admission_screen/bloc/get_admission/get_admission_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/admission_screen/bloc/admission_payment/admission_payment_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/attendance/bloc/attendance_count/attendance_count_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/attendance/bloc/class_student_attendance/class_student_attendance_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/attendance/bloc/new_attendance_read/new_attendance_read_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/attendance/bloc/unique_attendance/unique_attendance_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/auth_screen/bloc/reset_password/reset_password_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/auth_screen/bloc/user_type_bloc/user_type_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/class_screen/bloc/class_hall_bloc/class_halls_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/home_screen/bloc/today_classes/today_classes_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/payment/bloc/get_payment/get_payment_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/payment/bloc/payment_monthly_report/payment_monthly_report_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/student_screen/bloc/change_student_class/chenge_student_class_bloc.dart';
-import 'package:aloka_mobile_app/src/modules/teacher_screen/bloc/teacher_class_category/teacher_class_category_bloc.dart';
-import 'package:aloka_mobile_app/src/provider/bloc_provider/bank_details_bloc/bank_details_bloc.dart';
-import 'package:aloka_mobile_app/src/provider/bloc_provider/branch_details_bloc/branch_details_bloc.dart';
-import 'package:aloka_mobile_app/src/provider/bloc_provider/pages_bloc/pages_bloc.dart';
-import 'package:aloka_mobile_app/src/provider/bloc_provider/permission_bloc/permission_bloc.dart';
-import 'package:aloka_mobile_app/src/provider/cubit_provider/qr_scanner_cubit/qr_scanner_cubit.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'src/modules/admission_screen/bloc/admission/admission_bloc.dart';
+import 'src/modules/admission_screen/bloc/admission_payment/admission_payment_bloc.dart';
+import 'src/modules/admission_screen/bloc/get_admission/get_admission_bloc.dart';
+import 'src/modules/attendance/bloc/attendance_count/attendance_count_bloc.dart';
+import 'src/modules/attendance/bloc/class_student_attendance/class_student_attendance_bloc.dart';
+import 'src/modules/attendance/bloc/new_attendance_read/new_attendance_read_bloc.dart';
+import 'src/modules/attendance/bloc/unique_attendance/unique_attendance_bloc.dart';
 import 'src/modules/attendance/bloc/update_attendance/update_attendance_bloc.dart';
+import 'src/modules/auth_screen/bloc/reset_password/reset_password_bloc.dart';
 import 'src/modules/auth_screen/bloc/user_bloc/user_login_bloc.dart';
+import 'src/modules/auth_screen/bloc/user_type_bloc/user_type_bloc.dart';
 import 'src/modules/camera_screen/bloc/crop_image/crop_image_bloc.dart';
 import 'src/modules/camera_screen/bloc/quick_image/quick_image_bloc.dart';
+import 'src/modules/class_screen/bloc/class_hall_bloc/class_halls_bloc.dart';
 import 'src/modules/class_screen/bloc/student_percentage/student_percentage_bloc.dart';
 import 'src/modules/home_screen/bloc/quick_camera/quick_camera_bloc.dart';
+import 'src/modules/home_screen/bloc/today_classes/today_classes_bloc.dart';
+import 'src/modules/payment/bloc/get_payment/get_payment_bloc.dart';
+import 'src/modules/payment/bloc/payment_monthly_report/payment_monthly_report_bloc.dart';
 import 'src/modules/payment/bloc/student_half_payment/student_half_payment_bloc.dart';
+import 'src/modules/student_screen/bloc/change_student_class/chenge_student_class_bloc.dart';
 import 'src/modules/student_screen/bloc/image_picker/image_picker_bloc.dart';
 import 'src/modules/student_screen/bloc/student_in_the_class/student_in_the_class_bloc.dart';
+import 'src/modules/teacher_screen/bloc/teacher_class_category/teacher_class_category_bloc.dart';
 import 'src/provider/bloc_provider/all_student_has_class/all_student_has_class_bloc.dart';
+import 'src/provider/bloc_provider/bank_details_bloc/bank_details_bloc.dart';
+import 'src/provider/bloc_provider/branch_details_bloc/branch_details_bloc.dart';
 import 'src/provider/bloc_provider/date_picker_bloc/date_picker_bloc.dart';
+import 'src/provider/bloc_provider/pages_bloc/pages_bloc.dart';
+import 'src/provider/bloc_provider/permission_bloc/permission_bloc.dart';
 import 'src/provider/bloc_provider/theme_bloc/theme_bloc.dart';
 import 'src/provider/cubit_provider/check_box_list_cubit/checkbox_button_cubit.dart';
 import 'src/provider/cubit_provider/dropdown_button_cubit/dropdown_button_cubit.dart';
+import 'src/provider/cubit_provider/qr_scanner_cubit/qr_scanner_cubit.dart';
 import 'src/provider/cubit_provider/radio_button_cubit/radio_button_cubit.dart';
 import 'src/res/themes/app_mode.dart';
 import 'src/routes/app_route.dart';
@@ -57,8 +58,8 @@ import 'src/provider/bloc_provider/student_bloc/student_subject/student_subject_
 import 'src/provider/cubit_provider/check_box_list_cubit/check_box_list_cubit.dart';
 import 'src/provider/cubit_provider/time_cubit/time_cubit.dart';
 
-class AlokaMobileView extends StatelessWidget {
-  const AlokaMobileView({super.key});
+class PrivateClassMobileApp extends StatelessWidget {
+  const PrivateClassMobileApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +126,7 @@ class AlokaMobileView extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Aloka',
+            title: 'Education Mobile App',
             theme: lightMode,
             themeMode: state,
             darkTheme: darkMode,

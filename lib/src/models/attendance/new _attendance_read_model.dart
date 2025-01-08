@@ -1,3 +1,4 @@
+
 import 'package:equatable/equatable.dart';
 
 class NewAttendanceReadModel extends Equatable {
@@ -65,7 +66,7 @@ class NewAttendanceReadModel extends Equatable {
       isFreeCard: int.parse(json['is_free_card']),
 
       lastPaymentDate: json['lastPaymentDate'] != null
-          ? DateTime.tryParse(json['lastPaymentDate']) ?? null
+          ? DateTime.tryParse(json['lastPaymentDate']) 
           : null, // Nullable DateTime
       lastPaymentFor: json['lastPaymentFor'], // Nullable field
       amount: json['amount'] != null

@@ -1,10 +1,9 @@
-import 'package:aloka_mobile_app/src/provider/bloc_provider/student_bloc/student_grade/student_grade_bloc.dart';
-import 'package:aloka_mobile_app/src/res/color/app_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../provider/bloc_provider/student_bloc/student_grade/student_grade_bloc.dart';
+import '../../../res/color/app_color.dart';
 import '../bloc/quick_image/quick_image_bloc.dart';
 import '../components/search_quick_image_list.dart';
 
@@ -54,10 +53,10 @@ class _SearchQuickImageState extends State<SearchQuickImage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 suffixIcon: searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear),
+                        icon: const Icon(Icons.clear),
                         onPressed: () {
                           searchController.clear();
                           setState(() {

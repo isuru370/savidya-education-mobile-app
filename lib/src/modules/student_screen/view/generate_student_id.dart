@@ -397,10 +397,10 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
       final byteData = await captureWidgetOffScreen(qrCodeWidget);
       if (byteData != null) {
         // Save the image to the gallery.
-        final result = await ImageGallerySaver.saveImage(byteData);
-        print('Image saved: $result');
+        await ImageGallerySaver.saveImage(byteData);
+        
       } else {
-        print('Failed to capture image for ${student.cusId}');
+        
       }
     }
   }
@@ -443,7 +443,7 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
             await image.toByteData(format: ui.ImageByteFormat.png);
         completer.complete(byteData?.buffer.asUint8List());
       } catch (e) {
-        print("Error capturing widget: $e");
+       
         completer.complete(null);
       } finally {
         overlayEntry.remove();
@@ -506,10 +506,10 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
     final byteData = await captureWidgetOffScreen(qrCodeWidget);
     if (byteData != null) {
       // Save the captured image to the gallery.
-      final result = await ImageGallerySaver.saveImage(byteData);
-      print('Image saved: $result');
+       await ImageGallerySaver.saveImage(byteData);
+      
     } else {
-      print('Failed to capture image for $qrData');
+      
     }
   }
 }

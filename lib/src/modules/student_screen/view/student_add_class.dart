@@ -23,16 +23,15 @@ class StudentAddClass extends StatefulWidget {
   final String? studentInitialName;
   final bool isBottomNavBar;
 
-  const StudentAddClass({
-    super.key,
-    required this.studentId,
-    required this.cusStudentId,
-    this.studentInitialName,
-    required this.isBottomNavBar
-  });
+  const StudentAddClass(
+      {super.key,
+      required this.studentId,
+      required this.cusStudentId,
+      this.studentInitialName,
+      required this.isBottomNavBar});
 
   @override
-  _StudentAddClassState createState() => _StudentAddClassState();
+  State<StudentAddClass> createState() => _StudentAddClassState();
 }
 
 class _StudentAddClassState extends State<StudentAddClass> {
@@ -120,7 +119,6 @@ class _StudentAddClassState extends State<StudentAddClass> {
             ),
             TextButton(
               onPressed: () {
-                
                 if (classHasCatId != null &&
                     studentClassId != null &&
                     studentClassFreeCard != null) {
@@ -231,80 +229,83 @@ class _StudentAddClassState extends State<StudentAddClass> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        backgroundColor: ColorUtil.tealColor[10],
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Add Student Class"),
-            Text(
-              '${widget.studentInitialName}',
-              style: TextStyle(fontSize: 16, color: ColorUtil.whiteColor[16]),
+        appBar: AppBar(
+          toolbarHeight: 100,
+          backgroundColor: ColorUtil.tealColor[10],
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Add Student Class"),
+              Text(
+                '${widget.studentInitialName}',
+                style: TextStyle(fontSize: 16, color: ColorUtil.whiteColor[16]),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _studentAddClass,
+          backgroundColor: ColorUtil.tealColor[10],
+          child: const Icon(Icons.add),
+        ),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<ManageStudentBloc, ManageStudentState>(
+              listener: (context, state) {
+                if (state is StudentClassAddSuccess) {
+                  // Clear inputs and reset state
+                  setState(() {
+                    studentClassId = null;
+                    classHasCatId = null;
+                    studentClassFreeCard = null;
+                  });
+                  context
+                      .read<CheckboxButtonCubit>()
+                      .toggleFreeCardCheck(false);
+                  context.read<ClassHasStudentBloc>().add(
+                      GetClassHasStudentUniqueClassEvent(
+                          studentId: widget.studentId));
+                  context
+                      .read<DropdownButtonCubit>()
+                      .selectClassHasCategory(null);
+                  _showSnackbar(state.successMessage);
+                } else if (state is StudentDataFailure) {
+                  _showSnackbar(state.failureMessage);
+                }
+              },
+            ),
+            BlocListener<ChangeStudentClassBloc, ChangeStudentClassState>(
+              listener: (context, state) {
+                if (state is ChangeStudentClassSuccess) {
+                  // Clear dialog and reset state
+                  Navigator.of(context).pop();
+                  _showSnackbar(state.successMessage);
+                  setState(() {
+                    studentClassId = null;
+                    classHasCatId = null;
+                    studentClassFreeCard = null;
+                  });
+                  context
+                      .read<CheckboxButtonCubit>()
+                      .toggleFreeCardCheck(false);
+                } else if (state is ChangeStudentClassFailure) {
+                  _showSnackbar(state.failureMessage);
+                }
+              },
             ),
           ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _studentAddClass,
-        backgroundColor: ColorUtil.tealColor[10],
-        child: const Icon(Icons.add),
-      ),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<ManageStudentBloc, ManageStudentState>(
-            listener: (context, state) {
-              if (state is StudentClassAddSuccess) {
-                // Clear inputs and reset state
-                setState(() {
-                  studentClassId = null;
-                  classHasCatId = null;
-                  studentClassFreeCard = null;
-                });
-                context.read<CheckboxButtonCubit>().toggleFreeCardCheck(false);
-                context.read<ClassHasStudentBloc>().add(
-                    GetClassHasStudentUniqueClassEvent(
-                        studentId: widget.studentId));
-                context
-                    .read<DropdownButtonCubit>()
-                    .selectClassHasCategory(null);
-                _showSnackbar(state.successMessage);
-              } else if (state is StudentDataFailure) {
-                _showSnackbar(state.failureMessage);
+          child: BlocBuilder<ManageStudentBloc, ManageStudentState>(
+            builder: (context, state) {
+              if (state is StudentDataProcess) {
+                return const Center(child: CircularProgressIndicator());
               }
+              return _buildContent();
             },
           ),
-          BlocListener<ChangeStudentClassBloc, ChangeStudentClassState>(
-            listener: (context, state) {
-              if (state is ChangeStudentClassSuccess) {
-                // Clear dialog and reset state
-                Navigator.of(context).pop();
-                _showSnackbar(state.successMessage);
-                setState(() {
-                  studentClassId = null;
-                  classHasCatId = null;
-                  studentClassFreeCard = null;
-                });
-                context.read<CheckboxButtonCubit>().toggleFreeCardCheck(false);
-              } else if (state is ChangeStudentClassFailure) {
-                _showSnackbar(state.failureMessage);
-              }
-            },
-          ),
-        ],
-        child: BlocBuilder<ManageStudentBloc, ManageStudentState>(
-          builder: (context, state) {
-            if (state is StudentDataProcess) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return _buildContent();
-          },
         ),
-      ),
-      bottomNavigationBar: widget.isBottomNavBar
-          ? _buildBottomNavigationBar()
-          : const SizedBox()
-    );
+        bottomNavigationBar: widget.isBottomNavBar
+            ? _buildBottomNavigationBar()
+            : const SizedBox());
   }
 
   Widget _buildContent() {
@@ -404,9 +405,7 @@ class _StudentAddClassState extends State<StudentAddClass> {
                             return GestureDetector(
                               onTap: () => _showChangeClassDialog(studentData),
                               child: StudentSubjectWidget(
-                                onTap: () {
-                                  print(studentData.studentClassFreeCard);
-                                },
+                                onTap: () {},
                                 circleAvatarText:
                                     studentData.teacherInitialName ?? '',
                                 teacherName: studentData.className ?? '',

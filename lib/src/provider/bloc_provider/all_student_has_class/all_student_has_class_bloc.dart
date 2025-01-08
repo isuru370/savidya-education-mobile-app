@@ -1,6 +1,7 @@
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:equatable/equatable.dart';
 
 import '../../../models/student_has_category_has_class/student_has_category_has_class_model.dart';

@@ -16,13 +16,13 @@ class ClassStudentAttendance extends StatefulWidget {
   final String classDate;
 
   const ClassStudentAttendance({
-    Key? key,
+    super.key,
     required this.className,
     required this.gradeName,
     required this.categoryName,
     required this.classCatId,
     required this.classDate,
-  }) : super(key: key);
+  });
 
   @override
   State<ClassStudentAttendance> createState() => _ClassStudentAttendanceState();

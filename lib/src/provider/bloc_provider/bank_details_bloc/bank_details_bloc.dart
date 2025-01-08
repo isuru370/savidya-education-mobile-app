@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:aloka_mobile_app/src/services/bank_service/bank_details_service.dart';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../models/bank_details/bank_model.dart';
+import '../../../services/bank_service/bank_details_service.dart';
 
 part 'bank_details_event.dart';
 part 'bank_details_state.dart';

@@ -127,8 +127,8 @@ class StudentHasClassModelClass extends Equatable {
     if (value is int) {
       return value; // Already an integer
     } else if (value is String) {
-      return int.tryParse(value) ??
-          null; // Attempt to parse as int, return null if parsing fails
+      return int.tryParse(
+          value); // Attempt to parse as int, return null if parsing fails
     }
     return null; // Return null if value is neither an int nor a string
   }
@@ -137,8 +137,8 @@ class StudentHasClassModelClass extends Equatable {
     if (value is double) {
       return value; // Already a double
     } else if (value is String) {
-      return double.tryParse(value) ??
-          null; // Attempt to parse as double, return null if parsing fails
+      return double.tryParse(
+          value); // Attempt to parse as double, return null if parsing fails
     }
     return null; // Return null if value is neither a double nor a string
   }
