@@ -17,7 +17,7 @@ jobs:
       # 2. Flutter SDK Install කිරීම
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'  # Stable version එක install වේ.
+          flutter-version: '3.27.1'  # Stable version එක install වේ.
 
       # 3. Dependencies Install කිරීම
       - name: Install dependencies
