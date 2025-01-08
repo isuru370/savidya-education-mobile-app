@@ -1,0 +1,43 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Repository එක Clone කිරීම
+      - uses: actions/checkout@v4
+
+      # 2. Flutter SDK Install කිරීම
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'  # Stable version එක install වේ.
+
+      # 3. Dependencies Install කිරීම
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4. Analyze Project Source
+      - name: Analyze code
+        run: flutter analyze
+
+      # 5. Run Unit Tests
+      - name: Run tests
+        run: flutter test
+
+      # 6. Release APK Build කිරීම (Optional)
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      # 7. Release APK Upload කිරීම
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
