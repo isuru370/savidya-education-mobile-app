@@ -203,7 +203,8 @@ class _ClassCategoryState extends State<ClassCategory> {
           items: classList.map((classSchedule) {
             return DropdownMenuItem<ClassScheduleModelClass>(
               value: classSchedule,
-              child: Text("${classSchedule.id} ${classSchedule.className}"),
+              child: Text(
+                  " ${classSchedule.className}  : Grade ${classSchedule.gradeName}"),
             );
           }).toList(),
           onChanged: (classSchedule) {
