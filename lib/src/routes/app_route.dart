@@ -34,7 +34,6 @@ import 'package:aloka_mobile_app/src/modules/qr_code_screen/view/read_payment.da
 import 'package:aloka_mobile_app/src/modules/qr_code_screen/view/read_screen.dart';
 import 'package:aloka_mobile_app/src/modules/qr_code_screen/view/student_id_generate.dart';
 import 'package:aloka_mobile_app/src/modules/settings_screen/view/help_center_screen.dart';
-import 'package:aloka_mobile_app/src/modules/student_screen/arguments/student_id_data.dart';
 import 'package:aloka_mobile_app/src/modules/student_screen/view/all_student_screen.dart';
 import 'package:aloka_mobile_app/src/modules/student_screen/view/generate_student_id.dart';
 import 'package:aloka_mobile_app/src/modules/student_screen/view/student_add_class.dart';
@@ -152,12 +151,12 @@ class AppRoutes {
           ),
         );
       case '/generate_id':
-        final studentIdData = setting.arguments as StudentIdData;
+        final studentIdData = setting.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (context) => StudentIdGenerate(
-            studentId: studentIdData.studentId,
-            cusStudentId: studentIdData.cusStudentId,
-            studentInitialName: studentIdData.studentInitialName,
+            studentId: studentIdData['student_id'],
+            cusStudentId: studentIdData['cus_student_id'],
+            studentInitialName: studentIdData['student_initial_name'],
           ),
         );
       case '/student_generate_id':

@@ -1,9 +1,8 @@
 import 'dart:convert';
-//import 'dart:developer';
 
-import 'package:aloka_mobile_app/src/models/payment_model_class/student_half_payment_model.dart';
 
 import '../../models/payment_model_class/payment_model_class.dart';
+import '../../models/payment_model_class/student_half_payment_model.dart';
 import '../api/main_api.dart';
 import 'package:http/http.dart' as http;
 
@@ -107,7 +106,6 @@ Future<Map<String, dynamic>> monthlyPaymentReport(
 
   if (response.statusCode == 200) {
     final responseData = jsonDecode(response.body);
-    print(responseData);
     return responseData;
   } else {
     return {
