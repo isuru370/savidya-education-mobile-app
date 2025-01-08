@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:aloka_mobile_app/src/models/permission_model/permission_model.dart';
 
+import '../../models/permission_model/permission_model.dart';
 import '../api/main_api.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,7 +10,6 @@ Future<Map<String, dynamic>> getPages() async {
     final response = await http.get(Uri.parse('${API.pages}/get_pages.php'));
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      print(responseData);
       return responseData;
     } else {
       return {
