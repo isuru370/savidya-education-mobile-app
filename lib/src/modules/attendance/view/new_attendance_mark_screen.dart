@@ -1,4 +1,4 @@
-import 'package:aloka_mobile_app/src/models/attendance/new%20_attendance_read_model.dart';
+import 'package:aloka_mobile_app/src/models/attendance/new_attendance_read_model.dart';
 import 'package:aloka_mobile_app/src/modules/payment/components/build_student_info_widget.dart';
 import 'package:aloka_mobile_app/src/res/color/app_color.dart';
 import 'package:flutter/material.dart';

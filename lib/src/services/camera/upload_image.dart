@@ -88,7 +88,6 @@ Future<Map<String, dynamic>> uploadServerImage(File? imageFilePath) async {
     var responseData = await response.stream.bytesToString();
     try {
       var jsonResponse = jsonDecode(responseData) as Map<String, dynamic>;
-      print(jsonResponse);
       return jsonResponse;
     } catch (e) {
       return {'success': false, 'message': 'Invalid JSON response: $e'};

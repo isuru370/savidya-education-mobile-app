@@ -12,7 +12,7 @@ import '../../../provider/cubit_provider/dropdown_button_cubit/dropdown_button_s
 import '../../../res/color/app_color.dart';
 import '../../class_screen/bloc/class_has_category/class_has_category_bloc.dart';
 import '../../class_screen/bloc/class_has_student/class_has_student_bloc.dart';
-import '../arguments/student_Id_data.dart';
+import '../arguments/student_id_data.dart';
 import '../bloc/change_student_class/chenge_student_class_bloc.dart';
 import '../bloc/manage_student_bloc/manage_student_bloc.dart';
 import '../components/student_subject_widget.dart';

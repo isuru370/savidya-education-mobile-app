@@ -36,7 +36,6 @@ Future<Map<String, dynamic>> getClassHasCategory() async {
         .get(Uri.parse('${API.classHasCategory}/get_class_has_category.php'));
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      print(responseData);
       return responseData;
     } else {
       return {
@@ -88,7 +87,6 @@ Future<Map<String, dynamic>> getUniqueClassCategory(int classId) async {
 
   if (response.statusCode == 200) {
     final responseData = jsonDecode(response.body);
-    print(responseData);
     return responseData;
   } else {
     return {

@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../models/attendance/new _attendance_read_model.dart';
+import '../../../../models/attendance/new_attendance_read_model.dart';
 import '../../../../services/attendance/attendance_service.dart';
 
 part 'new_attendance_read_event.dart';

@@ -34,7 +34,7 @@ import 'package:aloka_mobile_app/src/modules/qr_code_screen/view/read_payment.da
 import 'package:aloka_mobile_app/src/modules/qr_code_screen/view/read_screen.dart';
 import 'package:aloka_mobile_app/src/modules/qr_code_screen/view/student_id_generate.dart';
 import 'package:aloka_mobile_app/src/modules/settings_screen/view/help_center_screen.dart';
-import 'package:aloka_mobile_app/src/modules/student_screen/arguments/student_Id_data.dart';
+import 'package:aloka_mobile_app/src/modules/student_screen/arguments/student_id_data.dart';
 import 'package:aloka_mobile_app/src/modules/student_screen/view/all_student_screen.dart';
 import 'package:aloka_mobile_app/src/modules/student_screen/view/generate_student_id.dart';
 import 'package:aloka_mobile_app/src/modules/student_screen/view/student_add_class.dart';
