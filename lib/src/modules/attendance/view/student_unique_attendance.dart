@@ -216,7 +216,10 @@ class _StudentUniqueAttendanceState extends State<StudentUniqueAttendance> {
         ),
         trailing: GestureDetector(
           onTap: () {
-            _showAttendanceUpdateDialog(context, attendanceData);
+            if (attendanceData.attendanceStatus == 'present') {
+            } else {
+              _showAttendanceUpdateDialog(context, attendanceData);
+            }
           },
           child: Text(
             attendanceData.attendanceStatus!,
@@ -285,11 +288,10 @@ class _StudentUniqueAttendanceState extends State<StudentUniqueAttendance> {
                           UpdateAttendance(
                             studentAttendanceModelClass:
                                 StudentAttendanceModelClass(
-                              attendanceId: attendanceData.classAttendanceId,
-                              attendanceStatus:
-                                  attendanceData.attendanceStatus == "present"
-                                      ? "absent"
-                                      : "present",
+                              classAttendanceId: attendanceData.classAttendanceId,
+                              atDate: attendanceData.classDate,
+                              studentId: widget.studentId,
+                              studentHasClassId: attendanceData.studentHasClassId,
                             ),
                           ),
                         );

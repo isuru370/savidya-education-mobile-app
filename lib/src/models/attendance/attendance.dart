@@ -2,9 +2,11 @@ import 'package:equatable/equatable.dart';
 
 class StudentAttendanceModelClass extends Equatable {
   final int? attendanceId;
+  final int? classAttendanceId;
   final DateTime? atDate;
   final String? attendanceStatus;
   final int? classId;
+  final int? studentHasClassId;
   final int? studentId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -12,8 +14,10 @@ class StudentAttendanceModelClass extends Equatable {
   // Constructor
   const StudentAttendanceModelClass({
     this.attendanceId,
+    this.classAttendanceId,
     this.atDate,
     this.attendanceStatus,
+    this.studentHasClassId,
     this.classId,
     this.studentId,
     this.createdAt,
@@ -59,8 +63,10 @@ class StudentAttendanceModelClass extends Equatable {
 
   Map<String, dynamic> updateJson() {
     return {
-      'attendance': attendanceStatus,
-      'attendance_status': attendanceStatus,
+      "class_attendance_id" : classAttendanceId,
+      "at_date": atDate,
+      "student_student_student_class_id": studentHasClassId,
+      "student_id": studentId,
     };
   }
 
@@ -98,6 +104,7 @@ class GetStudentAttendanceModelClass extends Equatable {
   final int? classAttendanceId;
   final int? classStatus;
   final int? classCategoryHasStudentClassId;
+  final int? studentHasClassId;
   final DateTime? classDate;
   final String? dayName;
   final String? categoryName;
@@ -107,6 +114,7 @@ class GetStudentAttendanceModelClass extends Equatable {
     this.classAttendanceId,
     this.classStatus,
     this.classCategoryHasStudentClassId,
+    this.studentHasClassId,
     this.classDate,
     this.dayName,
     this.categoryName,
@@ -127,6 +135,9 @@ class GetStudentAttendanceModelClass extends Equatable {
               ? int.parse(json['class_category_has_student_class_id'])
               : json['class_category_has_student_class_id']
                   as int?, // Check if it's already an int
+      studentHasClassId: json['studentHasClassId'] is String
+          ? int.parse(json['studentHasClassId'])
+          : json['studentHasClassId'] as int?, // Check if it's already an int
       classDate:
           json['classDate'] != null ? DateTime.parse(json['classDate']) : null,
       dayName: json['day_of_week'] as String?,
@@ -148,13 +159,12 @@ class GetStudentAttendanceModelClass extends Equatable {
     };
   }
 
-  
-
   @override
   List<Object?> get props => [
         classAttendanceId,
         classStatus,
         classCategoryHasStudentClassId,
+        studentHasClassId,
         classDate,
         dayName,
         categoryName,

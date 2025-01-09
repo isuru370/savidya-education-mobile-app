@@ -28,6 +28,10 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
   @override
   void initState() {
     super.initState();
+
+    context
+        .read<ClassHasStudentBloc>()
+        .add(GetClassHasStudentUniqueClassEvent(studentId: widget.studentId));
   }
 
   @override

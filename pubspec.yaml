@@ -39,6 +39,7 @@ dependencies:
 
   # Internet Connection Management
   internet_connection_checker: ^1.0.0+1 # Internet connection monitoring
+  flutter_phone_direct_caller: ^2.1.1 # Direct phone call
   connectivity_plus: ^5.0.1 # Connectivity status
 
   # State Management
