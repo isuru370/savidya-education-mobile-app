@@ -1,101 +1,109 @@
+# Project Information
 name: aloka_mobile_app
 description: "A new Flutter project."
-publish_to: 'none' 
-version: 1.0.0+1
+publish_to: 'none' # Prevent publishing to pub.dev
+version: 1.0.0+1 # Application version
 
+# Flutter SDK version constraints
 environment:
   sdk: '>=3.4.0-282.3.beta <4.0.0'
 
+# Project Dependencies
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.19.0
-  cupertino_icons: ^1.0.6
-  flutter_native_splash: ^2.3.6
+  intl: ^0.19.0 # Date and time formatting
+  cupertino_icons: ^1.0.6 # iOS style icons
+  flutter_native_splash: ^2.3.6 # Splash screen setup
 
-  scroll_date_picker: ^3.7.3
-  path_provider: ^2.1.0
-  modal_bottom_sheet: ^2.1.2
+  # UI Components
+  scroll_date_picker: ^3.7.3 # Scrollable date picker
+  path_provider: ^2.1.0 # File path access
+  modal_bottom_sheet: ^2.1.2 # Customizable bottom sheet
 
-  flutter_slidable: ^3.1.2
-  badges: ^3.1.2
-  percent_indicator: ^4.2.3
-  flutter_svg: ^2.0.7
-  multi_select_flutter: ^4.1.3
+  flutter_slidable: ^3.1.2 # Swipeable list items
+  badges: ^3.1.2 # Badge components
+  percent_indicator: ^4.2.3 # Progress indicators
+  flutter_svg: ^2.0.7 # SVG rendering
+  multi_select_flutter: ^4.1.3 # Multi-select dropdown
 
-#qr code
-  qr_flutter: ^4.1.0
-  qr_code_scanner: ^1.0.1
+  # QR Code Functionality
+  qr_flutter: ^4.1.0 # Generate QR codes
+  qr_code_scanner: ^1.0.1 # Scan QR codes
 
-#image 
-  image_picker: ^1.0.4
-  image_cropper: ^5.0.0
+  # Image Handling
+  image_picker: ^1.0.4 # Image selection
+  image_cropper: ^5.0.0 # Crop images
 
-  fluttericon: ^2.0.0
+  fluttericon: ^2.0.0 # Customizable icons
 
-#internet connection check
-  internet_connection_checker: ^1.0.0+1
-  flutter_phone_direct_caller: ^2.1.1
-  connectivity_plus: ^5.0.1
+  # Internet Connection Management
+  internet_connection_checker: ^1.0.0+1 # Internet connection monitoring
+  flutter_phone_direct_caller: ^2.1.1 # Direct phone call
+  connectivity_plus: ^5.0.1 # Connectivity status
 
-#flutter bloc
-  flutter_bloc: ^8.1.6
-  equatable: ^2.0.5
-  flutter_launcher_icons: ^0.13.1
-  simple_month_year_picker: ^1.0.5
-  pdf: ^3.11.1
-  printing: ^5.13.4
-  file_picker: ^8.1.4
-  permission_handler: ^11.3.1
-  image_gallery_saver: ^2.0.3
-  flutter_tts: ^4.2.0
-  share_plus: ^10.1.3
-  mobile_scanner: ^6.0.2
-  http: ^1.2.2
+  # State Management
+  flutter_bloc: ^8.1.6 # Bloc pattern
+  equatable: ^2.0.5 # Equality for bloc models
 
-#flutter error report
+  # Utilities
+  flutter_launcher_icons: ^0.13.1 # App launcher icon generator
+  simple_month_year_picker: ^1.0.5 # Month-year picker
+  pdf: ^3.11.1 # Generate PDFs
+  printing: ^5.13.4 # Print functionality
+  file_picker: ^8.1.4 # File selection
+  permission_handler: ^11.3.1 # Permission management
+  image_gallery_saver: ^2.0.3 # Save images to gallery
+  flutter_tts: ^4.2.0 # Text-to-speech
+  share_plus: ^10.1.3 # Sharing content
+  mobile_scanner: ^6.0.2 # Barcode scanning
+  http: ^1.2.2 # HTTP requests
+
+# Uncomment to use Bugsnag for error reporting
 #  bugsnag_flutter: ^3.1.1
 
-
-
+# Development Dependencies
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
-  build_runner: ^2.4.14
-  mockito: ^5.4.5
+  flutter_lints: ^3.0.0 # Linting rules
+  build_runner: ^2.4.14 # Code generation
+  mockito: ^5.4.5 # Mocking in tests
 
+# Flutter Settings
 flutter:
-  uses-material-design: true
+  uses-material-design: true # Material design usage
 
+  # Asset Configuration
   assets:
-  - assets/images/
-  - assets/logo/
-  - assets/svg/
+    - assets/images/
+    - assets/logo/
+    - assets/svg/
 
-
+  # Fonts
   fonts:
     - family: Poppins
       fonts:
-        - asset: assets\fonts\Poppins-Regular.ttf
-        - asset: assets\fonts\Poppins-Bold.ttf
-        - asset: assets\fonts\Poppins-Italic.ttf
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+        - asset: assets/fonts/Poppins-Italic.ttf
     - family: Oswald
       fonts:
-        - asset: assets\fonts\Oswald-Bold.ttf
-        - asset: assets\fonts\Oswald-Regular.ttf
-        - asset: assets\fonts\Oswald-ExtraLight.ttf
-        - asset: assets\fonts\Oswald-Medium.ttf
+        - asset: assets/fonts/Oswald-Bold.ttf
+        - asset: assets/fonts/Oswald-Regular.ttf
+        - asset: assets/fonts/Oswald-ExtraLight.ttf
+        - asset: assets/fonts/Oswald-Medium.ttf
 
-# splash screen
+# Splash Screen Configuration
 flutter_native_splash:
-    color: "#ffffff"
-    image: "assets/logo/brr.png"
-    android: true
-    ios: true
+  color: "#ffffff" # Background color
+  image: "assets/logo/brr.png" # Splash screen image
+  android: true
+  ios: true
 
+# Launcher Icon Configuration
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/logo/brr.png"
-  min_sdk_android: 21 # android min sdk min:16, default 21
+  min_sdk_android: 21 # Android minimum SDK level (default 21, minimum 16)

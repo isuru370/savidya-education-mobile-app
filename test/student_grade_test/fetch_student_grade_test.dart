@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aloka_mobile_app/src/models/student/grade.dart';
 import 'package:aloka_mobile_app/src/services/api/main_api.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -20,16 +21,24 @@ void main() {
     test('returns data when the server responds with a 200 status code',
         () async {
       // Arrange: Mock the response
-      const response = '{"success": true, "grades": "A"}';
+      const response =
+          '{"success": true, "grades": [{"subject": "Math", "grade": "A"}]}';
       when(mockClient.get(Uri.parse('${API.student}/grade.php')))
           .thenAnswer((_) async => http.Response(response, 200));
 
       // Act: Call the method
       final result = await getGrade(mockClient);
 
+      // Parse the response for testing
+      final Map<String, dynamic> parsedResponse = jsonDecode(response);
+      final List<dynamic> gradeList = parsedResponse['grades'];
+      List<Grade> studentGrades =
+          gradeList.map((gradeJson) => Grade.fromJson(gradeJson)).toList();
+
       // Assert: Check that the result matches the expected data
-      expect(result['success'], true);
-      expect(result['grades'], 'A');
+      expect(result['success'], parsedResponse['success']);
+      expect(result['grades'], isNotEmpty); // Check grades are non-empty
+      expect(studentGrades.first.gradeName, ''); // Example verification
     });
 
     test('returns error message when the server responds with an error',
