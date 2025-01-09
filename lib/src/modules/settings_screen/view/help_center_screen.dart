@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HelpCenterScreen extends StatefulWidget {
@@ -42,7 +41,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Padding(
-                    padding:  EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16.0),
                     child: Text(
                       'Welcome to the Aloka IT Solution Help Center for Private Classes. Explore our comprehensive articles, tutorials, and FAQs to efficiently navigate the platform, solve common problems, and improve your teaching journey. At Aloka IT Solution, we are dedicated to making your private classes a success, and this help center is here to assist you every step of the way.',
                       style: TextStyle(
@@ -69,7 +68,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 const SizedBox(height: 20),
                 ContactButton(
                   onPressed: () async {
-                    FlutterPhoneDirectCaller.callNumber(phoneNo1);
+                    // FlutterPhoneDirectCaller.callNumber(phoneNo1);
                   },
                   name: 'Isuru Fernando',
                   phoneNo: phoneNo1,
@@ -77,7 +76,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 const SizedBox(height: 10),
                 ContactButton(
                   onPressed: () {
-                    FlutterPhoneDirectCaller.callNumber(phoneNo2);
+                    // FlutterPhoneDirectCaller.callNumber(phoneNo2);
                   },
                   name: 'Pasindu Premodh',
                   phoneNo: phoneNo2,
@@ -85,7 +84,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 const SizedBox(height: 10),
                 ContactButton(
                   onPressed: () {
-                    FlutterPhoneDirectCaller.callNumber(phoneNo3);
+                    //FlutterPhoneDirectCaller.callNumber(phoneNo3);
                   },
                   name: 'Shiran Priyanjan',
                   phoneNo: phoneNo3,
@@ -109,7 +108,6 @@ class ContactButton extends StatelessWidget {
     required this.onPressed,
     required this.name,
     required this.phoneNo,
-
   });
 
   @override
