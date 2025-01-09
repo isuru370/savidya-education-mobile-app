@@ -11,33 +11,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Repository එක Clone කිරීම
+      # 1. Checkout the repository
       - uses: actions/checkout@v4
 
-      # 2. Flutter SDK Install කිරීම
+      # 2. Install Flutter SDK
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.1'  # Stable version එක install වේ.
+          flutter-version: '3.27.1'  # Stable version
 
-      # 3. Dependencies Install කිරීම
+      # 3. Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # 4. Analyze Project Source
+      # 4. Analyze the project source code
       - name: Analyze code
         run: flutter analyze
 
-      # 5. Run Unit Tests
+      # 5. Run unit tests
       - name: Run tests
         run: flutter test
 
-      # 6. Release APK Build කිරීම (Optional)
+      # 6. Build Release APK (optional)
       - name: Build Release APK
         run: flutter build apk --release
 
-      # 7. Release APK Upload කිරීම
+      # 7. Upload Release APK
       - name: Upload Release APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Use the latest version
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
