@@ -6,7 +6,7 @@ class API {
   //https://savidya.alokait.lk/api
 
   static String mainAPI =
-      "http://192.168.43.73/Aloka-Mobile-App-Backend/Savidya-Education-Mobile-App-Backend/api";
+      "https://api.alokait.lk/api";
 
   //https://api.coopcitycollege.com/api
   //https://api.alokait.lk/api

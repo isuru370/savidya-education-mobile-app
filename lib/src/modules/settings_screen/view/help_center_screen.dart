@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HelpCenterScreen extends StatefulWidget {
@@ -69,7 +68,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 const SizedBox(height: 20),
                 ContactButton(
                   onPressed: () async {
-                    FlutterPhoneDirectCaller.callNumber(phoneNo1);
+                    //FlutterPhoneDirectCaller.callNumber(phoneNo1);
                   },
                   name: 'Isuru Fernando',
                   phoneNo: phoneNo1,
@@ -77,7 +76,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 const SizedBox(height: 10),
                 ContactButton(
                   onPressed: () {
-                    FlutterPhoneDirectCaller.callNumber(phoneNo2);
+                    //FlutterPhoneDirectCaller.callNumber(phoneNo2);
                   },
                   name: 'Pasindu Premodh',
                   phoneNo: phoneNo2,
@@ -85,7 +84,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 const SizedBox(height: 10),
                 ContactButton(
                   onPressed: () {
-                    FlutterPhoneDirectCaller.callNumber(phoneNo3);
+                    //FlutterPhoneDirectCaller.callNumber(phoneNo3);
                   },
                   name: 'Shiran Priyanjan',
                   phoneNo: phoneNo3,
