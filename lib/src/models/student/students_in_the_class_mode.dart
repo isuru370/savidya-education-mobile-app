@@ -49,10 +49,16 @@ class StudentsInTheClassModel extends Equatable {
           int.tryParse(json['studentStudentClassId'].toString()) ?? 0,
       studentId: int.tryParse(json['studentId'].toString()) ?? 0,
       studentHasCatId: int.tryParse(json['studentHasCatId'].toString()) ?? 0,
-      studentStates: int.parse(json['studentStates']), // Ensure it's an integer
+      studentStates: json['studentStates'] is int
+          ? json['studentStates'] as int
+          : int.parse(
+              json['studentStates'].toString()), // Handle both int and String
       classJoinDate:
           DateTime.tryParse(json['classJoinDate'] ?? '') ?? DateTime(1970),
-      studentFreeCard: int.parse(json['studentFreeCard']), // Convert to boolean
+      studentFreeCard: json['studentFreeCard'] is int
+          ? json['studentFreeCard'] as int
+          : int.parse(
+              json['studentFreeCard'].toString()), // Handle both int and String
       customId: json['customId'] ?? '',
       initialName: json['initialName'] ?? '',
       whatsappNo: json['whatsappNo'] ?? '',
@@ -69,8 +75,7 @@ class StudentsInTheClassModel extends Equatable {
       'studentHasCatId': studentHasCatId,
       'studentStates': studentStates,
       'classJoinDate': classJoinDate.toIso8601String(),
-      'studentFreeCard':
-          studentFreeCard , // Convert boolean to integer (1 or 0)
+      'studentFreeCard': studentFreeCard, // Convert boolean to integer (1 or 0)
       'customId': customId,
       'initialName': initialName,
       'whatsappNo': whatsappNo,

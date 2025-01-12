@@ -19,6 +19,7 @@ Future<Map<String, dynamic>> getUniqueStudentClass(int studentId) async {
 
   if (response.statusCode == 200) {
     final responseData = jsonDecode(response.body);
+    print(responseData);
     return responseData;
   } else {
     return {
@@ -77,5 +78,3 @@ Future<Map<String, dynamic>> deleteClass(
     };
   }
 }
-
-

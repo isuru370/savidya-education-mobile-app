@@ -33,7 +33,9 @@ class StudentHalfPaymentModel extends Equatable {
       amount: json['amount'] != null
           ? double.tryParse(json['amount'].toString())
           : 0.0,
-      paymentStatus: int.parse(json['status'] ?? '0'),
+      paymentStatus: json['status'] is int
+          ? json['status'] as int
+          : int.tryParse(json['status']?.toString() ?? '0') ?? 0,
       fees:
           json['fees'] != null ? double.tryParse(json['fees'].toString()) : 0.0,
       attendanceCount: json['attendance_count'] != null

@@ -16,7 +16,7 @@ class LastPaymentModelClass extends Equatable {
   final String gradeName;
   final String gradeId;
   final String? lastPaymentDate; // Nullable to handle missing dates
-  final String? lastPaymentFor;  // Nullable to handle missing data
+  final String? lastPaymentFor; // Nullable to handle missing data
 
   const LastPaymentModelClass({
     required this.studentStudentClassId,
@@ -40,22 +40,30 @@ class LastPaymentModelClass extends Equatable {
   // Factory constructor for creating an instance from JSON
   factory LastPaymentModelClass.fromJson(Map<String, dynamic> json) {
     return LastPaymentModelClass(
-      studentStudentClassId: json['studentStudentClassId'] as String,
-      classFreeCard: int.parse(json['classFreeCard']),
-      classHasCategory: json['classHasCategory'] as String,
-      studentId: json['student_id'] as String,
-      initialName: json['initialName'] as String,
-      mobileNo: json['mobileNo'] as String,
-      guardianMobile: json['guardianMobile'] as String,
-      imageUrl: json['ImageUrl'] as String,
-      catId: json['catId'] as String,
-      fees: json['fees'] as String,
-      categoryName: json['categoryName'] as String,
-      className: json['className'] as String,
-      gradeName: json['gradeName'] as String,
-      gradeId: json['gradeId'] as String,
-      lastPaymentDate: json['lastPaymentDate'] as String?,
-      lastPaymentFor: json['lastPaymentFor'] as String?,
+      studentStudentClassId: json['studentStudentClassId']?.toString() ??
+          '', // Ensure it's a String
+      classFreeCard: json['classFreeCard'] is int
+          ? json['classFreeCard']
+          : int.tryParse(json['classFreeCard'].toString()) ??
+              0, // Safely handle int or String
+      classHasCategory:
+          json['classHasCategory']?.toString() ?? '', // Ensure it's a String
+      studentId: json['student_id']?.toString() ?? '', // Ensure it's a String
+      initialName:
+          json['initialName']?.toString() ?? '', // Ensure it's a String
+      mobileNo: json['mobileNo']?.toString() ?? '', // Ensure it's a String
+      guardianMobile:
+          json['guardianMobile']?.toString() ?? '', // Ensure it's a String
+      imageUrl: json['ImageUrl']?.toString() ?? '', // Ensure it's a String
+      catId: json['catId']?.toString() ?? '', // Ensure it's a String
+      fees: json['fees']?.toString() ?? '', // Ensure it's a String
+      categoryName:
+          json['categoryName']?.toString() ?? '', // Ensure it's a String
+      className: json['className']?.toString() ?? '', // Ensure it's a String
+      gradeName: json['gradeName']?.toString() ?? '', // Ensure it's a String
+      gradeId: json['gradeId']?.toString() ?? '', // Ensure it's a String
+      lastPaymentDate: json['lastPaymentDate']?.toString(), // Nullable String
+      lastPaymentFor: json['lastPaymentFor']?.toString(), // Nullable String
     );
   }
 

@@ -13,8 +13,8 @@ class StudentPercentageBloc
     on<GetStudentPercentageEvent>(_onGetStudentPercentageEvent);
   }
 
-  Future<void> _onGetStudentPercentageEvent(
-      GetStudentPercentageEvent event, Emitter<StudentPercentageState> emit) async {
+  Future<void> _onGetStudentPercentageEvent(GetStudentPercentageEvent event,
+      Emitter<StudentPercentageState> emit) async {
     emit(StudentPercentageLoading());
 
     try {
@@ -25,15 +25,18 @@ class StudentPercentageBloc
       );
 
       if (percentageResponse['success']) {
-        final List<dynamic> percentageData =
-            percentageResponse['present_data'];
+        // Directly get the 'attendance_data' map
+        final Map<String, dynamic> attendanceData =
+            percentageResponse['attendance_data'];
 
-        final List<PercentageModelClass> percentages = percentageData
-            .map((json) => PercentageModelClass.fromJson(json))
-            .toList();
+        // Check if attendanceData is not null and has values
+        // Convert the map to a list of one element for consistency with your original flow
+        final List<PercentageModelClass> percentages = [
+          PercentageModelClass.fromJson(attendanceData)
+        ];
 
         emit(StudentPercentageSuccess(getPercentage: percentages));
-      } else {
+            } else {
         emit(StudentPercentageFailure(
           message: percentageResponse['message'] ?? 'Failed to fetch data',
         ));

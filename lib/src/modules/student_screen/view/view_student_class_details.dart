@@ -136,7 +136,7 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
       itemCount: students.length,
       itemBuilder: (context, index) {
         final studentData = students[index];
-        final studentPercentage = percentage[index];
+        final studentPercentage = percentage[index] ;
         return _buildStudentCard(studentData, studentPercentage);
       },
     );

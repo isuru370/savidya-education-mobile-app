@@ -40,16 +40,23 @@ class ClassHasStudentBloc
                   ? int.parse(classData['classHasCatId'])
                   : classData['classHasCatId']);
 
-          if (percentageResponse['success']) {
-            final List<dynamic> percentageData =
-                percentageResponse['present_data'];
-            final List<PercentageModelClass> percentages = percentageData
-                .map((json) => PercentageModelClass.fromJson(json))
-                .toList();
-            percentageList.addAll(percentages);
-          } else {
+          final Map<String, dynamic>? attendanceData =
+              percentageResponse['attendance_data'];
+
+          if (attendanceData == null) {
+            emit(const ClassHasStudentFailure(
+                failureMessage: "Attendance data is null"));
+            return;
+          }
+
+          try {
+            final PercentageModelClass percentage =
+                PercentageModelClass.fromJson(attendanceData);
+            percentageList.add(percentage);
+          } catch (e) {
             emit(ClassHasStudentFailure(
-                failureMessage: percentageResponse['message']));
+                failureMessage:
+                    "Failed to parse attendance data: ${e.toString()}"));
             return;
           }
         }

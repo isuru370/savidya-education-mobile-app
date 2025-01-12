@@ -26,11 +26,7 @@ class PercentageModelClass extends Equatable {
     if (value is int) {
       return value;
     } else if (value is String) {
-      final result = int.tryParse(value);
-      if (result == null) {
-       
-      }
-      return result;
+      return int.tryParse(value);
     }
     return null;
   }
@@ -39,13 +35,8 @@ class PercentageModelClass extends Equatable {
     if (value is double) {
       return value;
     } else if (value is String) {
-      final result = double.tryParse(value);
-      if (result == null) {
-       
-      }
-      return result;
+      return double.tryParse(value);
     }
-   
     return null;
   }
 

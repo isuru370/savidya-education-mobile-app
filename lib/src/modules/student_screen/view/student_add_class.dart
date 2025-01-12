@@ -382,6 +382,9 @@ class _StudentAddClassState extends State<StudentAddClass> {
                 } else if (state is ChangeStudentClassSuccess) {
                   _showSnackbar(state.successMessage);
                   Navigator.pop(context);
+                } else if (state is DeleteStudentClassSuccess) {
+                  _showSnackbar(state.deleteMessage);
+                  Navigator.pop(context);
                 }
               },
               child:
@@ -404,7 +407,16 @@ class _StudentAddClassState extends State<StudentAddClass> {
                             return GestureDetector(
                               onTap: () => _showChangeClassDialog(studentData),
                               child: StudentSubjectWidget(
-                                onTap: () {},
+                                onTap: () {
+                                  context
+                                      .read<ChangeStudentClassBloc>()
+                                      .add(DeleteClassEvent(
+                                          modelClass:
+                                              StudentHasCategoryHasClassModelClass(
+                                        studentHasClassesId:
+                                            studentData.studentHasClassesId,
+                                      )));
+                                },
                                 circleAvatarText:
                                     studentData.teacherInitialName ?? '',
                                 teacherName: studentData.className ?? '',
