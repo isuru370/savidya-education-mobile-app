@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,6 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import '../../../models/student/student.dart';
 import '../../../provider/bloc_provider/student_bloc/student_grade/student_grade_bloc.dart';
@@ -397,11 +397,13 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
       final byteData = await captureWidgetOffScreen(qrCodeWidget);
       if (byteData != null) {
         // Save the image to the gallery.
-        await ImageGallerySaver.saveImage(byteData);
-        
-      } else {
-        
-      }
+        await FileSaver.instance.saveFile(
+          name: "qr_code_image", // File name without extension
+          bytes: byteData, // Image bytes
+          ext: "png", // File extension
+          mimeType: MimeType.png, // MIME type
+        );
+      } else {}
     }
   }
 
@@ -443,7 +445,6 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
             await image.toByteData(format: ui.ImageByteFormat.png);
         completer.complete(byteData?.buffer.asUint8List());
       } catch (e) {
-       
         completer.complete(null);
       } finally {
         overlayEntry.remove();
@@ -506,10 +507,12 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
     final byteData = await captureWidgetOffScreen(qrCodeWidget);
     if (byteData != null) {
       // Save the captured image to the gallery.
-       await ImageGallerySaver.saveImage(byteData);
-      
-    } else {
-      
-    }
+      await FileSaver.instance.saveFile(
+        name: "qr_code_image", // File name without extension
+        bytes: byteData, // Image bytes
+        ext: "png", // File extension
+        mimeType: MimeType.png, // MIME type
+      );
+    } else {}
   }
 }
