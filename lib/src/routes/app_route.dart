@@ -205,6 +205,7 @@ class AppRoutes {
             classHasCatId: teacher['class_has_cat_id'],
             gradeName: teacher['grade_name'],
             teacherName: teacher['teacher_name'],
+            className: teacher['class_name'],
           ),
         );
 
@@ -330,6 +331,7 @@ class AppRoutes {
             studentId: attendanceStudentData['studentId'],
             classCategoryHasStudentClassId:
                 attendanceStudentData['class_category_has_student_class_id'],
+            studentHasClassId: attendanceStudentData['student_has_class_id'],
           ),
         );
       case '/payment_read_screen':

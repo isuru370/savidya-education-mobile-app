@@ -5,12 +5,11 @@ class API {
   //https://edu.alokait.lk/api
   //https://savidya.alokait.lk/api
 
-  static String mainAPI =
-      "https://api.alokait.lk/api";
+  static String mainAPI = "https://api.alokait.lk/api";
 
   //https://api.coopcitycollege.com/api
   //https://api.alokait.lk/api
-  //http://192.168.43.73/Aloka-Mobile-App-Backend/Savidya-Education-Mobile-App-Backend/api
+  //http://192.168.1.101/Aloka-Mobile-App-Backend/Savidya-Education-Mobile-App-Backend/api
   //http://192.168.43.73/Aloka-Mobile-App-Backend/savidya/api
 
   static String passwordForgot = "$mainAPI/forgot-password";

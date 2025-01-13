@@ -272,6 +272,7 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
               .pushNamed('/unique_attendance', arguments: {
             "studentId": widget.studentId,
             "class_category_has_student_class_id": studentData.classHasCatId,
+            "student_has_class_id" : studentData.studentHasClassesId,
           });
         } else {
           Navigator.of(context, rootNavigator: true).pushNamed('/');

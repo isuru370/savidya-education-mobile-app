@@ -8,9 +8,21 @@ sealed class UpdateAttendanceEvent extends Equatable {
 }
 
 final class UpdateAttendance extends UpdateAttendanceEvent {
-  final StudentAttendanceModelClass studentAttendanceModelClass;
-  const UpdateAttendance({required this.studentAttendanceModelClass});
+  final int classAttendanceId;
+  final String atDate;
+  final int studentId;
+  final int studentHasClassId;
+  const UpdateAttendance(
+      {required this.classAttendanceId,
+      required this.atDate,
+      required this.studentId,
+      required this.studentHasClassId});
 
-   @override
-  List<Object> get props => [studentAttendanceModelClass];
+  @override
+  List<Object> get props => [
+        classAttendanceId,
+        atDate,
+        studentId,
+        studentHasClassId,
+      ];
 }

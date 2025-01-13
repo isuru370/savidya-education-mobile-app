@@ -12,6 +12,7 @@ import '../../class_screen/bloc/student_percentage/student_percentage_bloc.dart'
 class TeacherHasStudentReport extends StatefulWidget {
   final int classHasCatId;
   final int classId;
+  final String className;
   final String gradeName;
   final String teacherName;
 
@@ -19,6 +20,7 @@ class TeacherHasStudentReport extends StatefulWidget {
     super.key,
     required this.classHasCatId,
     required this.classId,
+    required this.className,
     required this.gradeName,
     required this.teacherName,
   });
@@ -56,27 +58,27 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                 ),
               ),
               pw.SizedBox(height: 10),
-              pw.Text(
-                'Class Name: ${studentData.isNotEmpty ? studentData[0][0] : "N/A"}',
-                style: const pw.TextStyle(fontSize: 18),
-              ),
-              pw.Text(
-                'Grade Name: ${studentData.isNotEmpty ? studentData[0][1] : "N/A"}',
-                style: const pw.TextStyle(fontSize: 18),
-              ),
-              pw.Text(
-                'Teacher Name: ${studentData.isNotEmpty ? studentData[0][2] : "N/A"}',
-                style: const pw.TextStyle(fontSize: 18),
+              pw.Center(
+                child: pw.Text(
+                  'Student Report',
+                  style: pw.TextStyle(
+                    fontSize: 24,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
               ),
               pw.SizedBox(height: 20),
-
-              // Report Title
               pw.Text(
-                'Student Report',
-                style: pw.TextStyle(
-                  fontSize: 24,
-                  fontWeight: pw.FontWeight.bold,
-                ),
+                'Class Name: ${widget.className}',
+                style: const pw.TextStyle(fontSize: 18),
+              ),
+              pw.Text(
+                'Grade Name: Grade ${widget.gradeName}',
+                style: const pw.TextStyle(fontSize: 18),
+              ),
+              pw.Text(
+                'Teacher Name: ${widget.teacherName}',
+                style: const pw.TextStyle(fontSize: 18),
               ),
               pw.SizedBox(height: 20),
 
@@ -113,6 +115,13 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                       pw.Padding(
                         padding: const pw.EdgeInsets.all(8.0),
                         child: pw.Text(
+                          'Student Free Card',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                      ),
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text(
                           'Attendance %',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                         ),
@@ -139,27 +148,32 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                       children: [
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[3].toString()), // Student ID
+                          child: pw.Text(data[0].toString()), // Student ID
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[4].toString()), // Student Name
+                          child: pw.Text(data[1].toString()), // Student Name
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[5].toString()), // Parent No
+                          child: pw.Text(data[2].toString()), // Parent No
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[6].toString()), // Attendance %
+                          child:
+                              pw.Text(data[3].toString()), // Student Free Card
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[7].toString()), // Present Count
+                          child: pw.Text(data[4].toString()), // Attendance %
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[8].toString()), // Absent Count
+                          child: pw.Text(data[5].toString()), // Present Count
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(data[6].toString()), // Absent Count
                         ),
                       ],
                     );
@@ -255,7 +269,7 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                         create: (context) => StudentPercentageBloc()
                           ..add(GetStudentPercentageEvent(
                             studentId: studentClass.studentId,
-                            classHasCatId: studentClass.studentStudentClassId,
+                            classHasCatId: studentClass.studentHasCatId,
                           )),
                         child: BlocBuilder<StudentPercentageBloc,
                             StudentPercentageState>(builder: (context, state) {
@@ -267,11 +281,17 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                             final absentCount =
                                 state.getPercentage.first.absentCount!;
 
+                            final studentFreeCard =
+                                studentClass.studentFreeCard == 1
+                                    ? "Free Card"
+                                    : "Non Free Card";
+
+                            // Update student data
                             studentDate.add([
-                              studentClass.studentFreeCard,
                               studentClass.customId,
                               studentClass.initialName,
                               studentClass.parentNo,
+                              studentFreeCard,
                               percentage,
                               presentCount,
                               absentCount,
@@ -296,7 +316,7 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Present Count: $presentCount',
+                                    'Present: $presentCount',
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.grey,
@@ -304,7 +324,7 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Absent Count: $absentCount',
+                                    'Absent: $absentCount',
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.grey,
@@ -333,7 +353,6 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                 ),
               ],
             ),
-            // Move the canceled message here, outside of the row and at the bottom of the column
             studentClass.studentStates == 0
                 ? Container(
                     margin: const EdgeInsets.only(top: 8),
@@ -347,7 +366,6 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                     ),
                   )
                 : const SizedBox.shrink(),
-            // This will show nothing if student is attending
           ],
         ),
       ),

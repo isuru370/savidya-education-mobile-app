@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../components/grade_chip_widget.dart';
 import '../../../components/slidable_details_view_widget.dart';
 import '../../../provider/bloc_provider/student_bloc/student_grade/student_grade_bloc.dart';
 import '../../../res/color/app_color.dart';
@@ -52,29 +53,9 @@ class _AllClassScreenState extends State<AllClassScreen> {
                             studentGradeId = null;
                           });
                         },
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          height: 50,
-                          margin: const EdgeInsets.only(right: 8.0),
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: studentGradeId == null
-                                ? ColorUtil.whiteColor[14]
-                                : ColorUtil.tealColor[10],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'All Grades',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: studentGradeId == null
-                                  ? Colors.blue
-                                  : Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                        child: GradeChipWidget(
+                          label: 'All Grades',
+                          selected: studentGradeId == null,
                         ),
                       ),
                       ...state.getGradeList.map((grade) {
@@ -84,29 +65,9 @@ class _AllClassScreenState extends State<AllClassScreen> {
                               studentGradeId = grade.id;
                             });
                           },
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            height: 50,
-                            margin: const EdgeInsets.only(right: 8.0),
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: studentGradeId == grade.id
-                                  ? ColorUtil.whiteColor[14]
-                                  : ColorUtil.tealColor[10],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              '${grade.gradeName} Grade',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: studentGradeId == grade.id
-                                    ? Colors.blue
-                                    : Colors.black,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                          child: GradeChipWidget(
+                            label: '${grade.gradeName} Grade',
+                            selected: studentGradeId == grade.id,
                           ),
                         );
                       }),
@@ -145,7 +106,6 @@ class _AllClassScreenState extends State<AllClassScreen> {
                           radius: 30,
                           backgroundImage: NetworkImage(StringData.appMainLogo),
                         ),
-                        
                         contend: "${activeClasses.className}",
                         subContend: "${activeClasses.teacherInitialName} ",
                         joinDate: activeClasses.subjectName!,

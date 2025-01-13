@@ -118,81 +118,172 @@ class _TodayClassScreenState extends State<TodayClassScreen> {
                       final classData = todayClasses[index];
                       return Card(
                         margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
-                        elevation: 4.0,
+                            vertical: 12, horizontal: 16),
+                        elevation: 6.0,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Class and Teacher Section
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    classData.className ?? "Unknown Class",
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      classData.className ?? "Unknown Class",
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow
+                                          .ellipsis, // දිග අකුරු අඩු කිරීම
                                     ),
                                   ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      classData.initialName ??
+                                          "Unknown Teacher",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                      ),
+                                      textAlign: TextAlign.end,
+                                      overflow: TextOverflow
+                                          .ellipsis, // දිග අකුරු අඩු කිරීම
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              const Divider(height: 20, thickness: 1),
+
+                              // Grade and Subject Section
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Grade",
+                                          style: TextStyle(
+                                              fontSize: 12, color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "Grade ${classData.gradeName ?? "N/A"}",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Subject",
+                                          style: TextStyle(
+                                              fontSize: 12, color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          classData.subjectName ?? "N/A",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+
+                              // Category Section
+                              Row(
+                                children: [
+                                  const Icon(Icons.category,
+                                      size: 20, color: Colors.deepPurple),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    classData.initialName ?? "Unknown Teacher",
+                                    "Category: ${classData.categoryName ?? "N/A"}",
                                     style: const TextStyle(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey,
+                                      color: Colors.black87,
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
+
+                              // Hall and Day Section
                               Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      "Grade: ${classData.gradeName ?? "N/A"}",
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.grey),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Hall",
+                                          style: TextStyle(
+                                              fontSize: 12, color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          classData.hallName ?? "N/A",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      "Subject: ${classData.subjectName ?? "N/A"}",
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.grey),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Day",
+                                          style: TextStyle(
+                                              fontSize: 12, color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          classData.classDay ?? "N/A",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                "Category: ${classData.categoryName ?? "N/A"}",
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.grey),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "Hall: ${classData.hallName ?? "N/A"}",
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.grey),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      "Day: ${classData.classDay ?? "N/A"}",
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.grey),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
+
+                              // Start and End Time Section
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -200,26 +291,35 @@ class _TodayClassScreenState extends State<TodayClassScreen> {
                                   Text(
                                     "Start: ${classData.classStartTime ?? "--"}",
                                     style: const TextStyle(
-                                        fontSize: 14, color: Colors.grey),
+                                      fontSize: 14,
+                                      color: Colors.green,
+                                    ),
                                   ),
                                   Text(
                                     "End: ${classData.classEndTime ?? "--"}",
                                     style: const TextStyle(
-                                        fontSize: 14, color: Colors.grey),
+                                      fontSize: 14,
+                                      color: Colors.red,
+                                    ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
+
+                              // Status Section
                               Row(
                                 children: [
                                   const Text(
                                     "Status: ",
                                     style: TextStyle(
-                                        fontSize: 14, color: Colors.black),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
                                   ),
                                   Text(
                                     classData.classStatus == 1
-                                        ? "I'm going to hold it"
+                                        ? "The class is held."
                                         : "Not holding it",
                                     style: TextStyle(
                                       fontSize: 14,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../components/grade_chip_widget.dart';
 import '../../../provider/bloc_provider/student_bloc/student_grade/student_grade_bloc.dart';
 import '../../../res/color/app_color.dart';
 import '../bloc/quick_image/quick_image_bloc.dart';
@@ -89,29 +90,9 @@ class _SearchQuickImageState extends State<SearchQuickImage> {
                             selectGradeName = null;
                           });
                         },
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          height: 50,
-                          margin: const EdgeInsets.only(right: 8.0),
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: selectGradeName == null
-                                ? ColorUtil.whiteColor[14]
-                                : ColorUtil.tealColor[10],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'All Grades',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: selectGradeName == null
-                                  ? Colors.blue
-                                  : Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                        child: GradeChipWidget(
+                          label: 'All Grades',
+                          selected: selectGradeName == null,
                         ),
                       ),
                       ...state.getGradeList.map((grade) {
@@ -121,29 +102,9 @@ class _SearchQuickImageState extends State<SearchQuickImage> {
                               selectGradeName = grade.gradeName;
                             });
                           },
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            height: 50,
-                            margin: const EdgeInsets.only(right: 8.0),
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: selectGradeName == grade.gradeName
-                                  ? ColorUtil.whiteColor[14]
-                                  : ColorUtil.tealColor[10],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              '${grade.gradeName} Grade',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: selectGradeName == grade.gradeName
-                                    ? Colors.blue
-                                    : Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                          child: GradeChipWidget(
+                            label: '${grade.gradeName} Grade',
+                            selected: selectGradeName == grade.gradeName,
                           ),
                         );
                       }),

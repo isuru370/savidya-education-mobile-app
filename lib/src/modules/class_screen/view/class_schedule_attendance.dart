@@ -69,12 +69,17 @@ class _ClassAttendanceState extends State<ClassScheduleAttendance> {
   // Get Button Text
   String _getButtonText(String dateString, int classStatus) {
     int status = _getButtonStatus(dateString);
-    DateTime currentDate = DateTime.now();
+    DateTime now = DateTime.now();
     DateFormat inputFormat = DateFormat('yyyy-MM-dd');
     DateTime classDate = inputFormat.parse(dateString);
 
-    if (classStatus == 0 && classDate.isBefore(currentDate)) {
-      return 'Class Not Held'; // Display this if the class is not held and the date has passed
+    // Normalize both dates to midnight for comparison
+    DateTime currentDate = DateTime(now.year, now.month, now.day);
+    DateTime classDateNormalized =
+        DateTime(classDate.year, classDate.month, classDate.day);
+
+    if (classStatus == 0 && classDateNormalized.isBefore(currentDate)) {
+      return 'Class Not Held'; // Class date is in the past
     }
 
     switch (status) {
@@ -152,8 +157,16 @@ class _ClassAttendanceState extends State<ClassScheduleAttendance> {
 
   // Get Button Color
   Color _getButtonColor(String dateString, int classStatus) {
-    if (classStatus == 0 &&
-        DateFormat('yyyy-MM-dd').parse(dateString).isBefore(DateTime.now())) {
+    DateFormat inputFormat = DateFormat('yyyy-MM-dd');
+    DateTime now = DateTime.now();
+
+    // Normalize both dates to remove the time component
+    DateTime currentDate = DateTime(now.year, now.month, now.day);
+    DateTime classDate = inputFormat.parse(dateString);
+    DateTime classDateNormalized =
+        DateTime(classDate.year, classDate.month, classDate.day);
+
+    if (classStatus == 0 && classDateNormalized.isBefore(currentDate)) {
       return Colors.red; // Red for "Class Not Held"
     }
 
@@ -161,7 +174,7 @@ class _ClassAttendanceState extends State<ClassScheduleAttendance> {
       case 0:
         return ColorUtil.blueColor[10]!;
       case 1:
-        return ColorUtil.greenColor[10]!;
+        return ColorUtil.greenColor[10]!; // Green for "Today's Class"
       case 2:
         return ColorUtil.skyBlueColor[10]!;
       default:

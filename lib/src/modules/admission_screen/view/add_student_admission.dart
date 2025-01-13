@@ -1,3 +1,4 @@
+import 'package:aloka_mobile_app/src/components/grade_chip_widget.dart';
 import 'package:aloka_mobile_app/src/modules/admission_screen/bloc/get_admission/get_admission_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,7 +97,7 @@ class _AddStudentAdmissionState extends State<AddStudentAdmission> {
                       studentGradeId = null;
                     });
                   },
-                  child: gradeChip(
+                  child: GradeChipWidget(
                     label: 'All Grades',
                     selected: studentGradeId == null,
                   ),
@@ -108,7 +109,7 @@ class _AddStudentAdmissionState extends State<AddStudentAdmission> {
                         studentGradeId = grade.id;
                       });
                     },
-                    child: gradeChip(
+                    child: GradeChipWidget(
                       label: '${grade.gradeName} Grade',
                       selected: studentGradeId == grade.id,
                     ),
@@ -319,19 +320,6 @@ class _AddStudentAdmissionState extends State<AddStudentAdmission> {
       return DateFormat('yyyy-MM-dd').format(dateTime);
     }
     return null;
-  }
-
-  Widget gradeChip({required String label, required bool selected}) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      child: Chip(
-        label: Text(label),
-        backgroundColor: selected ? Colors.teal : Colors.grey[300],
-        labelStyle: TextStyle(
-          color: selected ? Colors.white : Colors.black,
-        ),
-      ),
-    );
   }
 
   Widget studentAdmission(List<AdmissionModelClass> admissions) {

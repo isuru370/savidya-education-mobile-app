@@ -10,11 +10,13 @@ import '../bloc/unique_attendance/unique_attendance_bloc.dart';
 class StudentUniqueAttendance extends StatefulWidget {
   final int studentId;
   final int classCategoryHasStudentClassId;
+  final int studentHasClassId;
 
   const StudentUniqueAttendance({
     super.key,
     required this.studentId,
     required this.classCategoryHasStudentClassId,
+    required this.studentHasClassId,
   });
 
   @override
@@ -284,17 +286,19 @@ class _StudentUniqueAttendanceState extends State<StudentUniqueAttendance> {
                 ),
                 TextButton(
                   onPressed: () {
-                    context.read<UpdateAttendanceBloc>().add(
-                          UpdateAttendance(
-                            studentAttendanceModelClass:
-                                StudentAttendanceModelClass(
-                              classAttendanceId: attendanceData.classAttendanceId,
-                              atDate: attendanceData.classDate,
+                    if (attendanceData.classAttendanceId != null &&
+                        attendanceData.classDate != null) {
+                      context.read<UpdateAttendanceBloc>().add(
+                            UpdateAttendance(
+                              classAttendanceId: attendanceData.classAttendanceId!,
+                              atDate: attendanceData.classDate!.toIso8601String(),
                               studentId: widget.studentId,
-                              studentHasClassId: attendanceData.studentHasClassId,
+                              studentHasClassId: widget.studentHasClassId,
                             ),
-                          ),
-                        );
+                          );
+                    } else {
+                      
+                    }
                   },
                   child: const Text("Confirm"),
                 ),

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import '../../models/attendance/attendance.dart';
 import '../../models/attendance/class_student_attendance_mode.dart';
 import '../api/main_api.dart';
@@ -94,15 +93,20 @@ Future<Map<String, dynamic>> getAttendanceCount(
   }
 }
 
-Future<Map<String, dynamic>> updateStudentAttendance(
-    StudentAttendanceModelClass studentAttendance) async {
+Future<Map<String, dynamic>> updateStudentAttendance(int classAttendanceId,
+    String atDate, int studentId, int studentHasClassId) async {
   final url = Uri.parse('${API.attendance}/student_attendance_update.php');
 
   final response = await http.post(url,
       headers: {
         "Content-Type": "application/json",
       },
-      body: jsonEncode(studentAttendance.updateJson()));
+      body: jsonEncode({
+        "at_date": atDate,
+        "student_student_student_class_id": studentHasClassId,
+        "student_id": studentId,
+        "class_attendance_id" : classAttendanceId,
+      }));
 
   // ================= check php error =================================
   // log("Response status: ${response.statusCode}");
@@ -145,7 +149,8 @@ Future<Map<String, dynamic>> classStudentAttendance(
 }
 
 Future<Map<String, dynamic>> newAttendanceRead(
-    String studentCusId,) async {
+  String studentCusId,
+) async {
   final url = Uri.parse('${API.attendance}/new_attendance_read.php');
 
   final response = await http.post(url,

@@ -63,8 +63,8 @@ class StudentAttendanceModelClass extends Equatable {
 
   Map<String, dynamic> updateJson() {
     return {
-      "class_attendance_id" : classAttendanceId,
-      "at_date": atDate,
+      "class_attendance_id": classAttendanceId,
+      "at_date": atDate!.toIso8601String(),
       "student_student_student_class_id": studentHasClassId,
       "student_id": studentId,
     };
@@ -92,8 +92,10 @@ class StudentAttendanceModelClass extends Equatable {
   @override
   List<Object?> get props => [
         attendanceId,
+        classAttendanceId,
         atDate,
         attendanceStatus,
+        studentHasClassId,
         studentId,
         createdAt,
         updatedAt,

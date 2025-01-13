@@ -12,6 +12,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../../../components/grade_chip_widget.dart';
 import '../../../models/student/student.dart';
 import '../../../provider/bloc_provider/student_bloc/student_grade/student_grade_bloc.dart';
 import '../../../res/color/app_color.dart';
@@ -83,9 +84,9 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
                             studentGradeId = null;
                           });
                         },
-                        child: gradeSelectionContainer(
-                          isSelected: studentGradeId == null,
-                          title: 'All Grades',
+                        child: GradeChipWidget(
+                          label: 'All Grades',
+                          selected: studentGradeId == null,
                         ),
                       ),
                       ...state.getGradeList.map((grade) {
@@ -95,9 +96,9 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
                               studentGradeId = grade.id;
                             });
                           },
-                          child: gradeSelectionContainer(
-                            isSelected: studentGradeId == grade.id,
-                            title: '${grade.gradeName} Grade',
+                          child: GradeChipWidget(
+                            label: '${grade.gradeName} Grade',
+                            selected: studentGradeId == grade.id,
                           ),
                         );
                       }),
@@ -250,31 +251,6 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
     dateOnly = dateFormat.format(createdAt);
   }
 
-  // Grade selection container widget
-  Widget gradeSelectionContainer(
-      {required bool isSelected, required String title}) {
-    return Container(
-      alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.3,
-      height: 50,
-      margin: const EdgeInsets.only(right: 8.0),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: isSelected ? ColorUtil.whiteColor[14] : ColorUtil.tealColor[10],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: isSelected ? Colors.blue : Colors.black,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
   // Download QR code as PDF for a student
   Future<void> downloadQrPdf(String qrData, String studentName) async {
     final pdf = pw.Document();
@@ -398,7 +374,7 @@ class _GenerateStudentIdState extends State<GenerateStudentId> {
       if (byteData != null) {
         // Save the image to the gallery.
         await FileSaver.instance.saveFile(
-          name: "qr_code_image", // File name without extension
+          name: student.cusId!, // File name without extension
           bytes: byteData, // Image bytes
           ext: "png", // File extension
           mimeType: MimeType.png, // MIME type

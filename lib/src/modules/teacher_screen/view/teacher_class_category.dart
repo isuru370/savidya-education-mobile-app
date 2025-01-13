@@ -177,6 +177,7 @@ class _TeacherClassCategoryState extends State<TeacherClassCategory> {
                                           category.classHasCatId,
                                       'grade_name': widget.gradeName,
                                       'teacher_name': widget.teacherName,
+                                      'class_name': widget.className,
                                     });
                               },
                               style: ElevatedButton.styleFrom(
