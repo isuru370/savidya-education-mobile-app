@@ -33,6 +33,7 @@ class ShowMonthSelectionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      scrollable: true,
       title: const Text('Select Month and Year'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -66,19 +67,28 @@ class ShowMonthSelectionDialog extends StatelessWidget {
                 return const SizedBox();
               }
             },
-          )
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: cancelBtn,
+                style: ElevatedButton.styleFrom(
+                  iconColor: Colors.red,
+                ),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () => payBtn,
+                style: ElevatedButton.styleFrom(
+                  iconColor: Colors.green,
+                ),
+                child: const Text("Pay"),
+              ),
+            ],
+          ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: cancelBtn,
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: payBtn,
-          child: const Text('Confirm Payment'),
-        ),
-      ],
     );
   }
 }
