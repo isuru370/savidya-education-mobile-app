@@ -188,7 +188,6 @@ Future<Map<String, dynamic>> studentPercentage(
 
   if (response.statusCode == 200) {
     final responseData = jsonDecode(response.body);
-    print(responseData);
     return responseData;
   } else {
     return {
