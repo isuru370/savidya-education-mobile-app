@@ -139,60 +139,88 @@ class _TeacherClassCategoryState extends State<TeacherClassCategory> {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(
-                                    '/payment_monthly_report_screen',
-                                    arguments: {
-                                      'class_category_has_student_class_id':
-                                          category.classHasCatId,
-                                      'garde_name': widget.gradeName,
-                                      'class_name': widget.className,
-                                      'category_name': category.categoryName,
-                                    });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorUtil.tealColor[10],
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(
+                                      '/payment_monthly_paid_not_paid_report_screen',
+                                      arguments: {
+                                        'class_category_has_student_class_id':
+                                        category.classHasCatId,
+                                        'garde_name': widget.gradeName,
+                                        'class_name': widget.className,
+                                        'category_name': category.categoryName,
+                                      });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: ColorUtil.tealColor[10],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Monthly Payment',
+                                  style:
+                                  TextStyle(color: ColorUtil.whiteColor[10]),
                                 ),
                               ),
-                              child: Text(
-                                'View Payment',
-                                style:
-                                    TextStyle(color: ColorUtil.whiteColor[10]),
-                              ),
-                            ),
-                            const SizedBox(width: 8), // Spacing between buttons
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(
-                                    '/teacher_student_report_screen',
-                                    arguments: {
-                                      'class_id': widget.teacherClassId,
-                                      'class_has_cat_id':
-                                          category.classHasCatId,
-                                      'grade_name': widget.gradeName,
-                                      'teacher_name': widget.teacherName,
-                                      'class_name': widget.className,
-                                    });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorUtil.tealColor[10],
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(
+                                      '/payment_monthly_report_screen',
+                                      arguments: {
+                                        'class_category_has_student_class_id':
+                                            category.classHasCatId,
+                                        'garde_name': widget.gradeName,
+                                        'class_name': widget.className,
+                                        'category_name': category.categoryName,
+                                      });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: ColorUtil.tealColor[10],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Student Payment',
+                                  style:
+                                      TextStyle(color: ColorUtil.whiteColor[10]),
                                 ),
                               ),
-                              child: Text(
-                                'View Student',
-                                style:
-                                    TextStyle(color: ColorUtil.whiteColor[10]),
+                              const SizedBox(width: 8), // Spacing between buttons
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(
+                                      '/teacher_student_report_screen',
+                                      arguments: {
+                                        'class_id': widget.teacherClassId,
+                                        'class_has_cat_id':
+                                            category.classHasCatId,
+                                        'grade_name': widget.gradeName,
+                                        'teacher_name': widget.teacherName,
+                                        'class_name': widget.className,
+                                      });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: ColorUtil.tealColor[10],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Text(
+                                  'View Student',
+                                  style:
+                                      TextStyle(color: ColorUtil.whiteColor[10]),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import '../../models/payment_model_class/payment_model_class.dart';
 import '../../models/payment_model_class/student_half_payment_model.dart';
 import '../api/main_api.dart';
@@ -87,9 +86,9 @@ Future<Map<String, dynamic>> getUniqueStudentPayment(
   }
 }
 
-Future<Map<String, dynamic>> monthlyPaymentReport(
+Future<Map<String, dynamic>> studentMonthlyPaymentDateReport(
     String paymentMonth, int classCategoryHasStudentClassId) async {
-  final url = Uri.parse('${API.payment}/payment_monthly_report.php');
+  final url = Uri.parse('${API.payment}/student_monthly_payment_date.php');
 
   final response = await http.post(url,
       headers: {

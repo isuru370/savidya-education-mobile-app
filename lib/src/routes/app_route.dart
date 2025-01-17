@@ -52,7 +52,9 @@ import '../modules/home_screen/arguments/from_data.dart';
 import '../modules/payment/view/payment_monthly_report_screen.dart';
 import '../modules/payment/view/student_half_payment_screen.dart';
 import '../modules/payment/view/student_half_payment_update_screen.dart';
+import '../modules/reports/view/report_screen.dart';
 import '../modules/student_screen/view/student_view_screen.dart';
+import '../modules/teacher_screen/view/teacher_paid_not_paid_report.dart';
 import '../modules/unknown_page/view/unknown_page.dart';
 
 class AppRoutes {
@@ -392,6 +394,16 @@ class AppRoutes {
             categoryName: studentData['category_name'],
           ),
         );
+      case '/payment_monthly_paid_not_paid_report_screen':
+        final studentData = setting.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => TeacherPaidNotPaidReport(
+            classHasCatId: studentData['class_category_has_student_class_id'],
+            gradeName: studentData['garde_name'],
+            className: studentData['class_name'],
+            categoryName: studentData['category_name'],
+          ),
+        );
       case '/user_screen':
         return MaterialPageRoute(
           builder: (context) => const UserScreen(),
@@ -407,6 +419,10 @@ class AppRoutes {
       case '/today_pay_admission':
         return MaterialPageRoute(
           builder: (context) => const TodayAdmissionScreen(),
+        );
+      case '/reports':
+        return MaterialPageRoute(
+          builder: (context) => const ReportScreen(),
         );
       case '/help_screen':
         return MaterialPageRoute(

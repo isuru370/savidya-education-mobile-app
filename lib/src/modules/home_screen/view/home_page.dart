@@ -158,12 +158,15 @@ class _HomePageState extends State<HomePage> {
               color: ColorUtil.blackColor[10]!,
               title: 'Print_all',
             ),
-            // DrawerListItemWidget(
-            //   onTap: () {},
-            //   icon: FontAwesome5.user_edit,
-            //   color: ColorUtil.blackColor[10]!,
-            //   title: 'User Edit',
-            // ),
+            DrawerListItemWidget(
+              onTap: () {
+                Navigator.of(context, rootNavigator: true)
+                    .pushNamed('/reports');
+              },
+              icon: FontAwesome5.file_export,
+              color: ColorUtil.blackColor[10]!,
+              title: 'Reports',
+            ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 5),
               child: Divider(),

@@ -56,6 +56,7 @@ dependencies:
   mobile_scanner: ^6.0.2 # Barcode scanning
   http: ^1.2.2 # HTTP requests
   file_saver: ^0.2.14
+  month_picker_dialog: ^6.0.3
 
 # Uncomment to use Bugsnag for error reporting
 #  bugsnag_flutter: ^3.1.1

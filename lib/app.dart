@@ -1,4 +1,4 @@
-
+import 'package:aloka_mobile_app/src/modules/reports/bloc/reports/reports_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -121,6 +121,7 @@ class PrivateClassMobileApp extends StatelessWidget {
         BlocProvider(create: (_) => StudentHalfPaymentBloc()),
         BlocProvider(create: (_) => NewAttendanceReadBloc()),
         BlocProvider(create: (_) => TodayClassesBloc()),
+        BlocProvider(create: (_) => ReportsBloc()),
       ],
       child: BlocBuilder<ThemeBloc, ThemeMode>(
         builder: (context, state) {

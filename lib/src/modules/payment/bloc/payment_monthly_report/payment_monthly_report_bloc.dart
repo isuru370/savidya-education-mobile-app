@@ -16,7 +16,8 @@ class PaymentMonthlyReportBloc
     on<GetMonthlyPaymentEvent>((event, emit) async {
       emit(MonthlyPaymentProcess());
       try {
-        await monthlyPaymentReport(event.paymentMonth, event.classHasCatId)
+        await studentMonthlyPaymentDateReport(
+                event.paymentMonth, event.classHasCatId)
             .then(
           (report) {
             if (report['success']) {
