@@ -136,7 +136,7 @@ class _TeacherPaidNotPaidReportState
                         : 'Paid'), // Payment Status
                     pw.Text(payment.paymentDate ?? 'N/A'),// Payment Date
                     pw.Text(payment.paymentFor?? 'N/A'),
-                    pw.Text(payment.amount.toString() ?? 'N/A'),
+                    pw.Text(payment.amount.toString()),
 
                   ])
               ],

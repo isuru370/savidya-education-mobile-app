@@ -67,7 +67,6 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
   }
 
 
-  @override
   Widget getTeacher(List<TeacherModelClass> getTeacherList) {
     return BlocBuilder<DropdownButtonCubit, DropdownButtonState>(
       builder: (context, state) {
