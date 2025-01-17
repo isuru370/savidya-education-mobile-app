@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:aloka_mobile_app/src/res/color/app_color.dart';
 import '../../../models/payment_model_class/payment_monthly_report_model.dart';
 import '../../../provider/bloc_provider/date_picker_bloc/date_picker_bloc.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'dart:typed_data';
 
+import '../../../res/color/app_color.dart';
 import '../../reports/bloc/reports/reports_bloc.dart';
 
 class TeacherPaidNotPaidReport extends StatefulWidget {
