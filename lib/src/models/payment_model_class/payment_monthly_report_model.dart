@@ -6,6 +6,7 @@ class PaymentMonthlyReportModel extends Equatable {
   final String lname;
   final String imgUrl;
   final String whatsappMobile;
+  final String parentMobile;
   final String studentStatus;
   final String createdAt;
   final int classRecordId;
@@ -21,6 +22,7 @@ class PaymentMonthlyReportModel extends Equatable {
     required this.lname,
     required this.imgUrl,
     required this.whatsappMobile,
+    required this.parentMobile,
     required this.studentStatus,
     required this.createdAt,
     required this.classRecordId,
@@ -39,6 +41,7 @@ class PaymentMonthlyReportModel extends Equatable {
       lname: json['lname'],
       imgUrl: json['img_url'],
       whatsappMobile: json['whatsapp_mobile'],
+      parentMobile: json['guardian_mobile'],
       studentStatus: json['student_status'],
       createdAt: json['created_at'],
       classRecordId: _parseInt(json['class_record_id']),
@@ -96,6 +99,7 @@ class PaymentMonthlyReportModel extends Equatable {
     String? lname,
     String? imgUrl,
     String? whatsappMobile,
+    String? parentMobile,
     String? studentStatus,
     String? createdAt,
     int? classRecordId,
@@ -111,6 +115,7 @@ class PaymentMonthlyReportModel extends Equatable {
       lname: lname ?? this.lname,
       imgUrl: imgUrl ?? this.imgUrl,
       whatsappMobile: whatsappMobile ?? this.whatsappMobile,
+      parentMobile: parentMobile ?? this.parentMobile,
       studentStatus: studentStatus ?? this.studentStatus,
       createdAt: createdAt ?? this.createdAt,
       classRecordId: classRecordId ?? this.classRecordId,
@@ -130,6 +135,7 @@ class PaymentMonthlyReportModel extends Equatable {
         lname,
         imgUrl,
         whatsappMobile,
+        parentMobile,
         studentStatus,
         createdAt,
         classRecordId,

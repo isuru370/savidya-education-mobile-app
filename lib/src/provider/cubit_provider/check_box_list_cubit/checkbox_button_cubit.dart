@@ -14,6 +14,7 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
           isPayHasAttStatus: false,
           isClassActiveStatus: false,
           isCheckPayStatus: false,
+          isCheckTuteStatus: false,
         ));
 
   void toggleFreeCardCheck(bool freeCard) {
@@ -27,6 +28,7 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
       isPayHasAttStatus: currentState.isPayHasAttStatus,
       isClassActiveStatus: currentState.isClassActiveStatus,
       isCheckPayStatus: currentState.isCheckPayStatus,
+      isCheckTuteStatus: currentState.isCheckTuteStatus,
     ));
   }
 
@@ -41,6 +43,7 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
       isPayHasAttStatus: currentState.isPayHasAttStatus,
       isClassActiveStatus: currentState.isClassActiveStatus,
       isCheckPayStatus: currentState.isCheckPayStatus,
+      isCheckTuteStatus: currentState.isCheckTuteStatus,
     ));
   }
 
@@ -55,6 +58,7 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
       isPayHasAttStatus: currentState.isPayHasAttStatus,
       isClassActiveStatus: currentState.isClassActiveStatus,
       isCheckPayStatus: currentState.isCheckPayStatus,
+      isCheckTuteStatus: currentState.isCheckTuteStatus,
     ));
   }
 
@@ -69,6 +73,7 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
       isPayHasAttStatus: currentState.isPayHasAttStatus,
       isClassActiveStatus: currentState.isClassActiveStatus,
       isCheckPayStatus: currentState.isCheckPayStatus,
+      isCheckTuteStatus: currentState.isCheckTuteStatus,
     ));
   }
 
@@ -83,6 +88,7 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
       isPayHasAttStatus: currentState.isPayHasAttStatus,
       isClassActiveStatus: currentState.isClassActiveStatus,
       isCheckPayStatus: currentState.isCheckPayStatus,
+      isCheckTuteStatus: currentState.isCheckTuteStatus,
     ));
   }
 
@@ -97,6 +103,7 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
       isPayHasAttStatus: payHasAttStatus,
       isClassActiveStatus: currentState.isClassActiveStatus,
       isCheckPayStatus: currentState.isCheckPayStatus,
+      isCheckTuteStatus: currentState.isCheckTuteStatus,
     ));
   }
 
@@ -111,6 +118,7 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
       isPayHasAttStatus: currentState.isPayHasAttStatus,
       isClassActiveStatus: isClassActiveStatus,
       isCheckPayStatus: currentState.isCheckPayStatus,
+      isCheckTuteStatus: currentState.isCheckTuteStatus,
     ));
   }
 
@@ -125,6 +133,22 @@ class CheckboxButtonCubit extends Cubit<CheckboxButtonState> {
       isPayHasAttStatus: currentState.isPayHasAttStatus,
       isClassActiveStatus: currentState.isPayHasAttStatus,
       isCheckPayStatus: isCheckPayStatus,
+      isCheckTuteStatus: currentState.isCheckTuteStatus,
+    ));
+  }
+
+  void toggleCheckTuteStatus(bool isCheckTuteStatus) {
+    final currentState = state as CheckboxButtonInitial;
+    emit(CheckboxButtonInitial(
+      isStudentFreeCard: currentState.isStudentFreeCard,
+      isStudentActiveStatus: currentState.isStudentActiveStatus,
+      isTeacherActiveStatus: currentState.isTeacherActiveStatus,
+      isUserActiveStatus: currentState.isUserActiveStatus,
+      isOngoingStatus: currentState.isOngoingStatus,
+      isPayHasAttStatus: currentState.isPayHasAttStatus,
+      isClassActiveStatus: currentState.isPayHasAttStatus,
+      isCheckPayStatus: currentState.isCheckPayStatus,
+      isCheckTuteStatus: isCheckTuteStatus,
     ));
   }
 }

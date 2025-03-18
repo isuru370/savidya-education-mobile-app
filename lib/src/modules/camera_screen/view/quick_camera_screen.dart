@@ -1,11 +1,9 @@
 import 'dart:io';
-
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aloka_mobile_app/src/models/camera/quick_image_model.dart';
 import 'package:aloka_mobile_app/src/modules/camera_screen/bloc/quick_image/quick_image_bloc.dart';
 import 'package:aloka_mobile_app/src/provider/bloc_provider/student_bloc/student_grade/student_grade_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../components/drop_down_button_widget.dart';
 import '../../../models/student/grade.dart';
 import '../../../provider/cubit_provider/dropdown_button_cubit/dropdown_button_cubit.dart';
@@ -18,10 +16,7 @@ import '../components/quick_image_dialog_box.dart';
 class QuickCameraScreen extends StatefulWidget {
   final File studentImageUrl;
 
-  const QuickCameraScreen({
-    super.key,
-    required this.studentImageUrl,
-  });
+  const QuickCameraScreen({super.key, required this.studentImageUrl});
 
   @override
   State<QuickCameraScreen> createState() => _QuickCameraScreenState();
@@ -51,18 +46,13 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
           listener: (context, state) {
             if (state is QuickImageSaveFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.message!,
-                  ),
-                ),
+                SnackBar(content: Text(state.message ?? "Unknown error")),
               );
-            }
-            if (state is QuickImageSaveSuccess) {
+            } else if (state is QuickImageSaveSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content:
-                      Text("${state.successMessage} ${state.quickImageId}"),
+                  content: Text(
+                      "${state.successMessage ?? 'Success'} ${state.quickImageId}"),
                 ),
               );
               showDialog(
@@ -70,10 +60,8 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text(
-                      state.successMessage!,
-                      textAlign: TextAlign.center,
-                    ),
+                    title: Text(state.successMessage ?? 'Success',
+                        textAlign: TextAlign.center),
                     content: QuickImageDialogBox(
                       quickImageId: state.quickImageId!,
                       quickImageDescription:
@@ -81,14 +69,13 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
                     ),
                     actions: [
                       TextButton(
-                          onPressed: () {
-                            context
-                                .read<DropdownButtonCubit>()
-                                .selectGrade(null);
-                            Navigator.of(context, rootNavigator: true)
-                                .pushNamed('/home');
-                          },
-                          child: const Text("back")),
+                        onPressed: () {
+                          context.read<DropdownButtonCubit>().selectGrade(null);
+                          Navigator.of(context, rootNavigator: true)
+                              .pushNamed('/home');
+                        },
+                        child: const Text("Back"),
+                      ),
                     ],
                   );
                 },
@@ -98,9 +85,7 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
           child: BlocBuilder<QuickImageBloc, QuickImageState>(
             builder: (context, state) {
               if (state is QuickImageSaveProcess) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -109,9 +94,7 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
                   BlocBuilder<CropImageBloc, CropImageState>(
                     builder: (context, state) {
                       if (state is CropImageProcess) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       } else if (state is CropImageSuccess) {
                         studentCropImageFilePath =
                             state.cropStudentImageFilePath;
@@ -119,8 +102,7 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(state.message!),
-                            ),
+                                content: Text(state.message ?? "Crop failed")),
                           );
                         });
                       }
@@ -137,8 +119,7 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
                       builder: (context, state) {
                         if (state is GetStudentGradeSuccess) {
                           return DropDownButtonWidget(
-                            widget: studentGrade(state.getGradeList),
-                          );
+                              widget: studentGrade(state.getGradeList));
                         } else if (state is GetStudentGradeFailure) {
                           return Text('Error: ${state.message}');
                         } else {
@@ -152,50 +133,47 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                          onPressed: () {
-                            context
-                                .read<CropImageBloc>()
-                                .add(CropImageClickEvent(
-                                  studentImageFilePath: widget.studentImageUrl,
-                                ));
-                          },
-                          child: Text(
-                            'Crop Image',
-                            style: TextStyle(
-                                color: ColorUtil.blackColor[10], fontSize: 16),
-                          )),
-                      const SizedBox(
-                        width: 40,
+                        onPressed: () {
+                          context.read<CropImageBloc>().add(CropImageClickEvent(
+                                studentImageFilePath: widget.studentImageUrl,
+                              ));
+                        },
+                        child: Text(
+                          'Crop Image',
+                          style: TextStyle(
+                              color: ColorUtil.blackColor[10], fontSize: 16),
+                        ),
                       ),
+                      const SizedBox(width: 40),
                       ElevatedButton(
-                          onPressed: () {
-                            if (grade != null && gradeId != null) {
-                              File imgPath = studentCropImageFilePath ??
-                                  widget.studentImageUrl;
-                              context
-                                  .read<QuickImageBloc>()
-                                  .add(QuickImageSaveEvent(
-                                    quickImageModel: QuickImageModel(
-                                      gradeId: gradeId,
-                                      isActive: 1,
-                                    ),
-                                    quickImageFilePath: imgPath,
-                                  ));
-                            } else {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Please select the grade"),
+                        onPressed: () {
+                          if (grade != null && gradeId != null) {
+                            File imgPath = studentCropImageFilePath ??
+                                widget.studentImageUrl;
+                            context
+                                .read<QuickImageBloc>()
+                                .add(QuickImageSaveEvent(
+                                  quickImageModel: QuickImageModel(
+                                    gradeId: gradeId!,
+                                    isActive: 1,
                                   ),
-                                );
-                              });
-                            }
-                          },
-                          child: Text(
-                            'Save Image',
-                            style: TextStyle(
-                                color: ColorUtil.blackColor[10], fontSize: 16),
-                          )),
+                                  quickImageFilePath: imgPath,
+                                ));
+                          } else {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("Please select the grade")),
+                              );
+                            });
+                          }
+                        },
+                        child: Text(
+                          'Save Image',
+                          style: TextStyle(
+                              color: ColorUtil.blackColor[10], fontSize: 16),
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -209,15 +187,13 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
 
   Widget studentGrade(List<Grade> getGradeList) {
     return BlocBuilder<DropdownButtonCubit, DropdownButtonState>(
-        builder: (context, state) {
-      return DropdownButton(
+      builder: (context, state) {
+        return DropdownButton<Grade>(
           isExpanded: true,
           underline: const SizedBox(),
           iconSize: 40,
           hint: const Text('Select a Grade'),
-          icon: const Icon(
-            Icons.arrow_drop_down,
-          ),
+          icon: const Icon(Icons.arrow_drop_down),
           value: state.selectedGrade,
           items: getGradeList.map((Grade grade) {
             return DropdownMenuItem<Grade>(
@@ -227,11 +203,15 @@ class _QuickCameraScreenState extends State<QuickCameraScreen> {
           }).toList(),
           onChanged: (Grade? newGrade) {
             if (newGrade != null) {
+              setState(() {
+                grade = newGrade.gradeName;
+                gradeId = newGrade.id;
+              });
               context.read<DropdownButtonCubit>().selectGrade(newGrade);
-              grade = newGrade.gradeName;
-              gradeId = newGrade.id;
             }
-          });
-    });
+          },
+        );
+      },
+    );
   }
 }

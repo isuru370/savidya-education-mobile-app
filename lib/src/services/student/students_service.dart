@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:aloka_mobile_app/src/models/student/student.dart';
 
+import '../../models/student/student.dart';
 import '../api/main_api.dart';
 import 'package:http/http.dart' as http;
 

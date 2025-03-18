@@ -17,10 +17,16 @@ class ReadAttendanceEvent extends QrScannerEvent {
 
 class MarkAttendanceEvent extends QrScannerEvent {
   final QrReadStudentModelClass readAttendance;
-  const MarkAttendanceEvent({required this.readAttendance});
+  final String message;
+  final String studentMobileNumber;
+  const MarkAttendanceEvent({
+    required this.readAttendance,
+    required this.message,
+    required this.studentMobileNumber,
+  });
 
   @override
-  List<Object> get props => [readAttendance];
+  List<Object> get props => [readAttendance, message, studentMobileNumber];
 }
 
 class StudentPaymentReadEvent extends QrScannerEvent {

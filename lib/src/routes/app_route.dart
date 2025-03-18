@@ -52,6 +52,7 @@ import '../modules/home_screen/arguments/from_data.dart';
 import '../modules/payment/view/payment_monthly_report_screen.dart';
 import '../modules/payment/view/student_half_payment_screen.dart';
 import '../modules/payment/view/student_half_payment_update_screen.dart';
+import '../modules/reports/view/print_screen.dart';
 import '../modules/reports/view/report_screen.dart';
 import '../modules/student_screen/view/student_view_screen.dart';
 import '../modules/teacher_screen/view/teacher_paid_not_paid_report.dart';
@@ -371,9 +372,11 @@ class AppRoutes {
         final readStudentData = setting.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (context) => StudentHalfPaymentUpdateScreen(
-              studentId: readStudentData['student_id'],
-              classHasCatId: readStudentData['class_has_cat_id'],
-              customId: readStudentData["custom_id"]),
+            studentId: readStudentData['student_id'],
+            classHasCatId: readStudentData['class_has_cat_id'],
+            customId: readStudentData["custom_id"],
+            studentLastPaymentList: readStudentData["class_details"],
+          ),
         );
       case '/view_student_unique_payment':
         final studentData = setting.arguments as Map<String, dynamic>;
@@ -423,6 +426,10 @@ class AppRoutes {
       case '/reports':
         return MaterialPageRoute(
           builder: (context) => const ReportScreen(),
+        );
+        case '/print_screen':
+        return MaterialPageRoute(
+          builder: (context) => const PrintScreen(),
         );
       case '/help_screen':
         return MaterialPageRoute(

@@ -87,7 +87,7 @@ class StudentHalfPaymentBloc
           (paymentUpdate) async {
             if (paymentUpdate['success']) {
               // If the payment deletion is successful, send the notification message
-              await sendPaymentMessage(event.msg, "+94779947289").then(
+              await sendPaymentMessage(event.msg, "94779947289").then(
                 (sendMSG) {
                   if (sendMSG['success']) {
                     // Emit success state with a success message

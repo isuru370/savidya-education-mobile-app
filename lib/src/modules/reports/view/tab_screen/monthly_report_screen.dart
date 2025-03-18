@@ -67,47 +67,69 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
     final pdf = pw.Document();
 
     pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) => pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Text(
-              "Monthly Report",
-              style: pw.TextStyle(
-                fontSize: 24,
-                fontWeight: pw.FontWeight.bold,
+      pw.MultiPage(
+        build: (pw.Context context) => [
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                "Monthly Report",
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                "Date: ${DateTime.now().toString().split(' ')[0]}",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                "Student Count: $studentCount",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.Text(
+                "Total Amount: LKR ${totalAmount.toStringAsFixed(2)}",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.SizedBox(height: 20),
+            ],
+          ),
+          pw.TableHelper.fromTextArray(
+            headers: ["Student ID", "Name", "Class", "Subject", "Amount"],
+            data: reports.map((report) {
+              return [
+                report.studentCusId ?? "-",
+                report.studentInitialName ?? "-",
+                report.className ?? "-",
+                report.subjectName ?? "-",
+                report.paymentAmount != null
+                    ? report.paymentAmount.toStringAsFixed(2)
+                    : "0.00",
+              ];
+            }).toList(),
+          ),
+          pw.SizedBox(height: 100),
+          pw.Align(
+            alignment: pw.Alignment.centerRight,
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.end,
+              children: [
+                // Space for the signature
+                pw.Container(
+                  width: 150,
+                  child: pw.Divider(),
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  "Signature:",
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
+              ],
             ),
-            pw.SizedBox(height: 10),
-            pw.Text(
-              "Date: $_currentDate", // Ensure _currentDate is properly initialized
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.SizedBox(height: 10),
-            pw.Text(
-              "Student Count: $studentCount",
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.Text(
-              "Total Amount: LKR ${totalAmount.toStringAsFixed(2)}",
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.SizedBox(height: 20),
-            pw.TableHelper.fromTextArray(
-              headers: ["Student ID", "Name", "Class", "Subject", "Amount"],
-              data: reports.map((report) {
-                return [
-                  report.studentCusId ?? "-",
-                  report.studentInitialName ?? "-",
-                  report.className ?? "-",
-                  report.subjectName ?? "-",
-                  report.paymentAmount.toStringAsFixed(2),
-                ];
-              }).toList(),
-
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
 
@@ -116,18 +138,27 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
   }
 
   void downloadPDF(BuildContext context, List<dynamic> studentDate) async {
-    if (studentDate.isEmpty) {
+    try {
+      if (studentDate.isEmpty && _selectDateController.text.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No data to generate PDF')),
+        );
+        return;
+      }
+
+      // Generate the PDF data (as Uint8List)
+      final pdfData = await generatePDF(studentDate);
+
+      // Share the PDF using Printing plugin
+      await Printing.sharePdf(bytes: pdfData, filename: 'student_report.pdf');
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No data to generate PDF')),
+        const SnackBar(
+          content: Text('Error generating PDF: Use the website.'),
+          backgroundColor: Colors.red,
+        ),
       );
-      return;
     }
-
-    // Generate the PDF data (as Uint8List)
-    final pdfData = await generatePDF(studentDate);
-
-    // Share the PDF using Printing plugin
-    await Printing.sharePdf(bytes: pdfData, filename: 'student_report.pdf');
   }
 
   @override

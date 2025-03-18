@@ -6,6 +6,7 @@ import '../../../models/qr_read/qr_read.dart';
 import '../../../provider/cubit_provider/check_box_list_cubit/checkbox_button_cubit.dart';
 import '../../../res/color/app_color.dart';
 import '../../qr_code_screen/bloc/QRScanner/qr_scanner_bloc.dart';
+import '../../tute/bloc/tute_bloc/tute_bloc.dart';
 
 class AttendanceMarkScreen extends StatefulWidget {
   final List<QrReadStudentModelClass> studentList;
@@ -30,11 +31,19 @@ class AttendanceMarkScreen extends StatefulWidget {
 class _AttendanceMarkScreenState extends State<AttendanceMarkScreen> {
   bool checkAtt = false;
   bool checkPay = false;
+  bool checkTute = false;
   final FlutterTts _flutterTts = FlutterTts();
 
   @override
   void initState() {
     context.read<CheckboxButtonCubit>().toggleCheckPayStatus(false);
+    context.read<CheckboxButtonCubit>().toggleCheckTuteStatus(false);
+    final now = DateTime.now();
+    final tuteFor = DateFormat("yyyy MMM").format(now);
+    context.read<TuteBloc>().add(CheckStudentTuteEvent(
+        studentId: widget.studentList[0].studentId!,
+        classCategoryId: widget.studentList[0].classCategoryId!,
+        tuteFor: tuteFor));
     super.initState();
   }
 
@@ -142,6 +151,22 @@ class _AttendanceMarkScreenState extends State<AttendanceMarkScreen> {
                     ),
                     const SizedBox(height: 8),
                     _buildAttendanceCheckbox(),
+                    BlocBuilder<TuteBloc, TuteState>(
+                      builder: (context, state) {
+                        if (state is TuteProcessState) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (state is CheckTuteSuccessState) {
+                          if (state.chackTute > 0) {
+                            return const Text("Tute already given.");
+                          } else {
+                            return _buildTuteCheckbox();
+                          }
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
                     const SizedBox(height: 8),
                     student.studentClassFreeCard == 0
                         ? _buildPaymentCheckbox()
@@ -184,6 +209,37 @@ class _AttendanceMarkScreenState extends State<AttendanceMarkScreen> {
             ),
             const Text(
               "Attendance",
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTuteCheckbox() {
+    return BlocBuilder<CheckboxButtonCubit, CheckboxButtonState>(
+      builder: (context, tute) {
+        checkTute =
+            tute is CheckboxButtonInitial ? tute.isCheckTuteStatus : false;
+        return Row(
+          children: [
+            Transform.scale(
+              scale: 1.3,
+              child: Checkbox(
+                semanticLabel: "Tute",
+                activeColor: ColorUtil.tealColor[800],
+                checkColor: Colors.white,
+                value: checkTute,
+                onChanged: (check) {
+                  context
+                      .read<CheckboxButtonCubit>()
+                      .toggleCheckTuteStatus(check!);
+                },
+              ),
+            ),
+            const Text(
+              "Tute",
               style: TextStyle(fontSize: 16),
             ),
           ],
@@ -259,12 +315,23 @@ class _AttendanceMarkScreenState extends State<AttendanceMarkScreen> {
                 studentId: widget.studentList[0].studentId!,
                 studentStudentClassId:
                     widget.studentList[0].studentStudentClassId,
+                tuteFor: checkTute
+                    ? DateFormat("yyyy MMM").format(DateTime.now())
+                    : "",
+                classCategoryId: widget.studentList[0].classHasCatId!,
               );
-              context
-                  .read<QrScannerBloc>()
-                  .add(MarkAttendanceEvent(readAttendance: attendanceData));
-            } else {
-              _showSnackBar("Select attendance");
+              context.read<QrScannerBloc>().add(MarkAttendanceEvent(
+                    readAttendance: attendanceData,
+                    message: studentMSG(
+                      widget.studentList[0].initialName!,
+                      widget.studentList[0].className!,
+                      widget.studentList[0].categoryName!,
+                    ),
+                    studentMobileNumber: widget.studentList[0].guardianMobile!
+                            .startsWith('0')
+                        ? '94${widget.studentList[0].guardianMobile!.substring(1)}'
+                        : widget.studentList[0].guardianMobile!,
+                  ));
             }
           },
           style: ElevatedButton.styleFrom(
@@ -369,6 +436,12 @@ class _AttendanceMarkScreenState extends State<AttendanceMarkScreen> {
   Future<void> _announce(String message) async {
     await _flutterTts.setLanguage("si-LK");
     await _flutterTts.speak(message);
+  }
+   String studentMSG(
+      String studentName, String studentClass, String categoryName) {
+    String formattedDate =
+        DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now());
+    return "$studentName has been marked present in $studentClass ($categoryName) on $formattedDate.";
   }
 
   @override

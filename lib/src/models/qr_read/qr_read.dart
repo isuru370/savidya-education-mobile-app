@@ -17,29 +17,35 @@ class QrReadStudentModelClass extends Equatable {
   final String? categoryName;
   final String? className;
 
-  const QrReadStudentModelClass({
-    this.studentCustomId,
-    this.classHasCatId,
-    this.studentClassFreeCard,
-    this.classAttendanceId,
-    this.studentStudentClassId,
-    this.studentId,
-    this.initialName,
-    this.mobileNo,
-    this.guardianMobile,
-    this.freeCard,
-    this.imageUrl,
-    this.fees,
-    this.classCategoryId,
-    this.categoryName,
-    this.className,
-  });
+  //tute
+  final String? tuteFor;
+
+  const QrReadStudentModelClass(
+      {this.studentCustomId,
+      this.classHasCatId,
+      this.studentClassFreeCard,
+      this.classAttendanceId,
+      this.studentStudentClassId,
+      this.studentId,
+      this.initialName,
+      this.mobileNo,
+      this.guardianMobile,
+      this.freeCard,
+      this.imageUrl,
+      this.fees,
+      this.classCategoryId,
+      this.categoryName,
+      this.className,
+      this.tuteFor});
 
   // fromJson method
   factory QrReadStudentModelClass.fromJson(Map<String, dynamic> json) {
     return QrReadStudentModelClass(
       studentId: _parseInt(json['studentId']),
       studentStudentClassId: _parseInt(json['studentStudentClassId']),
+      classHasCatId: json['classCategoryHasStudentClassId'] != null
+          ? _parseInt(json['classCategoryHasStudentClassId'])
+          : _parseInt(json['classCategoryHasStudentClassId']),
       studentClassFreeCard: _parseInt(json['classFreeCard']),
       initialName: json['initialName'] as String?,
       mobileNo: json['mobileNo'] as String?,
@@ -131,6 +137,8 @@ class QrReadStudentModelClass extends Equatable {
       'studentStudentStudentClassId': studentStudentClassId,
       'studentId': studentId,
       'classAttendanceId': classAttendanceId,
+      'tuteFor': tuteFor,
+      'class_category_id': classCategoryId,
     };
   }
 
@@ -151,6 +159,7 @@ class QrReadStudentModelClass extends Equatable {
         classCategoryId,
         categoryName,
         className,
+        tuteFor,
       ];
 
   // Safe parsing methods

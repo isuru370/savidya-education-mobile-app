@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../../models/qr_read/qr_read.dart';
 import '../../../provider/cubit_provider/check_box_list_cubit/checkbox_button_cubit.dart';
 import '../../qr_code_screen/bloc/QRScanner/qr_scanner_bloc.dart';
+import '../../tute/bloc/tute_bloc/tute_bloc.dart';
 
 class NewAttendanceMarkScreen extends StatefulWidget {
   final List<NewAttendanceReadModel> newAttendanceReadModel;
@@ -24,11 +25,13 @@ class NewAttendanceMarkScreen extends StatefulWidget {
 class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
   bool checkAtt = false;
   bool checkPay = false;
+  bool checkTute = false;
   final FlutterTts _flutterTts = FlutterTts();
 
   @override
   void initState() {
     context.read<CheckboxButtonCubit>().toggleCheckPayStatus(false);
+    context.read<CheckboxButtonCubit>().toggleCheckTuteStatus(false);
     super.initState();
   }
 
@@ -128,6 +131,15 @@ class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
       itemCount: widget.newAttendanceReadModel.length,
       itemBuilder: (context, index) {
         final studentData = widget.newAttendanceReadModel[index];
+        if (studentData.classAttendanceId != 0) {
+          final now = DateTime.now();
+          final tuteFor = DateFormat("yyyy MMM").format(now);
+          context.read<TuteBloc>().add(CheckStudentTuteEvent(
+                studentId: studentData.studentId,
+                classCategoryId: studentData.classCatId!,
+                tuteFor: tuteFor,
+              ));
+        }
         return _buildAttendanceCard(studentData);
       },
     );
@@ -154,6 +166,24 @@ class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
               children: [
                 studentData.classAttendanceId != 0
                     ? _buildAttendanceCheckbox()
+                    : const SizedBox.shrink(),
+                studentData.classAttendanceId != 0
+                    ? BlocBuilder<TuteBloc, TuteState>(
+                        builder: (context, state) {
+                          if (state is TuteProcessState) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (state is CheckTuteSuccessState) {
+                            if (state.chackTute > 0) {
+                              return _buildGiveTuteCheckbox();
+                            } else {
+                              return _buildTuteCheckbox();
+                            }
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      )
                     : const SizedBox.shrink(),
                 const SizedBox(width: 6),
                 studentData.classAttendanceId != 0
@@ -208,7 +238,38 @@ class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
               ),
             ),
             const Text(
-              "Attendance",
+              "Att",
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTuteCheckbox() {
+    return BlocBuilder<CheckboxButtonCubit, CheckboxButtonState>(
+      builder: (context, tute) {
+        checkTute =
+            tute is CheckboxButtonInitial ? tute.isCheckTuteStatus : false;
+        return Row(
+          children: [
+            Transform.scale(
+              scale: 1.3,
+              child: Checkbox(
+                semanticLabel: "Tute",
+                activeColor: ColorUtil.tealColor[800],
+                checkColor: Colors.white,
+                value: checkTute,
+                onChanged: (check) {
+                  context
+                      .read<CheckboxButtonCubit>()
+                      .toggleCheckTuteStatus(check!);
+                },
+              ),
+            ),
+            const Text(
+              "Tute",
               style: TextStyle(fontSize: 16),
             ),
           ],
@@ -239,7 +300,7 @@ class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
               ),
             ),
             const Text(
-              "Payment",
+              "Pay",
               style: TextStyle(fontSize: 16),
             ),
           ],
@@ -255,7 +316,7 @@ class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
     if (studentData.classAttendanceId != 0) {
       if (studentData.lastPaymentFor != null) {
         _announce(
-            "${studentData.subjectName} ට අවසාන ගෙවීම සිදු කර ඇත්තේ ${convertToSinhalaMonth(studentData.lastPaymentFor!)} මසදීය.");
+            "${studentData.subjectName} ට අවසාන ගෙවීම සිදු කර ඇත්තේ ${studentData.lastPaymentFor!} මසදීය.");
       } else {
         _announce("ගෙවීම් සම්බන්ධ විස්තර නොමැත.");
       }
@@ -271,22 +332,46 @@ class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
                       classAttendanceId: studentData.classAttendanceId,
                       studentId: studentData.studentId,
                       studentStudentClassId: studentData.studentStudentClassId,
+                      tuteFor: checkTute
+                          ? DateFormat("yyyy MMM").format(DateTime.now())
+                          : "",
+                      classCategoryId: studentData.classCatId,
                     );
-                    context.read<QrScannerBloc>().add(
-                        MarkAttendanceEvent(readAttendance: attendanceData));
-                  } else {
-                    _showSnackBar("Select attendance");
+                    context.read<QrScannerBloc>().add(MarkAttendanceEvent(
+                          readAttendance: attendanceData,
+                          message: studentMSG(
+                            studentData.initialName,
+                            studentData.className!,
+                            studentData.categoryName!,
+                          ),
+                          studentMobileNumber: studentData.guardianMobile
+                                  .startsWith('0')
+                              ? '94${studentData.guardianMobile.substring(1)}'
+                              : studentData.guardianMobile,
+                        ));
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorUtil.greenColor[10],
+                  backgroundColor: ColorUtil.whiteColor[10],
                 ),
-                child: Text(
-                  "Mark",
-                  style: TextStyle(color: ColorUtil.whiteColor[10]),
-                ),
+                child: const Text('Mark'),
               )
             : const SizedBox.shrink(),
+      ],
+    );
+  }
+
+  Widget _buildGiveTuteCheckbox() {
+    return Row(
+      children: [
+        Icon(
+          Icons.check_box,
+          color: ColorUtil.tealColor[800],
+        ),
+        const Text(
+          "Tute",
+          style: TextStyle(fontSize: 16),
+        ),
       ],
     );
   }
@@ -364,23 +449,10 @@ class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
     super.dispose();
   }
 
-  String convertToSinhalaMonth(String month) {
-    final monthMap = {
-      'Jan': 'ජනවාරි',
-      'Feb': 'පෙබරවාරි',
-      'Mar': 'මාර්තු',
-      'Apr': 'අප්‍රේල්',
-      'May': 'මැයි',
-      'Jun': 'ජූනි',
-      'Jul': 'ජූලි',
-      'Aug': 'අගෝස්තු',
-      'Sep': 'සැප්තැම්බර්',
-      'Oct': 'ඔක්තෝබර්',
-      'Nov': 'නොවැම්බර්',
-      'Dec': 'දෙසැම්බර්',
-    };
-
-    return monthMap[month] ??
-        month; // Return Sinhala name or the original if not found
+  String studentMSG(
+      String studentName, String studentClass, String categoryName) {
+    String formattedDate =
+        DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now());
+    return "$studentName has been marked present in $studentClass ($categoryName) on $formattedDate.";
   }
 }

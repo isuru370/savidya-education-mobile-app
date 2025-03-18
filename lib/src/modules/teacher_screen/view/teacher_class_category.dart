@@ -38,9 +38,10 @@ class _TeacherClassCategoryState extends State<TeacherClassCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 120,
+        toolbarHeight: 150,
         backgroundColor: ColorUtil.tealColor[10],
         elevation: 5,
+        centerTitle: true,
         flexibleSpace: Padding(
           padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
           child: Column(
@@ -150,7 +151,7 @@ class _TeacherClassCategoryState extends State<TeacherClassCategory> {
                                       '/payment_monthly_paid_not_paid_report_screen',
                                       arguments: {
                                         'class_category_has_student_class_id':
-                                        category.classHasCatId,
+                                            category.classHasCatId,
                                         'garde_name': widget.gradeName,
                                         'class_name': widget.className,
                                         'category_name': category.categoryName,
@@ -164,8 +165,8 @@ class _TeacherClassCategoryState extends State<TeacherClassCategory> {
                                 ),
                                 child: Text(
                                   'Monthly Payment',
-                                  style:
-                                  TextStyle(color: ColorUtil.whiteColor[10]),
+                                  style: TextStyle(
+                                      color: ColorUtil.whiteColor[10]),
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -189,11 +190,12 @@ class _TeacherClassCategoryState extends State<TeacherClassCategory> {
                                 ),
                                 child: Text(
                                   'Student Payment',
-                                  style:
-                                      TextStyle(color: ColorUtil.whiteColor[10]),
+                                  style: TextStyle(
+                                      color: ColorUtil.whiteColor[10]),
                                 ),
                               ),
-                              const SizedBox(width: 8), // Spacing between buttons
+                              const SizedBox(
+                                  width: 8), // Spacing between buttons
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(context).pushNamed(
@@ -215,8 +217,8 @@ class _TeacherClassCategoryState extends State<TeacherClassCategory> {
                                 ),
                                 child: Text(
                                   'View Student',
-                                  style:
-                                      TextStyle(color: ColorUtil.whiteColor[10]),
+                                  style: TextStyle(
+                                      color: ColorUtil.whiteColor[10]),
                                 ),
                               ),
                             ],

@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../models/payment_model_class/payment_monthly_report_model.dart';
 import '../../../provider/bloc_provider/date_picker_bloc/date_picker_bloc.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -31,9 +30,9 @@ class TeacherPaidNotPaidReport extends StatefulWidget {
       _TeacherPaidNotPaidReportState();
 }
 
-class _TeacherPaidNotPaidReportState
-    extends State<TeacherPaidNotPaidReport> {
+class _TeacherPaidNotPaidReportState extends State<TeacherPaidNotPaidReport> {
   final TextEditingController _selectMonthController = TextEditingController();
+  String selectedFilter = 'All';
 
   @override
   void initState() {
@@ -46,105 +45,183 @@ class _TeacherPaidNotPaidReportState
         selectMonth: paymentMonth, classHasCatId: widget.classHasCatId));
   }
 
+  List<PaymentMonthlyReportModel> _filterPayments(
+      List<PaymentMonthlyReportModel> payments) {
+    if (selectedFilter == 'Paid') {
+      return payments.where((p) => p.amount != null).toList();
+    } else if (selectedFilter == 'Not Paid') {
+      return payments.where((p) => p.amount == null).toList();
+    }
+    return payments;
+  }
+
   // The function to generate PDF from the data
   Future<Uint8List> generatePaymentReportPdf(
       List<PaymentMonthlyReportModel> payments) async {
     final pdf = pw.Document();
 
-    // Add a page to the PDF document
-    pdf.addPage(pw.Page(
-      build: (pw.Context context) {
-        return pw.Column(
-          children: [
-            // Institution Name
-            pw.Text(
-              'Savidya Higher Education Institute',
-              style: pw.TextStyle(
-                fontSize: 18,
-                fontWeight: pw.FontWeight.bold,
-              ),
-            ),
-            pw.SizedBox(height: 10),
-            pw.Text(
-              'Payment Monthly Report',
-              style: pw.TextStyle(
-                fontSize: 24,
-                fontWeight: pw.FontWeight.bold,
-              ),
-            ),
-            pw.SizedBox(height: 20),
-            pw.Text(
-              widget.className, // Format the current month
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.normal,
-              ),
-            ),
-            pw.Text(
-              'Grade: ${widget.gradeName}', // Format the current month
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.normal,
-              ),
-            ),
-            pw.SizedBox(height: 20),
-            pw.Text(
-              widget.categoryName, // Format the current month
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.normal,
-              ),
-            ),
-            pw.SizedBox(height: 20),
-            // Current Month
-            pw.Text(
-              'Month: ${_selectMonthController.text}', // Format the current month
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.normal,
-              ),
-            ),
-            pw.SizedBox(height: 20),
-
-            // Report Title
-
-            // Table
-            pw.Table(
-              border: pw.TableBorder.all(),
+    pdf.addPage(
+      pw.MultiPage(
+        build: (pw.Context context) => [
+          // Institution and Report Details
+          pw.Center(
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              mainAxisAlignment:
+                  pw.MainAxisAlignment.center, // Ensures vertical centering
               children: [
-                pw.TableRow(children: [
-                  pw.Text('Student ID',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Student Name',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Payment Status',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Payment Date',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Payment For',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Amount',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                ]),
-                // Adding rows of payment data
-                for (var payment in payments)
-                  pw.TableRow(children: [
-                    pw.Text(payment.customId), // Student ID
-                    pw.Text(payment.lname), // Student Name
-                    pw.Text(payment.amount == null
-                        ? 'Not Paid'
-                        : 'Paid'), // Payment Status
-                    pw.Text(payment.paymentDate ?? 'N/A'),// Payment Date
-                    pw.Text(payment.paymentFor?? 'N/A'),
-                    pw.Text(payment.amount.toString()),
-
-                  ])
+                pw.Text(
+                  'Savidya Higher Education Institute',
+                  style: pw.TextStyle(
+                    fontSize: 18,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                  textAlign: pw.TextAlign.center,
+                ),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  'Payment Monthly Report',
+                  style: pw.TextStyle(
+                    fontSize: 24,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                  textAlign: pw.TextAlign.center,
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  widget.className, // Class Name
+                  style: const pw.TextStyle(fontSize: 16),
+                  textAlign: pw.TextAlign.center,
+                ),
+                pw.Text(
+                  'Grade: ${widget.gradeName}', // Grade
+                  style: const pw.TextStyle(fontSize: 16),
+                  textAlign: pw.TextAlign.center,
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  widget.categoryName, // Category
+                  style: const pw.TextStyle(fontSize: 16),
+                  textAlign: pw.TextAlign.center,
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  'Month: ${_selectMonthController.text}', // Selected Month
+                  style: const pw.TextStyle(fontSize: 16),
+                  textAlign: pw.TextAlign.center,
+                ),
+                pw.SizedBox(height: 20),
               ],
             ),
-          ],
-        );
-      },
-    ));
+          ),
+
+          // Payment Table
+          pw.Table(
+            border: pw.TableBorder.all(),
+            columnWidths: {
+              0: const pw.FlexColumnWidth(1), // Student ID
+              1: const pw.FlexColumnWidth(2), // Student Name
+              2: const pw.FlexColumnWidth(1.5), // Payment Status
+              3: const pw.FlexColumnWidth(2), // Payment Date
+              4: const pw.FlexColumnWidth(1.5), // Payment For
+              5: const pw.FlexColumnWidth(1), // Amount
+            },
+            children: [
+              // Table Header Row
+              pw.TableRow(
+                children: [
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(4),
+                    child: pw.Text('Student ID',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                  ),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(4),
+                    child: pw.Text('Student Name',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                  ),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(4),
+                    child: pw.Text('Payment Status',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                  ),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(4),
+                    child: pw.Text('Payment Date',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                  ),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(4),
+                    child: pw.Text('Payment For',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                  ),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(4),
+                    child: pw.Text('Amount',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                  ),
+                ],
+              ),
+              // Payment Data Rows
+              ...payments.map((payment) {
+                return pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.all(4),
+                      child: pw.Text(
+                        payment.customId,
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.all(4),
+                      child: pw.Text(
+                        payment.lname,
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.all(4),
+                      child: pw.Text(
+                        payment.amount == null ? 'Not Paid' : 'Paid',
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.all(4),
+                      child: pw.Text(
+                        payment.paymentDate ?? 'N/A',
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.all(4),
+                      child: pw.Text(
+                        payment.paymentFor ?? 'N/A',
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.all(4),
+                      child: pw.Text(
+                        payment.amount?.toStringAsFixed(2) ?? '0.00',
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
+        ],
+      ),
+    );
 
     return pdf.save();
   }
@@ -159,8 +236,12 @@ class _TeacherPaidNotPaidReportState
       // In this case, we can use the printing package to open the PDF file
       await Printing.sharePdf(bytes: pdfData, filename: 'payment_report.pdf');
     } catch (e) {
-      log('Error generating PDF: $e');
-      // Handle error if needed
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error generating PDF: Use the website.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -177,29 +258,18 @@ class _TeacherPaidNotPaidReportState
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                widget.className,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                'Grade: ${widget.gradeName}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                widget.categoryName,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                ),
-              ),
+              Text(widget.className,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              Text('Grade: ${widget.gradeName}',
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold)),
+              Text(widget.categoryName,
+                  style: const TextStyle(color: Colors.white70, fontSize: 16)),
             ],
           ),
         ),
@@ -207,18 +277,12 @@ class _TeacherPaidNotPaidReportState
           IconButton(
             icon: const Icon(Icons.file_download, color: Colors.white),
             onPressed: () {
-              // Access the state and get the list of payments, ensuring it's a List<PaymentMonthlyReportModel>
-              final payments = context.read<ReportsBloc>().state
-              is ReportsClassPaidNotPaid
-                  ? (context.read<ReportsBloc>().state
-              as ReportsClassPaidNotPaid)
-                  .reportsModel
-                  : [];
-
-              // Cast the list to List<PaymentMonthlyReportModel> explicitly
-              generateAndSharePdf(payments.cast<PaymentMonthlyReportModel>());
+              final state = context.read<ReportsBloc>().state;
+              if (state is ReportsClassPaidNotPaid) {
+                generateAndSharePdf(_filterPayments(state.reportsModel));
+              }
             },
-          )
+          ),
         ],
       ),
       body: Column(
@@ -229,103 +293,102 @@ class _TeacherPaidNotPaidReportState
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(state.message),
-                      backgroundColor: Colors.red,
-                    ),
+                        content: Text(state.message),
+                        backgroundColor: Colors.red),
                   );
                 });
-              } if (state is ClassEndDateSuccessState) {
+              }
+              if (state is ClassEndDateSuccessState) {
                 _selectMonthController.text = state.formatDate;
-
                 try {
-                  // Adjust the format to match the received date string
-                  DateTime selectedDate = DateFormat('yyyy-MMM').parse(_selectMonthController.text);
+                  DateTime selectedDate =
+                      DateFormat('yyyy-MMM').parse(_selectMonthController.text);
+                  String paymentMonth =
+                      DateFormat('yyyy-MM').format(selectedDate);
 
-                  // Reformat it to 'yyyy-MM'
-                  String paymentMonth = DateFormat('yyyy-MM').format(selectedDate);
-
-                  // Trigger the event with the correctly formatted date
-                  context.read<ReportsBloc>().add(
-                    ClassPaymentMonthlyReports(
+                  context.read<ReportsBloc>().add(ClassPaymentMonthlyReports(
                       selectMonth: paymentMonth,
-                      classHasCatId: widget.classHasCatId,
-                    ),
-                  );
+                      classHasCatId: widget.classHasCatId));
                 } catch (e) {
-                  log(e.toString());
-                  // Optionally, show a fallback or error message
+                  debugPrint(e.toString());
                 }
               }
 
-
               return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _buildDatePickerCard(
-                  controller: _selectMonthController,
-                  hintText: 'Select Month',
-                  icon: Icons.date_range,
-                  onTap: () {
-                    context
-                        .read<DatePickerBloc>()
-                        .add(ClassEndDatePicker(context: context));
-                  },
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: _buildDatePickerCard(),
               );
             },
           ),
+
+          // Filter Dropdown
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [
+                  BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 6,
+                      offset: Offset(0, 3))
+                ],
+              ),
+              child: DropdownButtonFormField<String>(
+                value: selectedFilter,
+                decoration: const InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  border: InputBorder.none,
+                ),
+                items: ['All', 'Paid', 'Not Paid']
+                    .map((filter) => DropdownMenuItem(
+                          value: filter,
+                          child: Text(filter,
+                              style: const TextStyle(fontSize: 16)),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      selectedFilter = value;
+                    });
+                  }
+                },
+                dropdownColor: Colors.white,
+                icon: const Icon(Icons.arrow_drop_down,
+                    color: Colors.teal, size: 28),
+              ),
+            ),
+          ),
+
+          // Payment List
           Expanded(
-            child: BlocBuilder<ReportsBloc,
-                ReportsState>(
+            child: BlocBuilder<ReportsBloc, ReportsState>(
               builder: (context, state) {
                 if (state is ReportsProcess) {
                   return const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3.0,
-                    ),
-                  );
+                      child: CircularProgressIndicator(strokeWidth: 3.0));
                 } else if (state is ReportsFailure) {
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.error, color: Colors.red, size: 40),
-                        const SizedBox(height: 8),
-                        Text(
-                          state.failureMSG,
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                  return _buildErrorWidget(state.failureMSG);
                 } else if (state is ReportsClassPaidNotPaid) {
-                  if (state.reportsModel.isEmpty) {
-                    return const Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.no_accounts, size: 40),
-                          SizedBox(height: 8),
-                          Text('No data found', style: TextStyle(fontSize: 18)),
-                        ],
-                      ),
-                    );
+                  List<PaymentMonthlyReportModel> filteredList =
+                      _filterPayments(state.reportsModel);
+
+                  if (filteredList.isEmpty) {
+                    return _buildNoDataWidget();
                   }
                   return ListView.builder(
-                    itemCount: state.reportsModel.length,
-                    itemBuilder: (context, index) {
-                      final payment = state.reportsModel[index];
-                      return buildPaymentCard(payment);
-                    },
+                    itemCount: filteredList.length,
+                    itemBuilder: (context, index) =>
+                        buildPaymentCard(filteredList[index]),
                   );
                 } else {
                   return const Center(
-                    child: Text('Unexpected state',
-                        style: TextStyle(fontSize: 18)),
-                  );
+                      child: Text('Unexpected state',
+                          style: TextStyle(fontSize: 18)));
                 }
               },
             ),
@@ -381,6 +444,57 @@ class _TeacherPaidNotPaidReportState
                   fontSize: 14,
                 ),
               ),
+              payment.amount == null
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Divider(
+                          thickness: 1,
+                          color: Colors.white,
+                        ),
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () =>
+                                      _makeCall(payment.whatsappMobile),
+                                  icon: const Icon(
+                                    Icons.call,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                const Text(
+                                  "Student",
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () =>
+                                      _makeCall(payment.parentMobile),
+                                  icon: const Icon(
+                                    Icons.call,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                const Text(
+                                  "Parent",
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
           trailing: Column(
@@ -409,33 +523,6 @@ class _TeacherPaidNotPaidReportState
     );
   }
 
-  Widget _buildDatePickerCard({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(8),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.teal),
-        title: TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hintText,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.all(8),
-          ),
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.calendar_today, color: Colors.teal),
-          onPressed: onTap,
-        ),
-      ),
-    );
-  }
-
   String _formatDate(String? paymentDate) {
     if (paymentDate == null) return '';
     try {
@@ -457,6 +544,82 @@ class _TeacherPaidNotPaidReportState
           dateTime); // Displaying time in 'hh:mm a' format (12-hour format with AM/PM)
     } catch (e) {
       return '';
+    }
+  }
+
+  // Error Widget
+  Widget _buildErrorWidget(String message) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.error, color: Colors.red, size: 40),
+          const SizedBox(height: 8),
+          Text(message,
+              style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  // No Data Widget
+  Widget _buildNoDataWidget() {
+    return const Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.no_accounts, size: 40),
+          SizedBox(height: 8),
+          Text('No data found', style: TextStyle(fontSize: 18)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDatePickerCard() {
+    return GestureDetector(
+      onTap: () {
+        context
+            .read<DatePickerBloc>()
+            .add(ClassEndDatePicker(context: context));
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3))
+            ]),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+                _selectMonthController.text.isEmpty
+                    ? 'Select Month'
+                    : _selectMonthController.text,
+                style: const TextStyle(fontSize: 16, color: Colors.black87)),
+            const Icon(Icons.date_range, color: Colors.teal),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Function to launch the dialer
+  void _makeCall(String phoneNumber) async {
+    final Uri phoneUri = Uri.parse('tel:$phoneNumber');
+
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      throw 'Could not launch $phoneUri';
     }
   }
 }

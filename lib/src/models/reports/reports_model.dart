@@ -27,7 +27,9 @@ class ReportsModel extends Equatable {
 
   factory ReportsModel.fromJson(Map<String, dynamic> json) {
     return ReportsModel(
-      paymentId: json['payment_id'] as int,
+      paymentId: json['payment_id'] is int
+          ? json['payment_id'] as int
+          : int.tryParse(json['payment_id']?.toString() ?? '0') ?? 0,
       paymentAmount: json['payment_amount'] is num
           ? (json['payment_amount'] as num).toDouble()
           : double.tryParse(json['payment_amount']?.toString() ?? '0') ?? 0.0,

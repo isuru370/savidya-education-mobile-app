@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../models/payment_model_class/last_payment_model_class.dart';
 import '../../../../models/qr_read/qr_read.dart';
+import '../../../../services/attendance/attendance_service.dart';
 import '../../../../services/qr_read/qr_read.dart';
 
 part 'qr_scanner_event.dart';
@@ -50,22 +51,36 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
     on<MarkAttendanceEvent>((event, emit) async {
       emit(AttendanceProcess());
       try {
-        await markStudentAttendance(event.readAttendance).then(
-          (markAttendance) {
-            if (markAttendance['success']) {
+        final markAttendance =
+            await markStudentAttendance(event.readAttendance);
+        if (markAttendance['success']) {
+          if (event.studentMobileNumber.isNotEmpty) {
+            final messageResponse = await sendAttendanceMessage(
+                event.message, event.studentMobileNumber);
+            if (messageResponse['success']) {
               emit(const MarkAttendanceSuccess(
-                successMessage: "Attendance marked successfully",
+                successMessage:
+                    "Attendance marked successfully and message sent",
               ));
             } else {
-              emit(ReadAttendanceFailure(
-                failureMessage: markAttendance["message"],
+              emit(const ReadAttendanceFailure(
+                failureMessage:
+                    "Attendance marked successfully but message not sent",
               ));
             }
-          },
-        );
-      } catch (e) {
-        emit(const ReadAttendanceFailure(
-          failureMessage: 'Failed to insert attendance data.',
+          } else {
+            emit(const MarkAttendanceSuccess(
+              successMessage: "Attendance marked successfully",
+            ));
+          }
+        } else {
+          emit(ReadAttendanceFailure(
+            failureMessage: markAttendance["message"],
+          ));
+        }
+      } catch (error) {
+        emit(ReadAttendanceFailure(
+          failureMessage: error.toString(),
         ));
       }
     });

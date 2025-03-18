@@ -135,9 +135,12 @@ class _AllStudentScreenState extends State<AllStudentScreen> {
                                 });
                         },
                         circleWidget: CircleAvatar(
-                          radius: 30,
+                          radius: 40,
                           backgroundImage:
-                              NetworkImage(activeStudent.studentImageUrl!),
+                              NetworkImage(activeStudent.studentImageUrl ?? ''),
+                          onBackgroundImageError: (error, stackTrace) {
+                            debugPrint('Error loading image: $error');
+                          },
                         ),
                         contend: "${activeStudent.initialName}",
                         subContend: "${activeStudent.mobileNumber} ",

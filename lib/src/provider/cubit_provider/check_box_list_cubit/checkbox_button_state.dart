@@ -16,6 +16,7 @@ final class CheckboxButtonInitial extends CheckboxButtonState {
   final bool isPayHasAttStatus;
   final bool isClassActiveStatus;
   final bool isCheckPayStatus;
+  final bool isCheckTuteStatus;
   const CheckboxButtonInitial({
     required this.isStudentFreeCard,
     required this.isStudentActiveStatus,
@@ -25,6 +26,7 @@ final class CheckboxButtonInitial extends CheckboxButtonState {
     required this.isPayHasAttStatus,
     required this.isClassActiveStatus,
     required this.isCheckPayStatus,
+    required this.isCheckTuteStatus,
   });
 
   @override
@@ -37,5 +39,6 @@ final class CheckboxButtonInitial extends CheckboxButtonState {
         isPayHasAttStatus,
         isClassActiveStatus,
         isCheckPayStatus,
+        isCheckTuteStatus,
       ];
 }

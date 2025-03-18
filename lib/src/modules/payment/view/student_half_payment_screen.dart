@@ -71,6 +71,15 @@ class _StudentHalfPaymentScreenState extends State<StudentHalfPaymentScreen> {
       gradeName: student.gradeName,
       studentFreeCard: student.classFreeCard,
       onPayPressed: () {
+        // Navigator.of(context).pushNamed(
+        //   '/student_half_payment_update_screen',
+        //   arguments: {
+        //     "student_id": int.parse(student.studentId),
+        //     "class_has_cat_id": int.parse(student.classHasCategory),
+        //     "custom_id": widget.studentCustomId,
+        //     "class_details": widget.studentLastPaymentList,
+        //   },
+        // );
         _showValidationPopup(student);
       },
     );
@@ -107,7 +116,7 @@ class _StudentHalfPaymentScreenState extends State<StudentHalfPaymentScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (inputController.text == "Tharanga7454") {
+                if (inputController.text == "Success#2024") {
                   Navigator.of(context).pop(); // Close the dialog
                   Navigator.of(context).pushNamed(
                     '/student_half_payment_update_screen',
@@ -115,6 +124,7 @@ class _StudentHalfPaymentScreenState extends State<StudentHalfPaymentScreen> {
                       "student_id": int.parse(student.studentId),
                       "class_has_cat_id": int.parse(student.classHasCategory),
                       "custom_id": widget.studentCustomId,
+                      "class_details": widget.studentLastPaymentList,
                     },
                   );
                 } else {

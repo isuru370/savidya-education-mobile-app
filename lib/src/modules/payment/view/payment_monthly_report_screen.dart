@@ -51,92 +51,107 @@ class _PaymentMonthlyReportScreenState
     final pdf = pw.Document();
 
     // Add a page to the PDF document
-    pdf.addPage(pw.Page(
-      build: (pw.Context context) {
-        return pw.Column(
-          children: [
-            // Institution Name
-            pw.Text(
-              'Savidya Higher Education Institute',
-              style: pw.TextStyle(
-                fontSize: 18,
-                fontWeight: pw.FontWeight.bold,
-              ),
-            ),
-            pw.SizedBox(height: 10),
-            pw.Text(
-              'Payment Monthly Report',
-              style: pw.TextStyle(
-                fontSize: 24,
-                fontWeight: pw.FontWeight.bold,
-              ),
-            ),
-            pw.SizedBox(height: 20),
-            pw.Text(
-              widget.className, // Format the current month
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.normal,
-              ),
-            ),
-            pw.Text(
-              'Grade: ${widget.gradeName}', // Format the current month
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.normal,
-              ),
-            ),
-            pw.SizedBox(height: 20),
-            pw.Text(
-              widget.categoryName, // Format the current month
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.normal,
-              ),
-            ),
-            pw.SizedBox(height: 20),
-            // Current Month
-            pw.Text(
-              'Month: ${_selectMonthController.text}', // Format the current month
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.normal,
-              ),
-            ),
-            pw.SizedBox(height: 20),
+    pdf.addPage(
+      pw.MultiPage(
+        build: (pw.Context context) {
+          return [
+            pw.Center(
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                mainAxisAlignment:
+                    pw.MainAxisAlignment.center, // Ensures vertical centering
+                children: [
+                  // Institution Name
+                  pw.Text(
+                    'Savidya Higher Education Institute',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text(
+                    'Payment Student Report',
+                    style: pw.TextStyle(
+                      fontSize: 24,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.Text(
+                    widget.className, // Class name
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.normal,
+                    ),
+                  ),
+                  pw.Text(
+                    'Grade: ${widget.gradeName}', // Grade name
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.normal,
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.Text(
+                    widget.categoryName, // Category name
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.normal,
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.Text(
+                    'Month: ${_selectMonthController.text}', // Selected month
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.normal,
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
 
-            // Report Title
-
-            // Table
-            pw.Table(
-              border: pw.TableBorder.all(),
-              children: [
-                pw.TableRow(children: [
-                  pw.Text('Student ID',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Student Name',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Payment Status',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Payment Date',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                ]),
-                // Adding rows of payment data
-                for (var payment in payments)
-                  pw.TableRow(children: [
-                    pw.Text(payment.customId), // Student ID
-                    pw.Text(payment.lname), // Student Name
-                    pw.Text(payment.amount == null
-                        ? 'Not Paid'
-                        : 'Paid'), // Payment Status
-                    pw.Text(payment.paymentDate ?? 'N/A'), // Payment Date
-                  ])
-              ],
+                  // Table
+                  pw.Table(
+                    border: pw.TableBorder.all(),
+                    children: [
+                      // Table Header
+                      pw.TableRow(children: [
+                        pw.Text(
+                          'Student ID',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.Text(
+                          'Student Name',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.Text(
+                          'Payment Status',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.Text(
+                          'Payment Date',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                      ]),
+                      // Adding rows of payment data
+                      for (var payment in payments)
+                        pw.TableRow(children: [
+                          pw.Text(payment.customId), // Student ID
+                          pw.Text(payment.lname), // Student Name
+                          pw.Text(payment.amount == null
+                              ? 'Not Paid'
+                              : 'Paid'), // Payment Status
+                          pw.Text(payment.paymentDate ?? 'N/A'), // Payment Date
+                        ])
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        );
-      },
-    ));
+          ];
+        },
+      ),
+    );
 
     return pdf.save();
   }
@@ -152,6 +167,14 @@ class _PaymentMonthlyReportScreenState
       await Printing.sharePdf(bytes: pdfData, filename: 'payment_report.pdf');
     } catch (e) {
       log('Error generating PDF: $e');
+
+      // If you're in a StatefulWidget or have access to BuildContext
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error generating PDF: Use the website.'),
+          backgroundColor: Colors.red,
+        ),
+      );
       // Handle error if needed
     }
   }

@@ -4,17 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../models/payment_model_class/last_payment_model_class.dart';
 import '../../../models/payment_model_class/student_half_payment_model.dart';
 import '../../../provider/bloc_provider/date_picker_bloc/date_picker_bloc.dart';
 import '../../../res/color/app_color.dart';
 import '../bloc/student_half_payment/student_half_payment_bloc.dart';
+import 'payment_update_dialog.dart';
 
 class StudentHalfPaymentUpdateScreen extends StatefulWidget {
+  final List<LastPaymentModelClass> studentLastPaymentList;
   final int studentId;
   final int classHasCatId;
   final String customId;
+
   const StudentHalfPaymentUpdateScreen({
     super.key,
+    required this.studentLastPaymentList,
     required this.studentId,
     required this.classHasCatId,
     required this.customId,
@@ -28,7 +33,46 @@ class StudentHalfPaymentUpdateScreen extends StatefulWidget {
 class _StudentHalfPaymentUpdateScreenState
     extends State<StudentHalfPaymentUpdateScreen> {
   final TextEditingController _selectMonthController = TextEditingController();
-  final TextEditingController _classFees = TextEditingController();
+  final TextEditingController _classFeesController = TextEditingController();
+  int? yearSelect;
+  int? monthSelect;
+
+  @override
+  void initState() {
+    super.initState();
+
+    try {
+      // Get the current date
+      final DateTime now = DateTime.now();
+
+      // Format it as "yyyy-MMM" (e.g., "2025-Feb")
+      final String formattedDate = DateFormat('yyyy-MMM').format(now);
+
+      // Convert to "yyyy-MM" for API request (e.g., "2025-02")
+      final String paymentMonth = DateFormat('yyyy-MM').format(now);
+
+      // Dispatch event with formatted date
+      context.read<StudentHalfPaymentBloc>().add(
+            GetStudentHalfPaymentEvent(
+              studentId: widget.studentId,
+              classHasCatId: widget.classHasCatId,
+              paymentMonth: paymentMonth,
+            ),
+          );
+
+      // Set the text controller value
+      _selectMonthController.text = formattedDate; // ✅ Show "2025-Feb" in UI
+    } catch (e) {
+      log("Error parsing date: $e");
+    }
+  }
+
+  @override
+  void dispose() {
+    _selectMonthController.dispose();
+    _classFeesController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,143 +87,46 @@ class _StudentHalfPaymentUpdateScreenState
           BlocListener<StudentHalfPaymentBloc, StudentHalfPaymentState>(
             listener: (context, state) {
               if (state is StudentHalfPaymentFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.failureMessage),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                _showSnackBar(context, state.failureMessage, Colors.red);
               } else if (state is StudentHalfPaymentUpdateSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.halfPaymentUpdateMsg),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                _showSnackBar(
+                    context, state.halfPaymentUpdateMsg, Colors.green);
               } else if (state is StudentPaymentUpdateSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.paymentUpdateMsg),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                _showSnackBar(context, state.paymentUpdateMsg, Colors.green);
               } else if (state is StudentHalfPaymentDeleteSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.halfPaymentDeleteMsg),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                _showSnackBar(
+                    context, state.halfPaymentDeleteMsg, Colors.green);
               }
             },
           ),
           BlocListener<DatePickerBloc, DatePickerState>(
             listener: (context, state) {
               if (state is DatePickerFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                _showSnackBar(context, state.message, Colors.red);
               } else if (state is ClassEndDateSuccessState) {
-                if (_selectMonthController.text != state.formatDate) {
-                  _selectMonthController.text = state.formatDate;
-
-                  try {
-                    final DateTime selectedDate = DateFormat('yyyy-MMM')
-                        .parse(_selectMonthController.text);
-                    final String paymentMonth =
-                        DateFormat('yyyy-MM').format(selectedDate);
-
-                    context.read<StudentHalfPaymentBloc>().add(
-                          GetStudentHalfPaymentEvent(
-                            studentId: widget.studentId,
-                            classHasCatId: widget.classHasCatId,
-                            paymentMonth: paymentMonth,
-                          ),
-                        );
-                  } catch (e) {
-                    log("Error parsing date: $e");
-                  }
-                }
+                _handleDateSelection(state.formatDate);
               }
             },
           ),
         ],
         child: Column(
           children: [
-            BlocBuilder<DatePickerBloc, DatePickerState>(
-              builder: (context, state) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: _buildDatePickerCard(
-                    controller: _selectMonthController,
-                    hintText: 'Select Month',
-                    icon: Icons.date_range,
-                    onTap: () {
-                      context
-                          .read<DatePickerBloc>()
-                          .add(ClassEndDatePicker(context: context));
-                    },
-                  ),
-                );
-              },
-            ),
+            _buildDatePickerCard(),
             Expanded(
               child:
                   BlocBuilder<StudentHalfPaymentBloc, StudentHalfPaymentState>(
                 builder: (context, state) {
                   if (state is StudentHalfPaymentProcess) {
                     return const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3.0,
-                      ),
-                    );
+                        child: CircularProgressIndicator(strokeWidth: 3.0));
                   } else if (state is StudentHalfPaymentFailure) {
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.error, color: Colors.red, size: 40),
-                          const SizedBox(height: 8),
-                          Text(
-                            state.failureMessage,
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                    return _buildErrorState(state.failureMessage);
                   } else if (state is StudentHalfPaymentSuccess) {
-                    if (state.studentHalfPaymentModel.isEmpty) {
-                      return const Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.no_accounts, size: 40),
-                            SizedBox(height: 8),
-                            Text('No data found',
-                                style: TextStyle(fontSize: 18)),
-                          ],
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      itemCount: state.studentHalfPaymentModel.length,
-                      itemBuilder: (context, index) {
-                        final payment = state.studentHalfPaymentModel[index];
-                        return buildPaymentCard(payment);
-                      },
-                    );
+                    return _buildPaymentList(state.studentHalfPaymentModel);
                   } else {
                     return const Center(
-                      child: Text('Unexpected state',
-                          style: TextStyle(fontSize: 18)),
-                    );
+                        child: Text('Unexpected state',
+                            style: TextStyle(fontSize: 18)));
                   }
                 },
               ),
@@ -190,43 +137,106 @@ class _StudentHalfPaymentUpdateScreenState
     );
   }
 
-  Widget _buildDatePickerCard({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(8),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.teal),
-        title: TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hintText,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.all(8),
+  void _showSnackBar(BuildContext context, String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: color),
+    );
+  }
+
+  void _handleDateSelection(String formatDate) {
+    if (_selectMonthController.text != formatDate) {
+      _selectMonthController.text = formatDate;
+      try {
+        final DateTime selectedDate = DateFormat('yyyy-MMM').parse(formatDate);
+        final String paymentMonth = DateFormat('yyyy-MM').format(selectedDate);
+        context.read<StudentHalfPaymentBloc>().add(
+              GetStudentHalfPaymentEvent(
+                studentId: widget.studentId,
+                classHasCatId: widget.classHasCatId,
+                paymentMonth: paymentMonth,
+              ),
+            );
+      } catch (e) {
+        log("Error parsing date: $e");
+      }
+    }
+  }
+
+  Widget _buildDatePickerCard() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        elevation: 4,
+        margin: const EdgeInsets.all(8),
+        child: ListTile(
+          leading: const Icon(Icons.date_range, color: Colors.teal),
+          title: TextFormField(
+            controller: _selectMonthController,
+            decoration: const InputDecoration(
+              hintText: 'Select Month',
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.all(8),
+            ),
           ),
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.calendar_today, color: Colors.teal),
-          onPressed: onTap,
+          trailing: IconButton(
+            icon: const Icon(Icons.calendar_today, color: Colors.teal),
+            onPressed: () {
+              context
+                  .read<DatePickerBloc>()
+                  .add(ClassEndDatePicker(context: context));
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget buildPaymentCard(StudentHalfPaymentModel payment) {
+  Widget _buildErrorState(String message) {
+    return const Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.error, color: Colors.red, size: 40),
+          SizedBox(height: 8),
+          Text(
+            "Not paid for the current month.",
+            style: TextStyle(
+                color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentList(List<StudentHalfPaymentModel> payments) {
+    if (payments.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.no_accounts, size: 40),
+            SizedBox(height: 8),
+            Text('No data found', style: TextStyle(fontSize: 18)),
+          ],
+        ),
+      );
+    }
+    return ListView.builder(
+      itemCount: payments.length,
+      itemBuilder: (context, index) {
+        return _buildPaymentCard(payments[index]);
+      },
+    );
+  }
+
+  Widget _buildPaymentCard(StudentHalfPaymentModel payment) {
     final currencyFormatter = NumberFormat.currency(
         locale: 'en_LK', symbol: 'LKR ', decimalDigits: 2);
 
     return Card(
       margin: const EdgeInsets.all(8),
       elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         decoration: BoxDecoration(
           color: ColorUtil.blackColor[16],
@@ -239,20 +249,16 @@ class _StudentHalfPaymentUpdateScreenState
               title: Text(
                 payment.paymentFor ?? "No Description",
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.white, // White text for better contrast
-                ),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white),
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Fees: ${currencyFormatter.format(payment.fees ?? 0.0)}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ],
               ),
@@ -262,17 +268,13 @@ class _StudentHalfPaymentUpdateScreenState
                   Text(
                     'Amount: ${currencyFormatter.format(payment.amount ?? 0.0)}',
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                   Text(
                     'Attendance Count: ${payment.attendanceCount ?? 0}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ],
               ),
@@ -286,233 +288,167 @@ class _StudentHalfPaymentUpdateScreenState
             ),
             const Divider(height: 1, color: Colors.white),
             Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Flexible(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          if (payment.amount != null &&
-                              payment.paymentStatus != 0) {
-                            showPaymentUpdateDialog(
-                                context: context,
-                                classFeesController: _classFees,
-                                fees: payment.fees ?? 0.00,
-                                amount: payment.amount ?? 0.00,
-                                cancel: () {
-                                  Navigator.of(context).pop();
-                                },
-                                update: () {
-                                  if (_classFees.text.isNotEmpty &&
-                                      payment.paymentStatus != 0) {
-                                    StudentHalfPaymentModel halfPaymentModel =
-                                        StudentHalfPaymentModel(
-                                      paymentId: payment.paymentId,
-                                      paymentFor: payment
-                                          .paymentFor, // Include necessary fields
-                                      amount:
-                                          double.parse(_classFees.text.trim()),
-                                      fees: payment.fees,
-                                      attendanceCount: payment.attendanceCount,
-                                    );
-
-                                    final msg = _sendUpdateToMG(
-                                        payment.className.toString(),
-                                        payment.categoryName.toString(),
-                                        "update");
-                                    // Perform the half payment update action here
-                                    // Example: Call a function or dispatch an event
-                                    context.read<StudentHalfPaymentBloc>().add(
-                                          UpdateStudentPaymentEvent(
-                                              studentHalfPaymentModel:
-                                                  halfPaymentModel,
-                                              msg: msg),
-                                        );
-                                  }
-                                });
-                          }
-                        },
-                        icon: const Icon(Icons.payment, color: Colors.white),
-                        label: const Text("Update",
-                            overflow: TextOverflow.ellipsis),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          if (payment.paymentStatus != 0) {
-                            showDeleteConfirmationDialog(
-                              context: context,
-                              onConfirm: () {
-                                final msg = _sendUpdateToMG(
-                                        payment.className.toString(),
-                                        payment.categoryName.toString(),
-                                        "delete");
-                                context.read<StudentHalfPaymentBloc>().add(
-                                      StudentPaymentDeleteEvent(
-                                          paymentId: payment.paymentId!,
-                                          msg: msg),
-                                    );
-                              },
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.delete, color: Colors.white),
-                        label: const Text("Delete Payment",
-                            overflow: TextOverflow.ellipsis),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          if (payment.attendanceCount == 1 &&
-                              payment.amount != null &&
-                              payment.amount != null &&
-                              payment.fees == payment.amount) {
-                            final double halfPay = payment.amount! / 2;
-
-                            // Create an updated StudentHalfPaymentModel
-                            StudentHalfPaymentModel halfPaymentModel =
-                                StudentHalfPaymentModel(
-                              paymentId: payment.paymentId,
-                              paymentFor: payment
-                                  .paymentFor, // Include necessary fields
-                              amount: halfPay,
-                              fees: payment.fees,
-                              attendanceCount: payment.attendanceCount,
-                            );
-
-                            final msg = _sendUpdateToMG(
-                                        payment.className.toString(),
-                                        payment.categoryName.toString(),
-                                        "half payment update");
-                            // Perform the half payment update action here
-                            // Example: Call a function or dispatch an event
-                            context.read<StudentHalfPaymentBloc>().add(
-                                  UpdateStudentHalfPaymentEvent(
-                                      studentHalfPaymentModel: halfPaymentModel,
-                                      msg: msg),
-                                );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    "Half payment update failed: Invalid data."),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.update, color: Colors.white),
-                        label: const Text("Half Payment",
-                            overflow: TextOverflow.ellipsis),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildActionButton(
+                    icon: Icons.payment,
+                    label: "Update",
+                    color: Colors.teal,
+                    onPressed: () => _handleUpdatePayment(payment),
+                  ),
+                  _buildActionButton(
+                    icon: Icons.delete,
+                    label: "Delete Payment",
+                    color: Colors.redAccent,
+                    onPressed: () => _handleDeletePayment(payment),
+                  ),
+                  _buildActionButton(
+                    icon: Icons.update,
+                    label: "Half Payment",
+                    color: Colors.orange,
+                    onPressed: () => _handleHalfPayment(payment),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  void showPaymentUpdateDialog({
-    required BuildContext context,
-    required TextEditingController classFeesController,
-    required double fees,
-    required double amount,
-    required Function()? update,
-    required Function()? cancel,
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onPressed,
   }) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Payment Update",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Class Fees: LKR ${fees.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Amount Paid: LKR ${amount.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: classFeesController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'New Class Fees',
-                  hintText: 'Enter updated fees',
-                  prefixIcon: const Icon(Icons.money, color: Colors.green),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(
-                      color: Colors.blue,
-                      width: 2.0,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(
-                      color: Colors.grey,
-                      width: 1.0,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: cancel,
-              child: const Text("Cancel",
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  )),
-            ),
-            ElevatedButton(
-              onPressed: update,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                "Update",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
+    return Flexible(
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, color: Colors.white),
+        label: Text(label, overflow: TextOverflow.ellipsis),
+        style: ElevatedButton.styleFrom(backgroundColor: color),
+      ),
     );
+  }
+
+  void _handleUpdatePayment(StudentHalfPaymentModel payment) {
+    if (payment.amount != null && payment.paymentStatus != 0) {
+      showDialog(
+        context: context,
+        builder: (context) => PaymentUpdateDialog(
+          classFeesController: _classFeesController,
+          fees: payment.fees ?? 0.00,
+          amount: payment.amount ?? 0.00,
+          studentLastPaymentList: widget.studentLastPaymentList,
+          cancel: () => Navigator.of(context).pop(),
+          update: (int selectedYear, int selectedMonth, int studentClassId,
+              double updatedFees) {
+            if (_classFeesController.text.trim().isNotEmpty &&
+                (payment.paymentStatus ?? 0) != 0) {
+              double? newAmount =
+                  double.tryParse(_classFeesController.text.trim());
+
+              if (newAmount == null || newAmount <= 0) {
+                _showSnackBar(
+                    context, "Please enter a valid amount.", Colors.red);
+                return;
+              }
+
+              // ✅ Convert numeric month to short month name using DateFormat
+              String monthName =
+                  DateFormat('MMM').format(DateTime(2000, selectedMonth));
+
+              // ✅ Correct format: "2025 Jan"
+              String formattedPaymentFor = "$selectedYear $monthName";
+
+              StudentHalfPaymentModel halfPaymentModel =
+                  StudentHalfPaymentModel(
+                paymentId: payment.paymentId,
+                paymentFor: formattedPaymentFor,
+                amount: newAmount,
+                studentStudentClassId: studentClassId,
+              );
+
+              final msg = _sendUpdateToMG(
+                payment.className.toString(),
+                payment.categoryName.toString(),
+                "update",
+              );
+
+              // 🔹 Dispatch update event (Uncomment when integrating with BLoC)
+              context.read<StudentHalfPaymentBloc>().add(
+                    UpdateStudentPaymentEvent(
+                      studentHalfPaymentModel: halfPaymentModel,
+                      msg: msg,
+                    ),
+                  );
+
+              // ✅ Close the dialog after a successful update
+              Navigator.of(context).pop();
+            } else {
+              _showSnackBar(context, "Invalid payment status or empty amount.",
+                  Colors.red);
+            }
+          },
+        ),
+      );
+    }
+  }
+
+  void _handleDeletePayment(StudentHalfPaymentModel payment) {
+    if (payment.paymentStatus != 0) {
+      showDeleteConfirmationDialog(
+        context: context,
+        onConfirm: () {
+          final msg = _sendUpdateToMG(
+            payment.className.toString(),
+            payment.categoryName.toString(),
+            "delete",
+          );
+          context.read<StudentHalfPaymentBloc>().add(
+                StudentPaymentDeleteEvent(
+                    paymentId: payment.paymentId!, msg: msg),
+              );
+        },
+      );
+    }
+  }
+
+  void _handleHalfPayment(StudentHalfPaymentModel payment) {
+    if (payment.attendanceCount == 1 &&
+        payment.amount != null &&
+        payment.fees == payment.amount) {
+      final double halfPay = payment.amount! / 2;
+
+      StudentHalfPaymentModel halfPaymentModel = StudentHalfPaymentModel(
+        paymentId: payment.paymentId,
+        paymentFor: payment.paymentFor,
+        amount: halfPay,
+        fees: payment.fees,
+        attendanceCount: payment.attendanceCount,
+      );
+
+      final msg = _sendUpdateToMG(
+        payment.className.toString(),
+        payment.categoryName.toString(),
+        "half payment update",
+      );
+
+      context.read<StudentHalfPaymentBloc>().add(
+            UpdateStudentHalfPaymentEvent(
+              studentHalfPaymentModel: halfPaymentModel,
+              msg: msg,
+            ),
+          );
+    } else {
+      _showSnackBar(
+          context, "Half payment update failed: Invalid data.", Colors.red);
+    }
   }
 
   void showDeleteConfirmationDialog({
@@ -523,37 +459,27 @@ class _StudentHalfPaymentUpdateScreenState
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text(
-            "Confirm Deletion",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          title: const Text("Confirm Deletion",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           content: const Text(
             "Are you sure you want to delete this payment? This action cannot be undone.",
             style: TextStyle(fontSize: 16),
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text(
-                "Cancel",
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel",
+                  style: TextStyle(
+                      color: Colors.red, fontWeight: FontWeight.bold)),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                onConfirm(); // Perform the delete action
+                Navigator.of(context).pop();
+                onConfirm();
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-              ),
-              child: const Text(
-                "Confirm",
-                style: TextStyle(color: Colors.white),
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+              child:
+                  const Text("Confirm", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -563,9 +489,6 @@ class _StudentHalfPaymentUpdateScreenState
 
   String _sendUpdateToMG(String className, String categoryName, String name) {
     final currentDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
-    final message =
-        "Payment for ${widget.customId}'s $className $categoryName $name on $currentDate";
-
-    return message;
+    return "Payment for ${widget.customId}'s $className $categoryName $name on $currentDate";
   }
 }

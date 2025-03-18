@@ -42,6 +42,8 @@ class _ClassScreenState extends State<ClassScreen> {
   int? subjectId;
   int? gradeId;
   int? teacherId;
+  int? classOnGoingStatus;
+  int? classActiveStatus;
 
   List<String>? selectedDay;
 
@@ -100,7 +102,7 @@ class _ClassScreenState extends State<ClassScreen> {
               SnackBar(
                 content: Text(state.updateMessage),
               ),
-            ); 
+            );
             context.read<ClassBlocBloc>().add(GetActiveClass());
             Navigator.pop(context);
           }
@@ -169,6 +171,13 @@ class _ClassScreenState extends State<ClassScreen> {
                                       statesTitle: 'Class Active Status',
                                       value: state.isClassActiveStatus,
                                       onChanged: (status) {
+                                        final isClassActiveStatus =
+                                            state.isClassActiveStatus;
+                                        if (isClassActiveStatus) {
+                                          classActiveStatus = 1;
+                                        } else {
+                                          classActiveStatus = 0;
+                                        }
                                         context
                                             .read<CheckboxButtonCubit>()
                                             .toggleClassActiveStatus(status);
@@ -179,6 +188,13 @@ class _ClassScreenState extends State<ClassScreen> {
                                       statesTitle: 'Class Ongoing Status',
                                       value: state.isOngoingStatus,
                                       onChanged: (status) {
+                                        final isClassOnGoingStatus =
+                                            state.isOngoingStatus;
+                                        if (isClassOnGoingStatus) {
+                                          classOnGoingStatus = 1;
+                                        } else {
+                                          classOnGoingStatus = 0;
+                                        }
                                         context
                                             .read<CheckboxButtonCubit>()
                                             .toggleClassOngoingStatus(status);
@@ -311,152 +327,6 @@ class _ClassScreenState extends State<ClassScreen> {
     });
   }
 
-  // void _classScheduleTime(String test) {
-  //   showModalBottomSheet(
-  //       backgroundColor: ColorUtil.whiteColor[14],
-  //       shape: const BeveledRectangleBorder(
-  //         borderRadius: BorderRadius.only(
-  //           topLeft: Radius.circular(5),
-  //           topRight: Radius.circular(5),
-  //         ),
-  //       ),
-  //       context: context,
-  //       builder: (context) {
-  //         return Padding(
-  //           padding: const EdgeInsets.only(left: 20, bottom: 20),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               const SizedBox(
-  //                 height: 30,
-  //               ),
-  //               test == "Start Time"
-  //                   ? Text(
-  //                       "Class Start Time",
-  //                       style: TextStyle(
-  //                           fontSize: 20,
-  //                           color: ColorUtil.blackColor[10],
-  //                           fontWeight: FontWeight.bold),
-  //                     )
-  //                   : Text(
-  //                       "Class End Time",
-  //                       style: TextStyle(
-  //                           fontSize: 20,
-  //                           color: ColorUtil.blackColor[10],
-  //                           fontWeight: FontWeight.bold),
-  //                     ),
-  //               Expanded(
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   children: [
-  //                     SizedBox(
-  //                       width: 70,
-  //                       child: ListWheelScrollView.useDelegate(
-  //                           onSelectedItemChanged: (hours) {
-  //                             context.read<TimeCubit>().updateHours(hours);
-  //                           },
-  //                           itemExtent: 50,
-  //                           perspective: 0.005,
-  //                           diameterRatio: 1.2,
-  //                           physics: const FixedExtentScrollPhysics(),
-  //                           childDelegate: ListWheelChildBuilderDelegate(
-  //                               childCount: 13,
-  //                               builder: (context, index) {
-  //                                 return MyHoursWidget(hours: index);
-  //                               })),
-  //                     ),
-  //                     const SizedBox(
-  //                       width: 10,
-  //                     ),
-  //                     SizedBox(
-  //                       width: 70,
-  //                       child: ListWheelScrollView.useDelegate(
-  //                           onSelectedItemChanged: (minutes) {
-  //                             context.read<TimeCubit>().updateMinutes(minutes);
-  //                           },
-  //                           itemExtent: 50,
-  //                           perspective: 0.005,
-  //                           diameterRatio: 1.2,
-  //                           physics: const FixedExtentScrollPhysics(),
-  //                           childDelegate: ListWheelChildBuilderDelegate(
-  //                               childCount: 60,
-  //                               builder: (context, index) {
-  //                                 return MyMinutesWidget(mins: index);
-  //                               })),
-  //                     ),
-  //                     const SizedBox(
-  //                       width: 10,
-  //                     ),
-  //                     SizedBox(
-  //                       width: 70,
-  //                       child: ListWheelScrollView.useDelegate(
-  //                           onSelectedItemChanged: (value) {
-  //                             setState(() {
-  //                               context
-  //                                   .read<TimeCubit>()
-  //                                   .updateAmPm(value == 0 ? "AM" : "PM");
-  //                             });
-  //                           },
-  //                           itemExtent: 50,
-  //                           perspective: 0.005,
-  //                           diameterRatio: 1.2,
-  //                           physics: const FixedExtentScrollPhysics(),
-  //                           childDelegate: ListWheelChildBuilderDelegate(
-  //                               childCount: 2,
-  //                               builder: (context, index) {
-  //                                 if (index == 0) {
-  //                                   return const MyAmorPmWidget(
-  //                                     isItAml: true,
-  //                                   );
-  //                                 } else {
-  //                                   return const MyAmorPmWidget(isItAml: false);
-  //                                 }
-  //                               })),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               Padding(
-  //                 padding: const EdgeInsets.only(right: 10),
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.end,
-  //                   children: [
-  //                     TextButton(
-  //                         onPressed: () {
-  //                           final timeState = context.read<TimeCubit>().state;
-  //                           if (timeState is TimeInitial) {
-  //                             if (test == 'Start Time') {
-  //                               _classStart.text =
-  //                                   "${timeState.hours} : ${timeState.minutes} - ${timeState.amPm}";
-  //                             } else {
-  //                               _classEnd.text =
-  //                                   "${timeState.hours} : ${timeState.minutes} - ${timeState.amPm}";
-  //                             }
-
-  //                             Navigator.pop(context);
-  //                           }
-  //                         },
-  //                         child: const Text(
-  //                           'Ok',
-  //                           style: TextStyle(fontSize: 16),
-  //                         )),
-  //                     TextButton(
-  //                         onPressed: () {
-  //                           Navigator.pop(context);
-  //                         },
-  //                         child: const Text(
-  //                           'Cancel',
-  //                           style: TextStyle(fontSize: 16),
-  //                         )),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         );
-  //       });
-  // }
-
   validateClassData() {
     if (RegisterFrom.notEmpty(_className.text, "class name", context) &&
         RegisterFrom.notEmpty(_classStart.text, "class start time", context) &&
@@ -491,12 +361,16 @@ class _ClassScreenState extends State<ClassScreen> {
   }
 
   updateClassData() {
-    if (subjectId != null && gradeId != null && teacherId != null) {
+    if (subjectId != null &&
+        gradeId != null &&
+        teacherId != null &&
+        classActiveStatus != null &&
+        classOnGoingStatus != null) {
       ClassScheduleModelClass classModelClass = ClassScheduleModelClass(
         id: widget.classScheduleModelClass!.id,
         className: _className.text.capitalizeEachWord,
-        isActive: 1,
-        isOngoing: 0,
+        isActive: classActiveStatus ?? 0,
+        isOngoing: classOnGoingStatus ?? 0,
         teacherId: teacherId,
         subjectId: subjectId,
         gradeId: gradeId,

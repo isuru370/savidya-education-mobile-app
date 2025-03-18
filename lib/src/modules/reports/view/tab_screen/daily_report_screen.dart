@@ -64,46 +64,108 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     final pdf = pw.Document();
 
     pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) => pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Text(
-              "Daily Report",
-              style: pw.TextStyle(
-                fontSize: 24,
-                fontWeight: pw.FontWeight.bold,
+      pw.MultiPage(
+        build: (pw.Context context) => [
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                "Daily Report",
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                "Date: ${_selectDateController.text.trim()}",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                "Student Count: $studentCount",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.Text(
+                "Total Amount: LKR ${totalAmount.toStringAsFixed(2)}",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.SizedBox(height: 20),
+            ],
+          ),
+          pw.Table(
+            columnWidths: {
+              0: const pw.FlexColumnWidth(1.2), // Wider column for "Student ID"
+              1: const pw.FlexColumnWidth(3), // Wider column for "Name"
+              2: const pw.FlexColumnWidth(3), // Adjust for "Class"
+              3: const pw.FlexColumnWidth(2), // Adjust for "Subject"
+              4: const pw.FlexColumnWidth(1.2), // Adjust for "Amount"
+            },
+            border: pw.TableBorder.all(),
+            children: [
+              // Table Headers
+              pw.TableRow(
+                children: [
+                  pw.Text("Student ID",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                  pw.Text("Name",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                  pw.Text("Class",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                  pw.Text("Subject",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                  pw.Text("Amount",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                ],
+              ),
+              // Table Data
+              ...reports.map((report) {
+                return pw.TableRow(
+                  children: [
+                    pw.Text(report.studentCusId ?? "-",
+                        style: const pw.TextStyle(fontSize: 10)),
+                    pw.Text(report.studentInitialName ?? "-",
+                        style: const pw.TextStyle(fontSize: 10)),
+                    pw.Text(report.className ?? "-",
+                        style: const pw.TextStyle(fontSize: 10)),
+                    pw.Text(report.subjectName ?? "-",
+                        style: const pw.TextStyle(fontSize: 10)),
+                    pw.Text(
+                      report.paymentAmount != null
+                          ? report.paymentAmount.toStringAsFixed(2)
+                          : "0.00",
+                      style: const pw.TextStyle(fontSize: 10),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
+          pw.SizedBox(height: 100),
+          pw.Align(
+            alignment: pw.Alignment.centerRight,
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.end,
+              children: [
+                // Space for the signature
+                pw.Container(
+                  width: 150,
+                  child: pw.Divider(),
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  "Signature:",
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
+              ],
             ),
-            pw.SizedBox(height: 10),
-            pw.Text(
-              "Date: $_currentDate", // Ensure _currentDate is properly initialized
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.SizedBox(height: 10),
-            pw.Text(
-              "Student Count: $studentCount",
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.Text(
-              "Total Amount: LKR ${totalAmount.toStringAsFixed(2)}",
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.SizedBox(height: 20),
-            pw.TableHelper.fromTextArray(
-              headers: ["Student ID", "Name", "Class", "Subject", "Amount"],
-              data: reports.map((report) {
-                return [
-                  report.studentCusId ?? "-",
-                  report.studentInitialName ?? "-",
-                  report.className ?? "-",
-                  report.subjectName ?? "-",
-                  report.paymentAmount.toStringAsFixed(2),
-                ];
-              }).toList(),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
 

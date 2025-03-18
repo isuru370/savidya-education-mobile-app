@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:aloka_mobile_app/src/modules/payment/components/show_month_selection_dialog.dart';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +32,8 @@ class _PaymentCheckState extends State<PaymentCheck> {
   final TextEditingController _classFees = TextEditingController();
   int? selectedYear;
   int? selectedMonth;
+  late LastPaymentModelClass payStudent;
+  String? paymentDate;
 
   @override
   void initState() {
@@ -50,6 +55,7 @@ class _PaymentCheckState extends State<PaymentCheck> {
           if (state is StudentPaymentSuccess) {
             Navigator.of(context).pop();
             _showSnackBar(context, 'Payment Successful', Colors.green);
+            _printBill(context, payStudent, paymentDate!);
           } else if (state is StudentPaymentFailure) {
             Navigator.of(context).pop();
             _showSnackBar(
@@ -211,15 +217,15 @@ class _PaymentCheckState extends State<PaymentCheck> {
 
   void _processPayment(BuildContext context, LastPaymentModelClass student) {
     if (selectedYear != null && selectedMonth != null) {
-      final paymentDate = DateFormat('yyyy MMM')
+      payStudent = student;
+      paymentDate = DateFormat('yyyy MMM')
           .format(DateTime(selectedYear!, selectedMonth!));
 
       final msg = "Dear Parent/Guardian, "
-          "payment of \$${double.parse(_classFees.text.trim()).toStringAsFixed(2)} has been made for ${student.initialName} "
-          "at Savidya Higher Education Institute.\n"
-          "- Class: ${student.className}\n"
-          "- Category: ${student.categoryName}\n"
-          "- Type: ${student.lastPaymentFor}\n"
+          "payment of LKR:${double.parse(double.parse(student.fees).toStringAsFixed(2)).toStringAsFixed(2)} has been made for ${student.initialName} "
+          "at Savidya Edu.\n"
+          "- ${student.className}\n"
+          "- $paymentDate\n"
           "Thank you for choosing us.";
 
       final paymentModelClass = PaymentModelClass(
@@ -266,5 +272,58 @@ class _PaymentCheckState extends State<PaymentCheck> {
           ),
           backgroundColor: color),
     );
+  }
+
+  void _printBill(BuildContext context, LastPaymentModelClass payStudent,
+      String paymentDate) async {
+    BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+    bool isConnected = await bluetooth.isConnected ?? false;
+
+    if (!isConnected) {
+      await _connectPrinter(); // Ensure we wait for the connection
+      isConnected = await bluetooth.isConnected ?? false;
+
+      if (!isConnected) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Printer not connected!'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+    }
+
+    bluetooth.printNewLine();
+    bluetooth.printCustom("Savidya Edu", 3, 1); // Large, Centered
+    bluetooth.printCustom("Payment Receipt", 2, 1);
+    bluetooth.printCustom("----------------------", 1, 1); // Separator
+
+    bluetooth.printLeftRight("Student:", payStudent.initialName, 0);
+    bluetooth.printLeftRight("Class:", payStudent.className, 1);
+    bluetooth.printLeftRight("Category:", payStudent.categoryName, 1);
+    bluetooth.printLeftRight("Payment For:", paymentDate, 1);
+    bluetooth.printLeftRight("Amount:", "LKR ${payStudent.fees}", 1);
+
+    bluetooth.printNewLine();
+    bluetooth.printCustom("Thank you!", 2, 1); // Medium, Centered
+    bluetooth.printCustom("----------------------", 1, 1);
+    bluetooth.printNewLine();
+    bluetooth.paperCut();
+  }
+
+  Future<void> _connectPrinter() async {
+    BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+    List<BluetoothDevice> devices = await bluetooth.getBondedDevices();
+
+    if (devices.isNotEmpty) {
+      await bluetooth
+          .connect(devices.first); // Connect to the first paired device
+      log("Printer Connected!");
+    } else {
+      log("No paired devices found.");
+    }
   }
 }

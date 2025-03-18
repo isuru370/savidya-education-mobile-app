@@ -30,15 +30,21 @@ class BuildStudentInfoWidget extends StatelessWidget {
         ],
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 40,
             backgroundImage: NetworkImage(imageUrl),
+            onBackgroundImageError: (error, stackTrace) {
+              debugPrint('Error loading image: $error');
+            }, 
           ),
           const SizedBox(height: 10),
           Text(
             initialName,
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 5),
           Text(

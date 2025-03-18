@@ -1,13 +1,13 @@
 class API {
-  static String uploadImageAPI = "https://savidya.alokait.lk/api";
+  static String uploadImageAPI = "https://admin.savidyaeducation.com/api";
 
   //https://admin.coopcitycollege.com/api
-  //https://edu.alokait.lk/api
+  //https://edu.alokait.lk/apiA
   //https://savidya.alokait.lk/api
 
-  static String mainAPI = "https://api.alokait.lk/api";
+  static String mainAPI = "https://api.savidyaeducation.com/api";
 
-  //https://api.coopcitycollege.com/api
+  //https://api.savidyaeducation.com/api
   //https://api.alokait.lk/api
   //http://192.168.1.101/Aloka-Mobile-App-Backend/Savidya-Education-Mobile-App-Backend/api
   //http://192.168.43.73/Aloka-Mobile-App-Backend/savidya/api
@@ -42,10 +42,10 @@ class API {
   //payment
   static String payment = "$mainAPI/payment";
 
-//class attendance
+  //class attendance
   static String classAttendance = "$mainAPI/class_attendance";
 
-//class category
+  //class category
   static String classCategory = "$mainAPI/category";
 
   //class category Has Class
@@ -53,8 +53,12 @@ class API {
   //class category Has Class
   static String admission = "$mainAPI/admission";
 
+  //tute
+  static String tute = "$mainAPI/tute";
   //pages
   static String pages = "$mainAPI/pages";
+
+  static String sendSMG = "$mainAPI/send_sms";
   //Permission
   static String permission = "$mainAPI/permission";
 }

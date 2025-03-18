@@ -24,6 +24,7 @@ class TeacherPaymentScreen extends StatefulWidget {
 class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
   String? _currentDate;
   int? teacherId;
+  String? teacherName;
   late TextEditingController _selectDateController;
 
   @override
@@ -39,7 +40,6 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
     _selectDateController.dispose();
     super.dispose();
   }
-
 
   void _selectDate(BuildContext context) async {
     DateTime? pickedDate = await showMonthPicker(
@@ -57,15 +57,14 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
 
       if (teacherId != null) {
         context.read<ReportsBloc>().add(
-          TeacherPaymentMonthlyReports(
-            selectMonth: _currentDate!,
-            teacherId: teacherId!,
-          ),
-        );
+              TeacherPaymentMonthlyReports(
+                selectMonth: _currentDate!,
+                teacherId: teacherId!,
+              ),
+            );
       }
     }
   }
-
 
   Widget getTeacher(List<TeacherModelClass> getTeacherList) {
     return BlocBuilder<DropdownButtonCubit, DropdownButtonState>(
@@ -91,16 +90,17 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
               // Update the local teacherId and dispatch the ReportsBloc event
               setState(() {
                 teacherId = newTeacher.id;
+                teacherName = newTeacher.fullName ?? "N/A";
               });
 
               if (_currentDate != null) {
                 // Dispatch the ReportsBloc event with the selected teacher ID and date
                 context.read<ReportsBloc>().add(
-                  TeacherPaymentMonthlyReports(
-                    selectMonth: _currentDate!,
-                    teacherId: teacherId!,
-                  ),
-                );
+                      TeacherPaymentMonthlyReports(
+                        selectMonth: _currentDate!,
+                        teacherId: teacherId!,
+                      ),
+                    );
               }
             }
           },
@@ -190,7 +190,7 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
                                   padding: const EdgeInsets.all(12.0),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Student ID: ${report.studentCusId ?? '-'}",
@@ -255,47 +255,113 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
     final pdf = pw.Document();
 
     pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) => pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Text(
-              "Monthly Report",
-              style: pw.TextStyle(
-                fontSize: 24,
-                fontWeight: pw.FontWeight.bold,
+      pw.MultiPage(
+        build: (pw.Context context) => [
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                "Teacher Report",
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                "Date: ${_selectDateController.text.trim()}",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                "Teacher: $teacherName",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                "Student Count: $studentCount",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.Text(
+                "Total Amount: LKR ${totalAmount.toStringAsFixed(2)}",
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+              pw.SizedBox(height: 20),
+            ],
+          ),
+          pw.Table(
+            columnWidths: {
+              0: const pw.FlexColumnWidth(1.2), // Wider column for "Student ID"
+              1: const pw.FlexColumnWidth(3), // Wider column for "Name"
+              2: const pw.FlexColumnWidth(3), // Adjust for "Class"
+              3: const pw.FlexColumnWidth(2), // Adjust for "Subject"
+              4: const pw.FlexColumnWidth(1.2), // Adjust for "Amount"
+            },
+            border: pw.TableBorder.all(),
+            children: [
+              // Table Headers
+              pw.TableRow(
+                children: [
+                  pw.Text("Student ID",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                  pw.Text("Name",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                  pw.Text("Class",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                  pw.Text("Subject",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                  pw.Text("Amount",
+                      style: const pw.TextStyle(fontSize: 10),
+                      textAlign: pw.TextAlign.center),
+                ],
+              ),
+              // Table Data
+              ...reports.map((report) {
+                return pw.TableRow(
+                  children: [
+                    pw.Text(report.studentCusId ?? "-",
+                        style: const pw.TextStyle(fontSize: 10)),
+                    pw.Text(report.studentInitialName ?? "-",
+                        style: const pw.TextStyle(fontSize: 10)),
+                    pw.Text(report.className ?? "-",
+                        style: const pw.TextStyle(fontSize: 10)),
+                    pw.Text(report.subjectName ?? "-",
+                        style: const pw.TextStyle(fontSize: 10)),
+                    pw.Text(
+                      report.paymentAmount != null
+                          ? report.paymentAmount.toStringAsFixed(2)
+                          : "0.00",
+                      style: const pw.TextStyle(fontSize: 10),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
+          pw.SizedBox(height: 100),
+          pw.Align(
+            alignment: pw.Alignment.centerRight,
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.end,
+              children: [
+                // Space for the signature
+                pw.Container(
+                  width: 150,
+                  child: pw.Divider(),
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  "Signature:",
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
+              ],
             ),
-            pw.SizedBox(height: 10),
-            pw.Text(
-              "Date: $_currentDate", // Ensure _currentDate is properly initialized
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.SizedBox(height: 10),
-            pw.Text(
-              "Student Count: $studentCount",
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.Text(
-              "Total Amount: LKR ${totalAmount.toStringAsFixed(2)}",
-              style: const pw.TextStyle(fontSize: 16),
-            ),
-            pw.SizedBox(height: 20),
-            pw.TableHelper.fromTextArray(
-              headers: ["Student ID", "Name", "Class", "Subject", "Amount"],
-              data: reports.map((report) {
-                return [
-                  report.studentCusId ?? "-",
-                  report.studentInitialName ?? "-",
-                  report.className ?? "-",
-                  report.subjectName ?? "-",
-                  report.paymentAmount.toStringAsFixed(2),
-                ];
-              }).toList(),
-
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
 
@@ -303,19 +369,28 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
     return pdf.save();
   }
 
-  void downloadPDF(BuildContext context, List<dynamic> studentDate) async {
-    if (studentDate.isEmpty) {
+  void downloadPDF(BuildContext context, List<dynamic> studentData) async {
+    try {
+      if (studentData.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No data to generate PDF')),
+        );
+        return;
+      }
+
+      // Generate the PDF data (as Uint8List)
+      final pdfData = await generatePDF(studentData);
+
+      // Share the PDF using Printing plugin
+      await Printing.sharePdf(bytes: pdfData, filename: 'student_report.pdf');
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No data to generate PDF')),
+        SnackBar(
+          content: Text(
+              'Error generating PDF: $e'), // Display the actual error message
+          backgroundColor: Colors.red,
+        ),
       );
-      return;
     }
-
-    // Generate the PDF data (as Uint8List)
-    final pdfData = await generatePDF(studentDate);
-
-    // Share the PDF using Printing plugin
-    await Printing.sharePdf(bytes: pdfData, filename: 'student_report.pdf');
   }
 }
-

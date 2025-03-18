@@ -79,7 +79,7 @@ class ShowMonthSelectionDialog extends StatelessWidget {
                 child: const Text("Cancel"),
               ),
               ElevatedButton(
-                onPressed: () => payBtn,
+                onPressed: payBtn,
                 style: ElevatedButton.styleFrom(
                   iconColor: Colors.green,
                 ),

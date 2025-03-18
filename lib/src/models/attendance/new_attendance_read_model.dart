@@ -8,6 +8,7 @@ class NewAttendanceReadModel extends Equatable {
   final String whatsappMobile;
   final String guardianMobile;
   final int isFreeCard;
+  final int? classCatId;
 
   // Making these fields nullable
   final String? className;
@@ -29,6 +30,7 @@ class NewAttendanceReadModel extends Equatable {
     required this.whatsappMobile,
     required this.guardianMobile,
     required this.isFreeCard,
+    this.classCatId,
     this.className,
     this.gradeName,
     this.subjectName,
@@ -55,6 +57,9 @@ class NewAttendanceReadModel extends Equatable {
       className: json['class_name'], // Nullable field
       gradeName: json['grade_name'], // Nullable field
       subjectName: json['subject_name'], // Nullable field
+      classCatId: json['class_cat_id'] != null
+          ? int.tryParse(json['class_cat_id'].toString()) ?? 0
+          : 0,
       categoryName: json['category_name'], // Nullable field
       fees: json['fees'] != null
           ? double.tryParse(json['fees'].toString()) ?? 0.00
@@ -140,5 +145,6 @@ class NewAttendanceReadModel extends Equatable {
         lastPaymentFor,
         amount,
         classAttendanceId,
+        classCatId,
       ];
 }

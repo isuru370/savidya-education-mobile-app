@@ -9,7 +9,7 @@ import '../components/build_scanner_body_widget.dart';
 import '../components/qr_read_search_bar_widget.dart';
 
 class QRCodeReadPaymentScreen extends StatefulWidget {
-  final String? title;
+  final String title;
 
   const QRCodeReadPaymentScreen({super.key, required this.title});
 

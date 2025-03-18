@@ -10,6 +10,7 @@ class StudentHalfPaymentModel extends Equatable {
   final String? categoryName; // Category name
   final String? className; // Class name
   final String? teacherLastName; // Teacher's last name
+  final int? studentStudentClassId;
 
   const StudentHalfPaymentModel({
     this.paymentId,
@@ -21,6 +22,7 @@ class StudentHalfPaymentModel extends Equatable {
     this.categoryName,
     this.className,
     this.teacherLastName,
+    this.studentStudentClassId,
   });
 
   // Factory method to create an instance from JSON
@@ -58,6 +60,15 @@ class StudentHalfPaymentModel extends Equatable {
       'category_name': categoryName ?? '', // Default to empty string
       'class_name': className ?? '', // Default to empty string
       'lname': teacherLastName ?? '', // Default to empty string
+    };
+  }
+
+   Map<String, dynamic> paymentUpdate() {
+    return {
+      'payment_id': paymentId,
+      "payment_for": paymentFor,
+      "student_student_class_id": studentStudentClassId, // Fixed key name
+      'amount': amount,
     };
   }
 
@@ -108,5 +119,6 @@ class StudentHalfPaymentModel extends Equatable {
         categoryName,
         className,
         teacherLastName,
+        studentStudentClassId,
       ];
 }

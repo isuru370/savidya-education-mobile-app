@@ -136,7 +136,7 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
       itemCount: students.length,
       itemBuilder: (context, index) {
         final studentData = students[index];
-        final studentPercentage = percentage[index] ;
+        final studentPercentage = percentage[index];
         return _buildStudentCard(studentData, studentPercentage);
       },
     );
@@ -201,6 +201,15 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
                 ),
               ),
               const SizedBox(height: 4),
+              Text(
+                'Grade : ${studentData.gradeName}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.teal[400],
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 4),
               studentData.studentClassFreeCard! == 1
                   ? Container(
                       padding: const EdgeInsets.symmetric(
@@ -247,7 +256,10 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _buildActionButton(studentData, 'Payments', Colors.blue, Colors.white),
+        studentData.studentClassFreeCard! == 0
+            ? _buildActionButton(
+                studentData, 'Payments', Colors.blue, Colors.white)
+            : const SizedBox.shrink(),
         _buildActionButton(
             studentData, 'Attendance', Colors.green, Colors.white),
       ],
@@ -272,7 +284,7 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
               .pushNamed('/unique_attendance', arguments: {
             "studentId": widget.studentId,
             "class_category_has_student_class_id": studentData.classHasCatId,
-            "student_has_class_id" : studentData.studentHasClassesId,
+            "student_has_class_id": studentData.studentHasClassesId,
           });
         } else {
           Navigator.of(context, rootNavigator: true).pushNamed('/');

@@ -59,7 +59,7 @@ Future<Map<String, dynamic>> markStudentAttendance(
 
 Future<Map<String, dynamic>> searchStudentPayment(
     String studentCustomId) async {
-  final url = Uri.parse('${API.payment}/read_payment_student.php');
+  final url = Uri.parse('${API.payment}/new_student_last_payment.php');
 
   final response = await http.post(url,
       headers: {

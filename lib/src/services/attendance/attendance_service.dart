@@ -175,3 +175,30 @@ Future<Map<String, dynamic>> newAttendanceRead(
     };
   }
 }
+Future<Map<String, dynamic>> sendAttendanceMessage(
+    String msg, String number) async {
+  final url = Uri.parse('${API.sendSMG}/send_sms.php');
+
+  final response = await http.post(url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({"message": msg, "mobile": number}));
+
+  // ================= check php error =================================
+  // log("Response status: ${response.statusCode}");
+  // log("Response body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    final responseData = jsonDecode(response.body);
+    return {
+      "success": true,
+      "sms": responseData,
+    };
+  } else {
+    return {
+      "success": false,
+      "message": "Server error",
+    };
+  }
+}

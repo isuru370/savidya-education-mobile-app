@@ -44,144 +44,84 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
     final pdf = pw.Document();
 
     pdf.addPage(
-      pw.Page(
+      pw.MultiPage(
         build: (pw.Context context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              // Header Section
-              pw.Text(
-                'Savidya Higher Education Institute',
-                style: pw.TextStyle(
-                  fontSize: 26,
-                  fontWeight: pw.FontWeight.bold,
-                ),
-              ),
-              pw.SizedBox(height: 10),
-              pw.Center(
-                child: pw.Text(
-                  'Student Report',
+          return [
+            // Header Section
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              mainAxisAlignment:
+                  pw.MainAxisAlignment.center, // Ensures vertical centering
+              children: [
+                pw.Text(
+                  'Savidya Higher Education Institute',
                   style: pw.TextStyle(
-                    fontSize: 24,
+                    fontSize: 26,
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
-              ),
-              pw.SizedBox(height: 20),
-              pw.Text(
-                'Class Name: ${widget.className}',
-                style: const pw.TextStyle(fontSize: 18),
-              ),
-              pw.Text(
-                'Grade Name: Grade ${widget.gradeName}',
-                style: const pw.TextStyle(fontSize: 18),
-              ),
-              pw.Text(
-                'Teacher Name: ${widget.teacherName}',
-                style: const pw.TextStyle(fontSize: 18),
-              ),
-              pw.SizedBox(height: 20),
-
-              // Table Section
-              pw.Table(
-                border: pw.TableBorder.all(),
-                children: [
-                  // Table Header
-                  pw.TableRow(
-                    decoration:
-                        const pw.BoxDecoration(color: PdfColors.grey300),
-                    children: [
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          'Student ID',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          'Student Name',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          'Parent No',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          'Student Free Card',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          'Attendance %',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          'Present Count',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8.0),
-                        child: pw.Text(
-                          'Absent Count',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                    ],
+                pw.SizedBox(height: 10),
+                pw.Center(
+                  child: pw.Text(
+                    'Student Report',
+                    style: pw.TextStyle(
+                      fontSize: 24,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
                   ),
-                  // Table Rows
-                  ...studentData.map((data) {
-                    return pw.TableRow(
-                      children: [
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[0].toString()), // Student ID
-                        ),
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[1].toString()), // Student Name
-                        ),
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[2].toString()), // Parent No
-                        ),
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.all(8.0),
-                          child:
-                              pw.Text(data[3].toString()), // Student Free Card
-                        ),
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[4].toString()), // Attendance %
-                        ),
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[5].toString()), // Present Count
-                        ),
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(data[6].toString()), // Absent Count
-                        ),
-                      ],
-                    );
-                  }),
-                ],
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  'Class Name: ${widget.className}',
+                  style: const pw.TextStyle(fontSize: 18),
+                ),
+                pw.Text(
+                  'Grade Name: Grade ${widget.gradeName}',
+                  style: const pw.TextStyle(fontSize: 18),
+                ),
+                pw.Text(
+                  'Teacher Name: ${widget.teacherName}',
+                  style: const pw.TextStyle(fontSize: 18),
+                ),
+                pw.SizedBox(height: 20),
+              ],
+            ),
+
+            // Table Section (Split Automatically by MultiPage)
+            pw.TableHelper.fromTextArray(
+              border: pw.TableBorder.all(),
+              headers: [
+                'Student ID',
+                'Student Name',
+                'Parent No',
+                'Student Free Card',
+                'Attendance %',
+                'Present Count',
+                'Absent Count',
+              ],
+              data: studentData.map((data) {
+                return [
+                  data[0].toString(), // Student ID
+                  data[1].toString(), // Student Name
+                  data[2].toString(), // Parent No
+                  data[3].toString(), // Student Free Card
+                  '${data[4].toString()} %', // Attendance %
+                  data[5].toString(), // Present Count
+                  data[6].toString(), // Absent Count
+                ];
+              }).toList(),
+              cellAlignment: pw.Alignment.centerLeft,
+              headerStyle: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 10,
               ),
-            ],
-          );
+              cellStyle: pw.TextStyle(
+                fontSize: 10,
+              ),
+              headerDecoration:
+                  const pw.BoxDecoration(color: PdfColors.grey300),
+            ),
+          ];
         },
       ),
     );

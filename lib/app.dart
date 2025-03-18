@@ -26,6 +26,7 @@ import 'src/modules/student_screen/bloc/change_student_class/chenge_student_clas
 import 'src/modules/student_screen/bloc/image_picker/image_picker_bloc.dart';
 import 'src/modules/student_screen/bloc/student_in_the_class/student_in_the_class_bloc.dart';
 import 'src/modules/teacher_screen/bloc/teacher_class_category/teacher_class_category_bloc.dart';
+import 'src/modules/tute/bloc/tute_bloc/tute_bloc.dart';
 import 'src/provider/bloc_provider/all_student_has_class/all_student_has_class_bloc.dart';
 import 'src/provider/bloc_provider/bank_details_bloc/bank_details_bloc.dart';
 import 'src/provider/bloc_provider/branch_details_bloc/branch_details_bloc.dart';
@@ -121,6 +122,7 @@ class PrivateClassMobileApp extends StatelessWidget {
         BlocProvider(create: (_) => StudentHalfPaymentBloc()),
         BlocProvider(create: (_) => NewAttendanceReadBloc()),
         BlocProvider(create: (_) => TodayClassesBloc()),
+        BlocProvider(create: (_) => TuteBloc()),
         BlocProvider(create: (_) => ReportsBloc()),
       ],
       child: BlocBuilder<ThemeBloc, ThemeMode>(
