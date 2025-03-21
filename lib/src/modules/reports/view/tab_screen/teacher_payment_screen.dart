@@ -56,6 +56,7 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
       });
 
       if (teacherId != null) {
+        // ignore: use_build_context_synchronously
         context.read<ReportsBloc>().add(
               TeacherPaymentMonthlyReports(
                 selectMonth: _currentDate!,
@@ -384,6 +385,7 @@ class _TeacherPaymentScreenState extends State<TeacherPaymentScreen> {
       // Share the PDF using Printing plugin
       await Printing.sharePdf(bytes: pdfData, filename: 'student_report.pdf');
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(

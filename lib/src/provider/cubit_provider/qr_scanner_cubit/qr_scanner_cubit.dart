@@ -1,42 +1,43 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 part 'qr_scanner_state.dart';
 
 class QrScannerCubit extends Cubit<QrScannerState> {
   QrScannerCubit() : super(QrScannerInitial());
 
-  QRViewController? controller;
+  final MobileScannerController cameraController = MobileScannerController();
 
-  // Initialize the QRViewController and process the QR code
-  void initializeController(QRViewController controller) {
-    this.controller = controller;
+  // Start scanning QR codes
+  void startScanning() {
+    cameraController.start();
+    cameraController.stop();
   }
 
-  void processQRCode() {
-    if (controller == null) {
-      emit(
-          const QrScannerFailure(failureMSG: 'Controller is not initialized.'));
+  // Process scanned QR code
+  void processQRCode(BarcodeCapture capture) {
+    if (capture.barcodes.isEmpty) {
+      emit(const QrScannerFailure(failureMSG: 'Invalid QR Code'));
       return;
     }
 
-    controller!.scannedDataStream.listen((scanData) async {
-      if (scanData.code != null) {
-        emit(QrScannerProcess());
-        try {
-          final qrScannerResult = scanData.code!;
+    emit(QrScannerProcess());
+    try {
+      final qrScannerResult = capture.barcodes.first.rawValue ?? '';
 
-          // Emit success with the QR code result
-          emit(QrScannerSuccess(qrScannerResult: qrScannerResult));
-        } catch (e) {
-          // Emit failure with error message
-          emit(QrScannerFailure(failureMSG: 'Failed to process QR Code: $e'));
-        }
+      if (qrScannerResult.isNotEmpty) {
+        emit(QrScannerSuccess(qrScannerResult: qrScannerResult));
       } else {
-        // Emit failure for invalid QR code
         emit(const QrScannerFailure(failureMSG: 'Invalid QR Code'));
       }
-    });
+    } catch (e) {
+      emit(QrScannerFailure(failureMSG: 'Failed to process QR Code: $e'));
+    }
+  }
+
+  // Dispose the camera
+  void disposeCamera() {
+    cameraController.dispose();
   }
 }

@@ -379,7 +379,6 @@ class _StudentHalfPaymentUpdateScreenState
                 payment.categoryName.toString(),
                 "update",
               );
-
               // 🔹 Dispatch update event (Uncomment when integrating with BLoC)
               context.read<StudentHalfPaymentBloc>().add(
                     UpdateStudentPaymentEvent(

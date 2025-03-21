@@ -236,6 +236,7 @@ class _TeacherPaidNotPaidReportState extends State<TeacherPaidNotPaidReport> {
       // In this case, we can use the printing package to open the PDF file
       await Printing.sharePdf(bytes: pdfData, filename: 'payment_report.pdf');
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error generating PDF: Use the website.'),
@@ -593,6 +594,7 @@ class _TeacherPaidNotPaidReportState extends State<TeacherPaidNotPaidReport> {
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
+                  // ignore: deprecated_member_use
                   color: Colors.black26.withOpacity(0.1),
                   blurRadius: 6,
                   offset: const Offset(0, 3))

@@ -1,18 +1,14 @@
-import 'dart:io';
-
+import 'package:aloka_mobile_app/src/modules/qr_code_screen/components/build_scanner_body_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../res/color/app_color.dart';
 import '../../attendance/bloc/new_attendance_read/new_attendance_read_bloc.dart';
-import '../components/build_scanner_body_widget.dart';
 import '../components/qr_read_search_bar_widget.dart';
 
 class NewAttendanceRead extends StatefulWidget {
-  const NewAttendanceRead({
-    super.key,
-  });
+  const NewAttendanceRead({super.key});
 
   @override
   State<NewAttendanceRead> createState() => _NewAttendanceReadState();
@@ -20,45 +16,51 @@ class NewAttendanceRead extends StatefulWidget {
 
 class _NewAttendanceReadState extends State<NewAttendanceRead> {
   final TextEditingController _searchStudentCustomId = TextEditingController();
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
-  String? qrCodeResult;
-  bool isErrorDialogVisible = false;
+  final MobileScannerController cameraController = MobileScannerController();
+
   String? studentCusId;
+  bool isErrorDialogVisible = false;
+  bool isCameraInitialized = false;
+  bool _isProcessing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
 
   @override
   void dispose() {
-    controller?.dispose();
+    cameraController.dispose();
     super.dispose();
   }
 
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller?.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller?.resumeCamera();
-    }
+  void _initializeCamera() {
+    cameraController.start();
+    setState(() {
+      isCameraInitialized = true;
+    });
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
+  void _onQrDetected(BarcodeCapture capture) {
+    if (_isProcessing || capture.barcodes.isEmpty) return;
 
-    controller.scannedDataStream.listen((scanData) async {
-      if (scanData.code != null) {
-        controller.pauseCamera();
-        studentCusId = scanData.code;
+    _isProcessing = true;
+    final qrCode = capture.barcodes.first.rawValue;
 
-        if (mounted) {
-          // Guard the context usage with mounted check
-          context.read<NewAttendanceReadBloc>().add(
-                GetAttendanceReadDateEvent(studentCustomId: studentCusId!),
-              );
-        }
-      } else {
-        _showErrorDialog("Invalid QR Code.");
-      }
+    if (qrCode == null || qrCode.isEmpty) {
+      _showErrorDialog("QR Code is empty.");
+      _isProcessing = false;
+      return;
+    }
+
+    studentCusId = qrCode.trim();
+    context.read<NewAttendanceReadBloc>().add(
+          GetAttendanceReadDateEvent(studentCustomId: studentCusId!),
+        );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      _isProcessing = false;
     });
   }
 
@@ -76,9 +78,12 @@ class _NewAttendanceReadState extends State<NewAttendanceRead> {
           actions: [
             TextButton(
               onPressed: () {
-                if (!mounted) return;
                 isErrorDialogVisible = false;
-                Navigator.of(context).pop();
+                if (mounted) Navigator.of(context).pop();
+
+                if (!cameraController.autoStart) {
+                  cameraController.start();
+                }
               },
               child: const Text("OK"),
             ),
@@ -90,6 +95,12 @@ class _NewAttendanceReadState extends State<NewAttendanceRead> {
 
   @override
   Widget build(BuildContext context) {
+    if (!isCameraInitialized) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: _buildAppBar(),
       body: BlocListener<NewAttendanceReadBloc, NewAttendanceReadState>(
@@ -99,29 +110,19 @@ class _NewAttendanceReadState extends State<NewAttendanceRead> {
           } else if (state is NewAttendanceReadSuccess) {
             Navigator.of(context, rootNavigator: true).pushNamed(
               '/new_attendance_mark',
-              arguments: {
-                "read_student_data": state.newAttendanceReadModel,
-              },
+              arguments: {"read_student_data": state.newAttendanceReadModel},
             );
           }
         },
-        child: BlocBuilder<NewAttendanceReadBloc, NewAttendanceReadState>(
-          builder: (context, state) {
-            if (state is NewAttendanceReadProcess) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return BuildScannerBodyWidget(
-              qrKey: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-              flashToggle: () async {
-                await controller?.toggleFlash();
-              },
-              cameraFlip: () async {
-                await controller?.flipCamera();
-              },
-            );
-          },
+        child: Column(
+          children: [
+            Expanded(
+              child: BuildScannerBodyWidget(
+                cameraController: cameraController,
+                onQrDetected: _onQrDetected,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -131,9 +132,7 @@ class _NewAttendanceReadState extends State<NewAttendanceRead> {
     return AppBar(
       title: const Text('QR Code Scanner'),
       flexibleSpace: Container(
-        decoration: BoxDecoration(
-          color: ColorUtil.tealColor[10],
-        ),
+        decoration: BoxDecoration(color: ColorUtil.tealColor[10]),
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
@@ -150,8 +149,7 @@ class _NewAttendanceReadState extends State<NewAttendanceRead> {
 
   void _onSearchStudentId(String input) {
     if (input.isNotEmpty) {
-      studentCusId = input;
-
+      studentCusId = input.trim();
       context.read<NewAttendanceReadBloc>().add(
             GetAttendanceReadDateEvent(studentCustomId: studentCusId!),
           );

@@ -116,7 +116,7 @@ class _StudentHalfPaymentScreenState extends State<StudentHalfPaymentScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (inputController.text == "Success#2024") {
+                if (inputController.text == "Tharanga7454") {
                   Navigator.of(context).pop(); // Close the dialog
                   Navigator.of(context).pushNamed(
                     '/student_half_payment_update_screen',

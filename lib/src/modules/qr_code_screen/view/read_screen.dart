@@ -1,9 +1,6 @@
-import 'dart:io';
-
-import 'package:aloka_mobile_app/src/res/color/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../models/qr_read/qr_read.dart';
 import '../bloc/QRScanner/qr_scanner_bloc.dart';
@@ -26,54 +23,40 @@ class QRCodeReadScreen extends StatefulWidget {
 
 class _QRCodeReadScreenState extends State<QRCodeReadScreen> {
   final TextEditingController _searchStudentCustomId = TextEditingController();
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
-  String? qrCodeResult;
+  final MobileScannerController cameraController = MobileScannerController();
+
   bool isErrorDialogVisible = false;
+  bool _isProcessing = false; 
   String? studentId;
 
   @override
   void dispose() {
-    controller?.dispose();
+    cameraController.dispose();
     super.dispose();
   }
 
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller?.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller?.resumeCamera();
+  void _onDetectBarcode(BarcodeCapture capture) {
+    if (_isProcessing || capture.barcodes.isEmpty) return;
+
+    _isProcessing = true;
+    final String? code = capture.barcodes.first.rawValue;
+
+    if (code != null && code.isNotEmpty) {
+      cameraController.stop();
+      studentId = code.trim();
+
+      QrReadStudentModelClass qrReadModelClass = QrReadStudentModelClass(
+        studentCustomId: studentId,
+        classHasCatId: widget.classHasId,
+      );
+
+      context.read<QrScannerBloc>().add(
+            ReadAttendanceEvent(readAttendance: qrReadModelClass),
+          );
+    } else {
+      _showErrorDialog("Invalid QR Code.");
+      _isProcessing = false;
     }
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-
-    controller.scannedDataStream.listen((scanData) async {
-      if (scanData.code != null) {
-        controller.pauseCamera();
-        studentId = scanData.code;
-        QrReadStudentModelClass qrReadModelClass = QrReadStudentModelClass(
-          studentCustomId: scanData.code,
-          classHasCatId: widget.classHasId,
-        );
-
-        if (qrReadModelClass.studentCustomId!.isNotEmpty) {
-          if (mounted) {
-            // Guard the context usage with mounted check
-            context.read<QrScannerBloc>().add(
-                  ReadAttendanceEvent(readAttendance: qrReadModelClass),
-                );
-          }
-        } else {
-          _showErrorDialog("Invalid QR Code.");
-        }
-      } else {
-        _showErrorDialog("QR Code could not be read.");
-      }
-    });
   }
 
   void _showErrorDialog(String message) {
@@ -90,9 +73,13 @@ class _QRCodeReadScreenState extends State<QRCodeReadScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                if (!mounted) return;
                 isErrorDialogVisible = false;
-                Navigator.of(context).pop();
+                if (mounted) Navigator.of(context).pop();
+
+                _isProcessing = false;
+                if (!cameraController.autoStart) {
+                  cameraController.start();
+                }
               },
               child: const Text("OK"),
             ),
@@ -100,6 +87,21 @@ class _QRCodeReadScreenState extends State<QRCodeReadScreen> {
         );
       },
     );
+  }
+
+  void _navigateToAttendanceScreen(ReadAttendanceSuccess state) {
+    Navigator.of(context, rootNavigator: true).pushNamed(
+      '/attendance_mark',
+      arguments: {
+        "read_student_data": state.studentList,
+        "read_class_data": state.classAttList,
+        "read_payment_data": state.paymentList,
+        "attendance_id": widget.classAttendanceId,
+        "student_cus_id": studentId,
+      },
+    );
+
+    _isProcessing = false; 
   }
 
   @override
@@ -111,35 +113,12 @@ class _QRCodeReadScreenState extends State<QRCodeReadScreen> {
           if (state is ReadAttendanceFailure) {
             _showErrorDialog(state.failureMessage);
           } else if (state is ReadAttendanceSuccess) {
-            Navigator.of(context, rootNavigator: true).pushNamed(
-              '/attendance_mark',
-              arguments: {
-                "read_student_data": state.studentList,
-                "read_class_data": state.classAttList,
-                "read_payment_data": state.paymentList,
-                "attendance_id": widget.classAttendanceId,
-                "student_cus_id": studentId,
-              },
-            );
+            _navigateToAttendanceScreen(state);
           }
         },
-        child: BlocBuilder<QrScannerBloc, QrScannerState>(
-          builder: (context, state) {
-            if (state is AttendanceProcess) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return BuildScannerBodyWidget(
-              qrKey: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-              flashToggle: () async {
-                await controller?.toggleFlash();
-              },
-              cameraFlip: () async {
-                await controller?.flipCamera();
-              },
-            );
-          },
+        child: BuildScannerBodyWidget(
+          cameraController: cameraController,
+          onQrDetected: _onDetectBarcode, 
         ),
       ),
     );
@@ -148,11 +127,6 @@ class _QRCodeReadScreenState extends State<QRCodeReadScreen> {
   AppBar _buildAppBar() {
     return AppBar(
       title: const Text('QR Code Scanner'),
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          color: ColorUtil.tealColor[10],
-        ),
-      ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
         child: Padding(
@@ -168,9 +142,9 @@ class _QRCodeReadScreenState extends State<QRCodeReadScreen> {
 
   void _onSearchStudentId(String input) {
     if (input.isNotEmpty) {
-      studentId = input;
+      studentId = input.trim();
       QrReadStudentModelClass qrReadModelClass = QrReadStudentModelClass(
-        studentCustomId: input.trim(),
+        studentCustomId: studentId,
         classHasCatId: widget.classHasId,
       );
 

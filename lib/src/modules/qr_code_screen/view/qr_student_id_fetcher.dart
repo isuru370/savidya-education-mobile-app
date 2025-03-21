@@ -1,14 +1,14 @@
-import 'dart:io';
 import 'package:aloka_mobile_app/src/modules/student_screen/bloc/get_student/get_student_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../components/build_scanner_body_widget.dart';
 import '../components/qr_read_search_bar_widget.dart';
+import '../components/build_scanner_body_widget.dart';
 
 class QRStudentIdFetcher extends StatefulWidget {
   final String screenName;
+
   const QRStudentIdFetcher({super.key, required this.screenName});
 
   @override
@@ -17,68 +17,64 @@ class QRStudentIdFetcher extends StatefulWidget {
 
 class _QRStudentIdFetcherState extends State<QRStudentIdFetcher> {
   final TextEditingController _searchStudentCustomId = TextEditingController();
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
+  final MobileScannerController cameraController = MobileScannerController();
+
   String? studentId;
-  bool isLoading = false;
   bool isErrorDialogVisible = false;
+  bool isCameraInitialized = false;
+  bool _isProcessing = false;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-
-    controller.scannedDataStream.listen((scanData) async {
-      if (scanData.code != null) {
-        controller.pauseCamera();
-
-        if (_isValidStudentId(scanData.code!)) {
-          if (mounted) {
-            setState(() {
-              studentId = scanData.code;
-            });
-            if (studentId != null) {
-              context
-                  .read<GetStudentBloc>()
-                  .add(GetUniqueStudentEvent(studentCustomId: studentId!));
-            } else {
-              Navigator.of(context).pop();
-            }
-          }
-        } else {
-          if (mounted) {
-            _showErrorDialog("Invalid QR Code.");
-          }
-        }
-      } else {
-        if (mounted) {
-          _showErrorDialog("QR Code could not be read.");
-        }
-      }
-    });
-  }
-
-  bool _isValidStudentId(String id) {
-    return id.isNotEmpty;
+    _initializeCamera();
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    cameraController.dispose();
     super.dispose();
   }
 
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller?.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller?.resumeCamera();
+  void _initializeCamera() async {
+    try {
+      await cameraController.start();
+      setState(() {
+        isCameraInitialized = true;
+      });
+    } catch (e) {
+      _showErrorDialog("Failed to initialize camera: $e");
     }
+  }
+
+  void _onQrDetected(BarcodeCapture capture) {
+    // Ensure that the camera is initialized and processing is not in progress
+    if (!_isProcessing && isCameraInitialized && capture.barcodes.isNotEmpty) {
+      _isProcessing = true;
+      final qrCode = capture.barcodes.first.rawValue;
+
+      if (qrCode == null || qrCode.isEmpty) {
+        _showErrorDialog("QR Code is empty.");
+        _isProcessing = false;
+        return;
+      }
+
+      setState(() {
+        studentId = qrCode;
+      });
+
+      context.read<GetStudentBloc>().add(
+            GetUniqueStudentEvent(studentCustomId: studentId!),
+          );
+
+      Future.delayed(const Duration(seconds: 2), () {
+        _isProcessing = false;
+      });
+    }
+  }
+
+  bool _isValidStudentId(String id) {
+    return id.isNotEmpty;
   }
 
   void _showErrorDialog(String message) {
@@ -95,9 +91,13 @@ class _QRStudentIdFetcherState extends State<QRStudentIdFetcher> {
           actions: [
             TextButton(
               onPressed: () {
-                if (!mounted) return;
                 isErrorDialogVisible = false;
-                Navigator.of(context).pop();
+                _isProcessing = false; // Reset processing flag
+                if (mounted) Navigator.of(context).pop();
+
+                if (!cameraController.autoStart) {
+                  cameraController.start();
+                }
               },
               child: const Text("OK"),
             ),
@@ -111,41 +111,46 @@ class _QRStudentIdFetcherState extends State<QRStudentIdFetcher> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : BlocListener<GetStudentBloc, GetStudentState>(
-              listener: (context, state) {
-                if (state is GetUniqueStudentSuccess) {
-                  if (widget.screenName == "view_student") {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed('/view_student', arguments: {
-                      'student_model_class': state.getUniqueStudentList.first,
-                    });
-                  } else if (widget.screenName == "student_add_class") {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed('/add_student_class', arguments: {
-                      "student_id": state.getUniqueStudentList.first.id,
-                      "student_custom_id":
-                          state.getUniqueStudentList.first.cusId,
-                      "student_initial_name":
-                          state.getUniqueStudentList.first.initialName,
-                      "is_bottom_nav_bar": false,
-                    });
-                  }
-                } else if (state is GetStudentDataFailure) {
-                  //_showErrorDialog(state.failureMessage);
-                }
-              },
-              child: BlocBuilder<GetStudentBloc, GetStudentState>(
-                builder: (context, state) {
-                  if (state is GetStudentDataProcess) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  return _buildScannerBody();
-                },
-              ),
-            ),
+      body: BlocListener<GetStudentBloc, GetStudentState>(
+        listener: (context, state) {
+          if (state is GetUniqueStudentSuccess) {
+            _navigateToNextScreen(state);
+          } else if (state is GetStudentDataFailure) {
+            _showErrorDialog(state.failureMessage);
+          }
+        },
+        child: BuildScannerBodyWidget(
+          cameraController: cameraController,
+          onQrDetected: _onQrDetected,
+        ),
+      ),
     );
+  }
+
+  void _navigateToNextScreen(GetUniqueStudentSuccess state) {
+    if (state.getUniqueStudentList.isEmpty) {
+      _showErrorDialog("No student found with the given ID.");
+      return;
+    }
+
+    final student = state.getUniqueStudentList.first;
+
+    if (widget.screenName == "view_student") {
+      Navigator.of(context, rootNavigator: true).pushNamed(
+        '/view_student',
+        arguments: {'student_model_class': student},
+      );
+    } else if (widget.screenName == "student_add_class") {
+      Navigator.of(context, rootNavigator: true).pushNamed(
+        '/add_student_class',
+        arguments: {
+          "student_id": student.id,
+          "student_custom_id": student.cusId,
+          "student_initial_name": student.initialName,
+          "is_bottom_nav_bar": false,
+        },
+      );
+    }
   }
 
   AppBar _buildAppBar() {
@@ -158,7 +163,7 @@ class _QRStudentIdFetcherState extends State<QRStudentIdFetcher> {
       backgroundColor: Colors.blueAccent,
       elevation: 0,
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(150.0),
+        preferredSize: const Size.fromHeight(130.0),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: _buildSearchTextField(),
@@ -179,24 +184,12 @@ class _QRStudentIdFetcherState extends State<QRStudentIdFetcher> {
       setState(() {
         studentId = input;
       });
-      context
-          .read<GetStudentBloc>()
-          .add(GetUniqueStudentEvent(studentCustomId: studentId!));
+
+      context.read<GetStudentBloc>().add(
+            GetUniqueStudentEvent(studentCustomId: studentId!),
+          );
     } else {
       _showErrorDialog("Please enter a valid Student ID.");
     }
-  }
-
-  Widget _buildScannerBody() {
-    return BuildScannerBodyWidget(
-      qrKey: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      flashToggle: () async {
-        await controller?.toggleFlash();
-      },
-      cameraFlip: () async {
-        await controller?.flipCamera();
-      },
-    );
   }
 }

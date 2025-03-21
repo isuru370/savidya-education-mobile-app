@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import '../../models/student/student.dart';
 import '../api/main_api.dart';
 import 'package:http/http.dart' as http;
@@ -232,6 +231,41 @@ Future<Map<String, dynamic>> studentInTheClass(
       "student_class_id": studentClassId,
       "class_has_cat_id": classHasCatId
     }),
+  );
+
+  // Log the response status and body for debugging
+  // log("Response status: ${response.statusCode}");
+  // log("Response body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    try {
+      final responseData = jsonDecode(response.body);
+      return responseData;
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "Failed to parse JSON response",
+      };
+    }
+  } else {
+    return {
+      "success": false,
+      "message": "Server error: ${response.statusCode}",
+    };
+  }
+}
+
+Future<Map<String, dynamic>> updateStudentGrade(
+    int studentId, int studentGradeId) async {
+  final url =
+      Uri.parse('${API.student}/update_student_grade.php'); // Correct URL
+
+  final response = await http.post(
+    url,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: jsonEncode({"student_id": studentId, "grade_id": studentGradeId}),
   );
 
   // Log the response status and body for debugging

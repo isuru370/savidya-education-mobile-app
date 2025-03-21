@@ -28,7 +28,6 @@ dependencies:
 
   # QR Code Functionality
   qr_flutter: ^4.1.0 # Generate QR codes
-  qr_code_scanner: ^1.0.1 # Scan QR codes
 
   # Image Handling
   image_picker: ^1.0.4 # Image selection
@@ -57,7 +56,8 @@ dependencies:
   http: ^1.2.2 # HTTP requests
   file_saver: ^0.2.14
   month_picker_dialog: ^6.0.3
-  blue_thermal_printer: ^1.2.3
+  flutter_esc_pos_utils: ^1.0.1
+  bluetooth_print_plus: ^2.4.5
   url_launcher: ^6.3.1
 
 # Uncomment to use Bugsnag for error reporting

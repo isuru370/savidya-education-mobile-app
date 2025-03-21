@@ -48,6 +48,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       });
 
       if (mounted) {
+        // ignore: use_build_context_synchronously
         context.read<ReportsBloc>().add(DallyReports(selectDate: _currentDate));
       }
     }

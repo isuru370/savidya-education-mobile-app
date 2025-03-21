@@ -26,11 +26,14 @@ class QrReadSearchBarWidget extends StatelessWidget {
             prefixIcon: const Icon(Icons.search, color: Colors.blueAccent),
             contentPadding: const EdgeInsets.all(16),
           ),
-          onSubmitted: (value) => onSearch(value.trim()), // Call onSearch when submitted
+          onSubmitted: (value) =>
+              onSearch(value.trim()), // Call onSearch when submitted
         ),
-        const SizedBox(height: 10), // Add spacing between the text field and button
+        const SizedBox(
+            height: 10), // Add spacing between the text field and button
         ElevatedButton(
-          onPressed: () => onSearch(controller.text.trim()), // Call onSearch when button is pressed
+          onPressed: () => onSearch(
+              controller.text.trim()), // Call onSearch when button is pressed
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             shape: RoundedRectangleBorder(
@@ -38,7 +41,10 @@ class QrReadSearchBarWidget extends StatelessWidget {
             ),
             backgroundColor: Colors.blueAccent,
           ),
-          child: const Text('Search'),
+          child: const Text(
+            'Search',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         const SizedBox(height: 10),
       ],

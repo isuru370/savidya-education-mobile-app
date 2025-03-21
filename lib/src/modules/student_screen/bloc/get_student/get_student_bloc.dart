@@ -121,5 +121,23 @@ class GetStudentBloc extends Bloc<GetStudentEvent, GetStudentState> {
         log(e.toString());
       }
     });
+    on<UpdateStudentsGrade>((event, emit) async {
+      emit(GetStudentDataProcess());
+      try {
+        await updateStudentGrade(event.studentId, event.gradeId).then(
+          (updateStudentGrade) {
+            if (updateStudentGrade['success']) {
+              emit(const UpdateStudentGradeSuccess(message: "Grade Updated"));
+            } else {
+              emit(GetStudentDataFailure(
+                  failureMessage: updateStudentGrade['message']));
+            }
+          },
+        );
+      } catch (e) {
+        emit(const GetStudentDataFailure(failureMessage: "Data Not Found"));
+        log(e.toString());
+      }
+    });
   }
 }

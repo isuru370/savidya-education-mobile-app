@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../bloc/QRScanner/qr_scanner_bloc.dart';
 import '../components/build_scanner_body_widget.dart';
@@ -20,68 +18,56 @@ class QRCodeReadPaymentScreen extends StatefulWidget {
 
 class _QRCodeReadPaymentScreenState extends State<QRCodeReadPaymentScreen> {
   final TextEditingController _searchStudentCustomId = TextEditingController();
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
+  final MobileScannerController cameraController = MobileScannerController();
+
   String? studentId;
-  bool isLoading = false;
   bool isErrorDialogVisible = false;
+  bool isCameraInitialized = false;
+  bool _isProcessing = false;
 
   @override
   void initState() {
     super.initState();
+    _initializeCamera();
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
+  @override
+  void dispose() {
+    cameraController.dispose();
+    super.dispose();
+  }
 
-    controller.scannedDataStream.listen((scanData) async {
-      if (scanData.code != null) {
-        controller.pauseCamera();
+  void _initializeCamera() {
+    cameraController.start();
+    setState(() {
+      isCameraInitialized = true;
+    });
+  }
 
-        if (_isValidStudentId(scanData.code!)) {
-          if (mounted) {
-            setState(() {
-              studentId = scanData.code;
-            });
-            if (studentId != null) {
-              context
-                  .read<QrScannerBloc>()
-                  .add(StudentPaymentReadEvent(studentCustomId: studentId!));
-            } else {
-              Navigator.of(context).pop();
-            }
-          }
-        } else {
-          if (mounted) {
-            _showErrorDialog("Invalid QR Code.");
-          }
-        }
-      } else {
-        if (mounted) {
-          _showErrorDialog("QR Code could not be read.");
-        }
-      }
+  void _onQrDetected(BarcodeCapture capture) {
+    if (_isProcessing || capture.barcodes.isEmpty) return;
+
+    _isProcessing = true;
+    final qrCode = capture.barcodes.first.rawValue;
+
+    if (qrCode == null || qrCode.isEmpty) {
+      _showErrorDialog("QR Code is empty.");
+      _isProcessing = false;
+      return;
+    }
+
+    studentId = qrCode.trim();
+    context.read<QrScannerBloc>().add(
+          StudentPaymentReadEvent(studentCustomId: studentId!),
+        );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      _isProcessing = false;
     });
   }
 
   bool _isValidStudentId(String id) {
     return id.isNotEmpty;
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller?.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller?.resumeCamera();
-    }
   }
 
   void _showErrorDialog(String message) {
@@ -98,9 +84,13 @@ class _QRCodeReadPaymentScreenState extends State<QRCodeReadPaymentScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                if (!mounted) return;
                 isErrorDialogVisible = false;
-                Navigator.of(context).pop();
+                if (mounted) Navigator.of(context).pop();
+
+                // ✅ Restart camera safely
+                if (!cameraController.autoStart) {
+                  cameraController.start();
+                }
               },
               child: const Text("OK"),
             ),
@@ -114,44 +104,48 @@ class _QRCodeReadPaymentScreenState extends State<QRCodeReadPaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : BlocListener<QrScannerBloc, QrScannerState>(
-              listener: (context, state) {
-                if (state is PaymentReadSuccess) {
-                  if (widget.title == "ordinary-level") {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed('/payment_screen', arguments: {
-                      "student_last_payment": state.studentLastPaymentList,
-                      "student_custom_id": studentId,
-                    });
-                  } else if (widget.title == "advance-level") {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed('/al_payment_screen', arguments: {
-                      "student_last_payment": state.studentLastPaymentList,
-                      "student_custom_id": studentId,
-                    });
-                  } else if (widget.title == "half_payment") {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed('/half_payment_screen', arguments: {
-                      "student_last_payment": state.studentLastPaymentList,
-                      "student_custom_id": studentId,
-                    });
-                  }
-                } else if (state is PaymentReadFailure) {
-                  Navigator.of(context).pop();
-                }
-              },
-              child: BlocBuilder<QrScannerBloc, QrScannerState>(
-                builder: (context, state) {
-                  if (state is PaymentReadProcess) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  return _buildScannerBody();
-                },
+      body: BlocListener<QrScannerBloc, QrScannerState>(
+        listener: (context, state) {
+          if (state is PaymentReadSuccess) {
+            _navigateToPaymentScreen(state);
+          } else if (state is PaymentReadFailure) {
+            _showErrorDialog(state.failureMessage);
+          }
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: BuildScannerBodyWidget(
+                cameraController: cameraController,
+                onQrDetected: _onQrDetected,
               ),
             ),
+          ],
+        ),
+      ),
     );
+  }
+
+  void _navigateToPaymentScreen(PaymentReadSuccess state) {
+    String routeName;
+    switch (widget.title) {
+      case "ordinary-level":
+        routeName = '/payment_screen';
+        break;
+      case "advance-level":
+        routeName = '/al_payment_screen';
+        break;
+      case "half_payment":
+        routeName = '/half_payment_screen';
+        break;
+      default:
+        return;
+    }
+
+    Navigator.of(context, rootNavigator: true).pushNamed(routeName, arguments: {
+      "student_last_payment": state.studentLastPaymentList,
+      "student_custom_id": studentId,
+    });
   }
 
   AppBar _buildAppBar() {
@@ -164,7 +158,7 @@ class _QRCodeReadPaymentScreenState extends State<QRCodeReadPaymentScreen> {
       backgroundColor: Colors.blueAccent,
       elevation: 0,
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(150.0),
+        preferredSize: const Size.fromHeight(130.0),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: _buildSearchTextField(),
@@ -181,28 +175,16 @@ class _QRCodeReadPaymentScreenState extends State<QRCodeReadPaymentScreen> {
   }
 
   void _onSearchStudentId(String input) {
-    if (input.isNotEmpty) {
+    if (input.isNotEmpty && _isValidStudentId(input)) {
       setState(() {
         studentId = input;
       });
-      context
-          .read<QrScannerBloc>()
-          .add(StudentPaymentReadEvent(studentCustomId: studentId!));
+
+      context.read<QrScannerBloc>().add(
+            StudentPaymentReadEvent(studentCustomId: studentId!),
+          );
     } else {
       _showErrorDialog("Please enter a valid Student ID.");
     }
-  }
-
-  Widget _buildScannerBody() {
-    return BuildScannerBodyWidget(
-      qrKey: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      flashToggle: () async {
-        await controller?.toggleFlash();
-      },
-      cameraFlip: () async {
-        await controller?.flipCamera();
-      },
-    );
   }
 }

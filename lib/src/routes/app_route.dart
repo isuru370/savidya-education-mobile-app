@@ -54,6 +54,7 @@ import '../modules/payment/view/student_half_payment_screen.dart';
 import '../modules/payment/view/student_half_payment_update_screen.dart';
 import '../modules/reports/view/print_screen.dart';
 import '../modules/reports/view/report_screen.dart';
+import '../modules/student_screen/view/change_grade_screen.dart';
 import '../modules/student_screen/view/student_view_screen.dart';
 import '../modules/teacher_screen/view/teacher_paid_not_paid_report.dart';
 import '../modules/unknown_page/view/unknown_page.dart';
@@ -152,6 +153,10 @@ class AppRoutes {
           builder: (context) => StudentViewScreen(
             studentModel: studentViewData['student_model_class'],
           ),
+        );
+        case '/cheng_grade':
+        return MaterialPageRoute(
+          builder: (context) => const ChangeGradeScreen(),
         );
       case '/generate_id':
         final studentIdData = setting.arguments as Map<String, dynamic>;

@@ -49,6 +49,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
       });
 
       if (mounted) {
+        // ignore: use_build_context_synchronously
         context
             .read<ReportsBloc>()
             .add(MonthlyReports(selectMonth: _currentDate));
@@ -152,6 +153,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
       // Share the PDF using Printing plugin
       await Printing.sharePdf(bytes: pdfData, filename: 'student_report.pdf');
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error generating PDF: Use the website.'),

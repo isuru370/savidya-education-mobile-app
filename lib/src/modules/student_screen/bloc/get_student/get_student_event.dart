@@ -28,3 +28,15 @@ class GetUniqueStudentPercentageEvent extends GetStudentEvent {
   @override
   List<Object> get props => [studentId, classCategoryHasStudentClassId];
 }
+
+class UpdateStudentsGrade extends GetStudentEvent {
+  final int studentId;
+  final int gradeId;
+  const UpdateStudentsGrade({
+    required this.studentId,
+    required this.gradeId,
+  });
+
+  @override
+  List<Object> get props => [studentId, gradeId];
+}

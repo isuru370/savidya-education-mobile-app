@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class BuildScannerBodyWidget extends StatelessWidget {
-  final Key qrKey;
-  final Function(QRViewController) onQRViewCreated;
-  final Function()? flashToggle;
-  final Function()? cameraFlip;
+  final MobileScannerController cameraController;
+  final Function(BarcodeCapture) onQrDetected;
 
   const BuildScannerBodyWidget({
     super.key,
-    required this.qrKey,
-    required this.onQRViewCreated,
-    this.flashToggle,
-    this.cameraFlip,
+    required this.cameraController,
+    required this.onQrDetected,
   });
 
   @override
@@ -21,16 +17,15 @@ class BuildScannerBodyWidget extends StatelessWidget {
       children: <Widget>[
         _buildCameraControls(),
         Expanded(
-          child: QRView(
-            key: qrKey,
-            onQRViewCreated: onQRViewCreated,
-            overlay: QrScannerOverlayShape(
-              borderColor: Colors.blueAccent,
-              borderRadius: 16,
-              borderLength: 30,
-              borderWidth: 8,
-              cutOutSize: MediaQuery.of(context).size.width * 0.7,
-            ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              MobileScanner(
+                controller: cameraController,
+                onDetect: onQrDetected,
+              ),
+              _buildScannerOverlay(context),
+            ],
           ),
         ),
       ],
@@ -39,18 +34,63 @@ class BuildScannerBodyWidget extends StatelessWidget {
 
   Padding _buildCameraControls() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            onPressed: flashToggle,
+            onPressed: () => cameraController.toggleTorch(),
             icon: const Icon(Icons.flash_on, color: Colors.black),
           ),
           const SizedBox(width: 20),
           IconButton(
-            onPressed: cameraFlip,
+            onPressed: () => cameraController.switchCamera(),
             icon: const Icon(Icons.switch_camera, color: Colors.black),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScannerOverlay(BuildContext context) {
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Transparent dark overlay
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: const Color.fromARGB(255, 26, 19, 88).withValues(alpha: 0.1),
+          ),
+
+          // Scanner frame
+          Container(
+            width: 250,
+            height: 250,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.blueAccent,
+                width: 4,
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 50,
+            child: Container(
+              width: 200,
+              height: 4,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Colors.blueAccent, Colors.white],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ),
         ],
       ),

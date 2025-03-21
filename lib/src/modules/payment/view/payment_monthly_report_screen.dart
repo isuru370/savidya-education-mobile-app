@@ -169,6 +169,7 @@ class _PaymentMonthlyReportScreenState
       log('Error generating PDF: $e');
 
       // If you're in a StatefulWidget or have access to BuildContext
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error generating PDF: Use the website.'),

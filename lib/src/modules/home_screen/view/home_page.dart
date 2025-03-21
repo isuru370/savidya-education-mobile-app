@@ -143,12 +143,14 @@ class _HomePageState extends State<HomePage> {
               color: ColorUtil.darkGreenColor[10]!,
               title: 'Class Details',
             ),
-            // DrawerListItemWidget(
-            //   onTap: () {},
-            //   icon: Entypo.database,
-            //   color: ColorUtil.blackColor[10]!,
-            //   title: 'User Details',
-            // ),
+            DrawerListItemWidget(
+              onTap: () {
+                Navigator.pushNamed(context, '/cheng_grade');
+              },
+              icon: Icons.grade,
+              color: ColorUtil.blackColor[10]!,
+              title: 'Chenge Grade',
+            ),
             DrawerListItemWidget(
               onTap: () {
                 Navigator.of(context, rootNavigator: true)

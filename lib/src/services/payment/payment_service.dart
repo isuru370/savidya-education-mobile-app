@@ -151,7 +151,7 @@ Future<Map<String, dynamic>> studentPaymentUpdate(
       headers: {
         "Content-Type": "application/json",
       },
-      body: jsonEncode(studentHalfPayModel.halfPaymentUpdate()));
+      body: jsonEncode(studentHalfPayModel.paymentUpdate()));
 
   // ================= check php error =================================
   // log("Response status: ${response.statusCode}");

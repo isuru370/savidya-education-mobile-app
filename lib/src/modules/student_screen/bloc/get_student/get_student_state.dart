@@ -51,3 +51,11 @@ class GetStudentPercentageSuccess extends GetStudentState {
   List<Object> get props =>
       [presentCount, absentCount, percentage, attendancePercentage];
 }
+
+final class UpdateStudentGradeSuccess extends GetStudentState {
+  final String message;
+  const UpdateStudentGradeSuccess({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

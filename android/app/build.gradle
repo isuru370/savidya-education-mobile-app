@@ -35,7 +35,7 @@ android {
     // Any value starting with "flutter." gets its value from
     // the Flutter Gradle plugin.
     // To change from these defaults, make your changes in this file.
-    compileSdk = 34
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     
@@ -45,7 +45,7 @@ android {
         applicationId = "com.example.aloka_mobile_app_new_version"
         // You can update the following values to match your application needs.
         minSdk = 21
-        targetSdk = 34
+        targetSdk = flutter.targetSdkVersion
         // These two properties use values defined elsewhere in this file.
         // You can set these values in the property declaration
         // or use a variable.
@@ -66,7 +66,7 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now,
             // so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            //signingConfig = signingConfigs.debug
             signingConfig = signingConfigs.release
         }
     }

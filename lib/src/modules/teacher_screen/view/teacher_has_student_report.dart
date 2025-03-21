@@ -115,7 +115,7 @@ class _TeacherHasStudentReportState extends State<TeacherHasStudentReport> {
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 10,
               ),
-              cellStyle: pw.TextStyle(
+              cellStyle: const pw.TextStyle(
                 fontSize: 10,
               ),
               headerDecoration:
