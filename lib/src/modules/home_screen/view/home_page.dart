@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttericon/entypo_icons.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
-import 'package:fluttericon/fontelico_icons.dart';
-import 'package:fluttericon/mfg_labs_icons.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../res/color/app_color.dart';
 import '../arguments/from_data.dart';
 import '../arguments/student_editable.dart';
 import '../bloc/quick_camera/quick_camera_bloc.dart';
-import '../components/drawer_header_widget.dart';
-import '../components/drawer_list_item_widget.dart';
 import '../components/horizontalmainview.dart';
 import '../components/vertical_main_view_widget.dart';
 
@@ -40,228 +34,7 @@ class _HomePageState extends State<HomePage> {
         title: const Text(
           'Home',
         ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeaderWidget(
-                drawerHeaderImageUrl: 'assets/logo/brr.png',
-                drawerHeaderText: 'SAVIDYA EDUCATION'),
-            const SizedBox(
-              height: 20,
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/teacher_screen', arguments: {
-                  "update_teacher": false,
-                });
-              },
-              icon: Fontelico.crown_plus,
-              color: ColorUtil.roseColor[10]!,
-              title: 'Add Tutor',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true).pushNamed(
-                    '/class_screen',
-                    arguments: {"edit_mode": false});
-              },
-              icon: Entypo.home,
-              color: ColorUtil.darkGreenColor[10]!,
-              title: 'Add Class',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/class_schedule');
-              },
-              icon: Entypo.bucket,
-              color: ColorUtil.darkGreenColor[10]!,
-              title: 'Class Schedule',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/today_classes');
-              },
-              icon: FontAwesome5.book_reader,
-              color: ColorUtil.darkGreenColor[10]!,
-              title: 'Today Classes',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/user_screen');
-              },
-              icon: FontAwesome5.user,
-              color: ColorUtil.blackColor[10]!,
-              title: 'Add User',
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Divider(),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true).pushNamed(
-                    '/all_active_student',
-                    arguments:
-                        const ActiveStudentViewEditable(editable: false));
-              },
-              icon: Entypo.database,
-              color: ColorUtil.skyBlueColor[10]!,
-              title: 'Student Details',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true).pushNamed(
-                    '/teacher_all_screen',
-                    arguments: {"update_teacher": false});
-              },
-              icon: Entypo.database,
-              color: ColorUtil.roseColor[10]!,
-              title: 'Tutor Details',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/all_active_class', arguments: {
-                  "edit_mode": false,
-                });
-              },
-              icon: Entypo.database,
-              color: ColorUtil.darkGreenColor[10]!,
-              title: 'Class Details',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.pushNamed(context, '/cheng_grade');
-              },
-              icon: Icons.grade,
-              color: ColorUtil.blackColor[10]!,
-              title: 'Chenge Grade',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/student_generate_id');
-              },
-              icon: Entypo.print,
-              color: ColorUtil.blackColor[10]!,
-              title: 'Print_all',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/reports');
-              },
-              icon: FontAwesome5.file_export,
-              color: ColorUtil.blackColor[10]!,
-              title: 'Reports',
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Divider(),
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/payment_read_screen', arguments: {
-                  "name": "half_payment",
-                });
-              },
-              icon: FontAwesome5.money_bill,
-              color: ColorUtil.orangeColor[10]!,
-              title: 'payment check',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/add_admission');
-              },
-              icon: FontAwesome5.dollar_sign,
-              color: ColorUtil.orangeColor[10]!,
-              title: 'Add Admission',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/pay_admission');
-              },
-              icon: FontAwesome5.file_invoice_dollar,
-              color: ColorUtil.orangeColor[10]!,
-              title: 'Pay Admission',
-            ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/today_pay_admission');
-              },
-              icon: FontAwesome5.file_invoice_dollar,
-              color: ColorUtil.orangeColor[10]!,
-              title: 'Today Admission Payment',
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Divider(),
-            ),
-
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/user_profile');
-              },
-              icon: FontAwesome5.user_shield,
-              color: ColorUtil.blackColor[10]!,
-              title: 'Profile',
-            ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
-            // const Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 5),
-            //   child: Divider(
-            //     thickness: 2,
-            //   ),
-            // ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamed('/help_screen');
-              },
-              icon: Icons.help,
-              color: ColorUtil.roseColor[10]!,
-              title: 'Help Center',
-            ),
-            // DrawerListItemWidget(
-            //   onTap: () {},
-            //   icon: Icons.light_mode,
-            //   color: ColorUtil.blackColor[10]!,
-            //   title: 'Light Mode',
-            // ),
-            DrawerListItemWidget(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true).pushNamed('/');
-              },
-              icon: MfgLabs.logout,
-              color: ColorUtil.roseColor[10]!,
-              title: 'Sign Out',
-            ),
-          ],
-        ),
+        backgroundColor: ColorUtil.tealColor[10],
       ),
       body: BlocListener<QuickCameraBloc, QuickCameraState>(
         listener: (context, state) {
@@ -339,6 +112,22 @@ class _HomePageState extends State<HomePage> {
                                 colorFilter: ColorFilter.mode(
                                     ColorUtil.blackColor[10]!, BlendMode.srcIn),
                                 text: "Add To Class"),
+
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            HorizontalMainViewWidget(
+                                onTap: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed('/read_student_id_screen',
+                                          arguments: {
+                                        'screen_name': "student_tute",
+                                      });
+                                },
+                                icon: 'assets/svg/tute.svg',
+                                colorFilter: ColorFilter.mode(
+                                    ColorUtil.blackColor[10]!, BlendMode.srcIn),
+                                text: "Tute"),
 
                             const SizedBox(
                               width: 20,

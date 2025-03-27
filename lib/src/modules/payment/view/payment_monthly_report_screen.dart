@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:aloka_mobile_app/src/modules/payment/bloc/payment_monthly_report/payment_monthly_report_bloc.dart';
 import 'package:aloka_mobile_app/src/res/color/app_color.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../models/payment_model_class/payment_monthly_report_model.dart';
 import '../../../provider/bloc_provider/date_picker_bloc/date_picker_bloc.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -33,6 +34,7 @@ class PaymentMonthlyReportScreen extends StatefulWidget {
 class _PaymentMonthlyReportScreenState
     extends State<PaymentMonthlyReportScreen> {
   final TextEditingController _selectMonthController = TextEditingController();
+  String selectedFilter = 'All';
 
   @override
   void initState() {
@@ -138,9 +140,11 @@ class _PaymentMonthlyReportScreenState
                         pw.TableRow(children: [
                           pw.Text(payment.customId), // Student ID
                           pw.Text(payment.lname), // Student Name
-                          pw.Text(payment.amount == null
-                              ? 'Not Paid'
-                              : 'Paid'), // Payment Status
+                          pw.Text(payment.classFreeCrad == 1
+                              ? "Free Card"
+                              : payment.amount == null
+                                  ? 'Not Paid'
+                                  : 'Paid'), // Payment Status
                           pw.Text(payment.paymentDate ?? 'N/A'), // Payment Date
                         ])
                     ],
@@ -289,6 +293,46 @@ class _PaymentMonthlyReportScreenState
               );
             },
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [
+                  BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 6,
+                      offset: Offset(0, 3))
+                ],
+              ),
+              child: DropdownButtonFormField<String>(
+                value: selectedFilter,
+                decoration: const InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  border: InputBorder.none,
+                ),
+                items: ['All', 'Paid', 'Not Paid', "Free Card"]
+                    .map((filter) => DropdownMenuItem(
+                          value: filter,
+                          child: Text(filter,
+                              style: const TextStyle(fontSize: 16)),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      selectedFilter = value;
+                    });
+                  }
+                },
+                dropdownColor: Colors.white,
+                icon: const Icon(Icons.arrow_drop_down,
+                    color: Colors.teal, size: 28),
+              ),
+            ),
+          ),
           Expanded(
             child: BlocBuilder<PaymentMonthlyReportBloc,
                 PaymentMonthlyReportState>(
@@ -318,22 +362,18 @@ class _PaymentMonthlyReportScreenState
                     ),
                   );
                 } else if (state is MonthlyPaymentSuccess) {
-                  if (state.paymentMonthlyReport.isEmpty) {
-                    return const Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.no_accounts, size: 40),
-                          SizedBox(height: 8),
-                          Text('No data found', style: TextStyle(fontSize: 18)),
-                        ],
-                      ),
-                    );
+                  // Filter the list once before building the ListView
+                  List<PaymentMonthlyReportModel> filteredList =
+                      _filterPayments(state.paymentMonthlyReport);
+
+                  if (filteredList.isEmpty) {
+                    return _buildNoDataWidget();
                   }
+
                   return ListView.builder(
-                    itemCount: state.paymentMonthlyReport.length,
+                    itemCount: filteredList.length, // Use filtered list count
                     itemBuilder: (context, index) {
-                      final payment = state.paymentMonthlyReport[index];
+                      final payment = filteredList[index]; // Use filtered list
                       return buildPaymentCard(payment);
                     },
                   );
@@ -346,6 +386,19 @@ class _PaymentMonthlyReportScreenState
               },
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoDataWidget() {
+    return const Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.no_accounts, size: 40),
+          SizedBox(height: 8),
+          Text('No data found', style: TextStyle(fontSize: 18)),
         ],
       ),
     );
@@ -388,15 +441,77 @@ class _PaymentMonthlyReportScreenState
                   fontSize: 14,
                 ),
               ),
-              Text(
-                'Amount: ${payment.amount ?? "Not Paid"}',
-                style: TextStyle(
-                  color: payment.amount == null
-                      ? Colors.red.shade300
-                      : Colors.white,
-                  fontSize: 14,
-                ),
-              ),
+              payment.classFreeCrad == 1
+                  ? Text(
+                      "Free Card",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: ColorUtil.blueColor[10],
+                      ),
+                    )
+                  : Text(
+                      'Amount: ${payment.amount ?? "Not Paid"}',
+                      style: TextStyle(
+                        color: payment.amount == null
+                            ? Colors.red.shade300
+                            : Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+              payment.classFreeCrad == 1
+                  ? const SizedBox.shrink()
+                  : payment.amount == null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Divider(
+                              thickness: 1,
+                              color: Colors.white,
+                            ),
+                            Row(
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () =>
+                                          _makeCall(payment.whatsappMobile),
+                                      icon: const Icon(
+                                        Icons.call,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    const Text(
+                                      "Student",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () =>
+                                          _makeCall(payment.parentMobile!),
+                                      icon: const Icon(
+                                        Icons.call,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    const Text(
+                                      "Parent",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
             ],
           ),
           trailing: Column(
@@ -464,6 +579,18 @@ class _PaymentMonthlyReportScreenState
     }
   }
 
+  List<PaymentMonthlyReportModel> _filterPayments(
+      List<PaymentMonthlyReportModel> payments) {
+    if (selectedFilter == 'Paid') {
+      return payments.where((p) => p.amount != null).toList();
+    } else if (selectedFilter == 'Not Paid') {
+      return payments.where((p) => p.amount == null).toList();
+    } else if (selectedFilter == "Free Card") {
+      return payments.where((p) => p.classFreeCrad == 1).toList();
+    }
+    return payments;
+  }
+
   String _formatTime(String? paymentDate) {
     if (paymentDate == null) return '';
     try {
@@ -473,6 +600,16 @@ class _PaymentMonthlyReportScreenState
           dateTime); // Displaying time in 'hh:mm a' format (12-hour format with AM/PM)
     } catch (e) {
       return '';
+    }
+  }
+
+  void _makeCall(String phoneNumber) async {
+    final Uri phoneUri = Uri.parse('tel:$phoneNumber');
+
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      throw 'Could not launch $phoneUri';
     }
   }
 }

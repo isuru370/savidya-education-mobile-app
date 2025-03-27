@@ -27,3 +27,11 @@ final class StudentInTheClassSuccess extends StudentInTheClassState {
   @override
   List<Object?> get props => [studentInTheClassModel];
 }
+
+final class UnicStudentAllClass extends StudentInTheClassState {
+  final List<LastPaymentModelClass> studentInTheClassModel;
+  const UnicStudentAllClass({required this.studentInTheClassModel});
+
+  @override
+  List<Object?> get props => [studentInTheClassModel];
+}

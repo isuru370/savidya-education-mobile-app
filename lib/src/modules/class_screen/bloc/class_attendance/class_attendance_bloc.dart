@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../models/class_attendance/class_attendance.dart';
+import '../../../../models/class_attendance/class_attendance_list_model.dart';
 import '../../../../services/class_attendance_service/class_attendance_service.dart';
 
 part 'class_attendance_event.dart';
@@ -87,5 +88,54 @@ class ClassAttendanceBloc
         emit(const ClassAttendanceFailure(failureMessage: 'not found'));
       }
     });
+    on<ClassAttendanceListEvent>((event, emit) async {
+      emit(ClassAttendanceProcess());
+      try {
+        await getClassesAttendanceList(event.classHasCatId, event.dayOfWeek)
+            .then((getClassAttendanceList) {
+          if (getClassAttendanceList['success']) {
+            final List<dynamic> getAttendanceData =
+                getClassAttendanceList['class_attendance_list'];
+            final List<ClassAttendanceListModel> classAttendanceList =
+                getAttendanceData
+                    .map((classAttendanceJson) =>
+                        ClassAttendanceListModel.fromJson(classAttendanceJson))
+                    .toList();
+            emit(GetClassAttendanceListSuccess(
+                classAttendanceList: classAttendanceList));
+          } else {
+            emit(ClassAttendanceFailure(
+                failureMessage: getClassAttendanceList['message']));
+          }
+        });
+      } catch (e) {
+        log(e.toString());
+        emit(const ClassAttendanceFailure(
+            failureMessage: "class attendance data not found"));
+      }
+    });
+    on<ClassAttendanceUpdateEvent>((event, emit) async {
+      emit(ClassAttendanceProcess());
+      try {
+        // Use the correct field name here
+        await updateClassAttendance(event.classAttendanceId).then(
+          (updateClassAttendance) {
+            if (updateClassAttendance['success']) {
+              emit(ClassAttendanceInsertSuccess(
+                  successMessage: updateClassAttendance['message']));
+            } else {
+              emit(ClassAttendanceFailure(
+                  failureMessage: updateClassAttendance['message']));
+            }
+          },
+        );
+      } catch (e) {
+        print(e.toString());
+        emit(const ClassAttendanceFailure(failureMessage: 'not found'));
+      }
+    });
+  
   }
 }
+
+

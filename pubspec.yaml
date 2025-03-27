@@ -59,6 +59,7 @@ dependencies:
   flutter_esc_pos_utils: ^1.0.1
   bluetooth_print_plus: ^2.4.5
   url_launcher: ^6.3.1
+  fl_chart: ^0.70.2
 
 # Uncomment to use Bugsnag for error reporting
 #  bugsnag_flutter: ^3.1.1

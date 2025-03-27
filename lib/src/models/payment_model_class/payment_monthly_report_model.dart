@@ -6,11 +6,12 @@ class PaymentMonthlyReportModel extends Equatable {
   final String lname;
   final String imgUrl;
   final String whatsappMobile;
-  final String parentMobile;
+  final String? parentMobile;
   final String studentStatus;
   final String createdAt;
   final int classRecordId;
   final int classCategoryHasStudentClassId;
+  final int classFreeCrad;
   final String? paymentDate;
   final double? amount;
   final String? paymentFor;
@@ -27,6 +28,7 @@ class PaymentMonthlyReportModel extends Equatable {
     required this.createdAt,
     required this.classRecordId,
     required this.classCategoryHasStudentClassId,
+    required this.classFreeCrad,
     this.paymentDate,
     this.amount,
     this.paymentFor,
@@ -47,6 +49,8 @@ class PaymentMonthlyReportModel extends Equatable {
       classRecordId: _parseInt(json['class_record_id']),
       classCategoryHasStudentClassId:
           _parseInt(json['class_category_has_student_class_id']),
+      classFreeCrad:
+          _parseInt(json['is_free_card']),
       paymentDate: json['payment_date'],
       amount: _parseAmount(json['amount']),
       paymentFor: json['payment_for'],
@@ -104,6 +108,7 @@ class PaymentMonthlyReportModel extends Equatable {
     String? createdAt,
     int? classRecordId,
     int? classCategoryHasStudentClassId,
+    int? classFreeCard,
     String? paymentDate,
     double? amount,
     String? paymentFor,
@@ -121,6 +126,7 @@ class PaymentMonthlyReportModel extends Equatable {
       classRecordId: classRecordId ?? this.classRecordId,
       classCategoryHasStudentClassId:
           classCategoryHasStudentClassId ?? this.classCategoryHasStudentClassId,
+      classFreeCrad: classFreeCard ?? classFreeCrad,
       paymentDate: paymentDate ?? this.paymentDate,
       amount: amount ?? this.amount,
       paymentFor: paymentFor ?? this.paymentFor,
@@ -140,6 +146,7 @@ class PaymentMonthlyReportModel extends Equatable {
         createdAt,
         classRecordId,
         classCategoryHasStudentClassId,
+        classFreeCrad,
         paymentDate,
         amount,
         paymentFor,

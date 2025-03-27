@@ -19,7 +19,6 @@ final class TuteFailureState extends TuteState {
   List<Object?> get props => [failureMessage];
 }
 
-
 final class CheckTuteSuccessState extends TuteState {
   final int chackTute;
   const CheckTuteSuccessState({required this.chackTute});
@@ -50,4 +49,13 @@ final class GetStudentTuteSuccessState extends TuteState {
 
   @override
   List<Object?> get props => [tuteModelClass];
+}
+
+final class GetStudentTuteChackSuccessState extends TuteState {
+  final int paymentCount;
+  final int tuteCount;
+  const GetStudentTuteChackSuccessState({required this.paymentCount,required this.tuteCount});
+
+  @override
+  List<Object?> get props => [paymentCount,tuteCount];
 }

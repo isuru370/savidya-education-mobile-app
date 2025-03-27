@@ -38,3 +38,22 @@ final class GetClassAttendanceSuccess extends ClassAttendanceState {
   @override
   List<Object> get props => [classAttendanceList];
 }
+final class GetClassAttendanceListSuccess extends ClassAttendanceState {
+  final List<ClassAttendanceListModel> classAttendanceList;
+  const GetClassAttendanceListSuccess({
+    required this.classAttendanceList,
+  });
+
+  @override
+  List<Object> get props => [classAttendanceList];
+}
+
+final class ClassAttendanceListSuccess extends ClassAttendanceState {
+  final String classAttendanceListSuccess;
+  const ClassAttendanceListSuccess({
+    required this.classAttendanceListSuccess,
+  });
+
+  @override
+  List<Object> get props => [classAttendanceListSuccess];
+}

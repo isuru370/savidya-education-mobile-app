@@ -51,6 +51,8 @@ class _TeacherPaidNotPaidReportState extends State<TeacherPaidNotPaidReport> {
       return payments.where((p) => p.amount != null).toList();
     } else if (selectedFilter == 'Not Paid') {
       return payments.where((p) => p.amount == null).toList();
+    } else if (selectedFilter == 'Free Card') {
+      return payments.where((p) => p.classFreeCrad == 1).toList();
     }
     return payments;
   }
@@ -189,7 +191,11 @@ class _TeacherPaidNotPaidReportState extends State<TeacherPaidNotPaidReport> {
                     pw.Padding(
                       padding: const pw.EdgeInsets.all(4),
                       child: pw.Text(
-                        payment.amount == null ? 'Not Paid' : 'Paid',
+                        payment.classFreeCrad == 1
+                            ? "Free Card"
+                            : payment.amount == null
+                                ? 'Not Paid'
+                                : 'Paid',
                         style: const pw.TextStyle(fontSize: 10),
                       ),
                     ),
@@ -344,7 +350,7 @@ class _TeacherPaidNotPaidReportState extends State<TeacherPaidNotPaidReport> {
                       EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   border: InputBorder.none,
                 ),
-                items: ['All', 'Paid', 'Not Paid']
+                items: ['All', 'Paid', 'Not Paid', 'Free Card']
                     .map((filter) => DropdownMenuItem(
                           value: filter,
                           child: Text(filter,
@@ -414,16 +420,15 @@ class _TeacherPaidNotPaidReportState extends State<TeacherPaidNotPaidReport> {
         child: ListTile(
           contentPadding: const EdgeInsets.all(16),
           leading: CircleAvatar(
-            backgroundImage: NetworkImage(
-                payment.imgUrl), // Use a default image if none exists
-            radius: 24, // Adjust the size of the image
+            backgroundImage: NetworkImage(payment.imgUrl),
+            radius: 24,
           ),
           title: Text(
             payment.customId,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: Colors.white, // White text for better contrast
+              color: Colors.white,
             ),
           ),
           subtitle: Column(
@@ -436,66 +441,77 @@ class _TeacherPaidNotPaidReportState extends State<TeacherPaidNotPaidReport> {
                   fontSize: 14,
                 ),
               ),
-              Text(
-                'Amount: ${payment.amount ?? "Not Paid"}',
-                style: TextStyle(
-                  color: payment.amount == null
-                      ? Colors.red.shade300
-                      : Colors.white,
-                  fontSize: 14,
-                ),
-              ),
-              payment.amount == null
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Divider(
-                          thickness: 1,
-                          color: Colors.white,
-                        ),
-                        Row(
+              payment.classFreeCrad == 1
+                  ? Text(
+                      "Free Card",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: ColorUtil.blueColor[10],
+                      ),
+                    )
+                  : Text(
+                      'Amount: ${payment.amount ?? "Not Paid"}',
+                      style: TextStyle(
+                        color: payment.amount == null
+                            ? Colors.red.shade300
+                            : Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+              payment.classFreeCrad == 1
+                  ? const SizedBox.shrink()
+                  : payment.amount == null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () =>
-                                      _makeCall(payment.whatsappMobile),
-                                  icon: const Icon(
-                                    Icons.call,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 5),
-                                const Text(
-                                  "Student",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ],
+                            const Divider(
+                              thickness: 1,
+                              color: Colors.white,
                             ),
                             Row(
                               children: [
-                                IconButton(
-                                  onPressed: () =>
-                                      _makeCall(payment.parentMobile),
-                                  icon: const Icon(
-                                    Icons.call,
-                                    color: Colors.white,
-                                  ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () =>
+                                          _makeCall(payment.whatsappMobile),
+                                      icon: const Icon(
+                                        Icons.call,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    const Text(
+                                      "Student",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 5),
-                                const Text(
-                                  "Parent",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () =>
+                                          _makeCall(payment.parentMobile!),
+                                      icon: const Icon(
+                                        Icons.call,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    const Text(
+                                      "Parent",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink(),
+                        )
+                      : const SizedBox.shrink(),
             ],
           ),
           trailing: Column(

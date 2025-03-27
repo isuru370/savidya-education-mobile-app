@@ -101,3 +101,56 @@ Future<Map<String, dynamic>> getTodayClasses(String selectDate) async {
     };
   }
 }
+Future<Map<String, dynamic>> getClassesAttendanceList(
+    int classHasCatId, String dayOfWeek) async {
+  final url = Uri.parse('${API.classAttendance}/class_attendance_change.php');
+
+  final response = await http.post(url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "class_category_has_class_id": classHasCatId,
+        "day_of_week": dayOfWeek
+      }));
+
+  // ================= check php error =================================
+  // log("Response status: ${response.statusCode}");
+  // log("Response body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    final responseData = jsonDecode(response.body);
+    return responseData;
+  } else {
+    return {
+      "success": false,
+      "message": "Server error",
+    };
+  }
+}
+
+Future<Map<String, dynamic>> updateClassAttendance(
+    int classAttendanceID) async {
+  final url =
+      Uri.parse('${API.classAttendance}/class_attendance_list_update.php');
+
+  final response = await http.post(url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({"class_attendance_id": classAttendanceID}));
+
+  // ================= check php error =================================
+  // log("Response status: ${response.statusCode}");
+  // log("Response body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    final responseData = jsonDecode(response.body);
+    return responseData;
+  } else {
+    return {
+      "success": false,
+      "message": "Server error",
+    };
+  }
+}

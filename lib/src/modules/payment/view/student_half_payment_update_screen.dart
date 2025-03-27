@@ -400,22 +400,20 @@ class _StudentHalfPaymentUpdateScreenState
   }
 
   void _handleDeletePayment(StudentHalfPaymentModel payment) {
-    if (payment.paymentStatus != 0) {
-      showDeleteConfirmationDialog(
-        context: context,
-        onConfirm: () {
-          final msg = _sendUpdateToMG(
-            payment.className.toString(),
-            payment.categoryName.toString(),
-            "delete",
-          );
-          context.read<StudentHalfPaymentBloc>().add(
-                StudentPaymentDeleteEvent(
-                    paymentId: payment.paymentId!, msg: msg),
-              );
-        },
-      );
-    }
+    showDeleteConfirmationDialog(
+      context: context,
+      onConfirm: () {
+        final msg = _sendUpdateToMG(
+          payment.className.toString(),
+          payment.categoryName.toString(),
+          "delete",
+        );
+        context.read<StudentHalfPaymentBloc>().add(
+              StudentPaymentDeleteEvent(
+                  paymentId: payment.paymentId!, msg: msg),
+            );
+      },
+    );
   }
 
   void _handleHalfPayment(StudentHalfPaymentModel payment) {

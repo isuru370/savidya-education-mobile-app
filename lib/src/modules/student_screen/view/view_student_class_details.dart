@@ -262,6 +262,8 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
             : const SizedBox.shrink(),
         _buildActionButton(
             studentData, 'Attendance', Colors.green, Colors.white),
+        _buildActionButton(
+            studentData, 'Tute', Colors.lightBlueAccent, Colors.white),
       ],
     );
   }
@@ -285,6 +287,12 @@ class _ViewStudentClassDetailsState extends State<ViewStudentClassDetails> {
             "studentId": widget.studentId,
             "class_category_has_student_class_id": studentData.classHasCatId,
             "student_has_class_id": studentData.studentHasClassesId,
+          });
+        } else if (label == 'Tute') {
+          Navigator.of(context, rootNavigator: true)
+              .pushNamed('/student_tute', arguments: {
+            "student_id": widget.studentId,
+            "class_category_has_student_class_id": studentData.classHasCatId,
           });
         } else {
           Navigator.of(context, rootNavigator: true).pushNamed('/');

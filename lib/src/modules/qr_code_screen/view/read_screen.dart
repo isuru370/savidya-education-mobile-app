@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../models/qr_read/qr_read.dart';
+import '../../../res/color/app_color.dart';
 import '../bloc/QRScanner/qr_scanner_bloc.dart';
 import '../components/build_scanner_body_widget.dart';
 import '../components/qr_read_search_bar_widget.dart';
@@ -137,6 +138,7 @@ class _QRCodeReadScreenState extends State<QRCodeReadScreen> {
           ),
         ),
       ),
+      backgroundColor: ColorUtil.tealColor[10],
     );
   }
 

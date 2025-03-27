@@ -393,7 +393,7 @@ class _ReScheduleScreenState extends State<ReScheduleScreen> {
     if (validation()) {
       ClassAttendanceModelClass modelClass = ClassAttendanceModelClass(
         classAttId: widget.classAttendanceModelClass.classAttId,
-        classStatus: 2,
+        classStatus: 0,
         classStartTime: _startTimeController.text.trim(),
         classEndTime: _endTimeController.text.trim(),
         dayDayName: dayName,

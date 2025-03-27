@@ -30,3 +30,18 @@ class ClassReScheduleEvent extends ClassAttendanceEvent {
   @override
   List<Object> get props => [attendanceModelClass];
 }
+class ClassAttendanceListEvent extends ClassAttendanceEvent {
+  final int classHasCatId;
+  final String dayOfWeek;
+  const ClassAttendanceListEvent({required this.classHasCatId,required this.dayOfWeek});
+
+  @override
+  List<Object> get props => [classHasCatId,dayOfWeek];
+}
+class ClassAttendanceUpdateEvent extends ClassAttendanceEvent {
+  final int classAttendanceId; 
+  const ClassAttendanceUpdateEvent({required this.classAttendanceId});
+
+  @override
+  List<Object> get props => [classAttendanceId];
+}

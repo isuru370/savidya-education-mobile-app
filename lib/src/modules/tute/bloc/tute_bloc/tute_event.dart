@@ -8,11 +8,17 @@ sealed class TuteEvent extends Equatable {
 }
 
 final class InsertTuteEvent extends TuteEvent {
-  final TuteModelClass tuteModelClass;
-  const InsertTuteEvent({required this.tuteModelClass});
+  final int studentId;
+  final int classCategoryId;
+  final String tuteFor;
+  const InsertTuteEvent({
+    required this.studentId,
+    required this.classCategoryId,
+    required this.tuteFor,
+  });
 
   @override
-  List<Object?> get props => [tuteModelClass];
+  List<Object?> get props => [studentId,classCategoryId,tuteFor];
 }
 
 final class UpdateTuteEvent extends TuteEvent {
@@ -53,5 +59,27 @@ final class CheckStudentTuteEvent extends TuteEvent {
         studentId,
         classCategoryId,
         tuteFor,
+      ];
+}
+
+final class CheckStudentTuteCountEvent extends TuteEvent {
+  final String tuteFor;
+  final int studentId;
+  final int studentStudentClassId;
+  final int classCategoryId;
+
+  const CheckStudentTuteCountEvent({
+    required this.tuteFor,
+    required this.studentId,
+    required this.studentStudentClassId,
+    required this.classCategoryId,
+  });
+
+  @override
+  List<Object?> get props => [
+        tuteFor,
+        studentId,
+        studentStudentClassId,
+        classCategoryId,
       ];
 }

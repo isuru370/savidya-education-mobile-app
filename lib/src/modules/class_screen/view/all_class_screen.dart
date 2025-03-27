@@ -7,7 +7,6 @@ import '../../../components/grade_chip_widget.dart';
 import '../../../components/slidable_details_view_widget.dart';
 import '../../../provider/bloc_provider/student_bloc/student_grade/student_grade_bloc.dart';
 import '../../../res/color/app_color.dart';
-import '../../../res/strings/string.dart';
 
 class AllClassScreen extends StatefulWidget {
   final bool classEditable;
@@ -102,9 +101,9 @@ class _AllClassScreenState extends State<AllClassScreen> {
                                   'class_details': activeClasses
                                 });
                         },
-                        circleWidget: CircleAvatar(
+                        circleWidget: const CircleAvatar(
                           radius: 30,
-                          backgroundImage: NetworkImage(StringData.appMainLogo),
+                          backgroundImage: AssetImage("assets/logo/brr.png"),
                         ),
                         contend: "${activeClasses.className}",
                         subContend: "${activeClasses.teacherInitialName} ",

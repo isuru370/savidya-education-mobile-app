@@ -40,3 +40,11 @@ class UpdateStudentsGrade extends GetStudentEvent {
   @override
   List<Object> get props => [studentId, gradeId];
 }
+
+class GetUniqueStudentTuteEvent extends GetStudentEvent {
+  final String studentCustomId;
+  const GetUniqueStudentTuteEvent({required this.studentCustomId});
+
+  @override
+  List<Object> get props => [studentCustomId];
+}

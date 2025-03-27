@@ -28,7 +28,7 @@ class TeacherViewScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit_note),
+            icon: const Icon(Icons.report),
             onPressed: () {},
           ),
         ],
@@ -65,8 +65,8 @@ class TeacherViewScreen extends StatelessWidget {
                         ? ColorUtil.greenColor[10]
                         : ColorUtil.roseColor[10],
                     child: const CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        'https://savidya.alokait.lk/images/logo.png',
+                      backgroundImage: AssetImage(
+                        'assets/logo/brr.png',
                       ),
                       radius: 50,
                     ),

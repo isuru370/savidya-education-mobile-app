@@ -1,10 +1,10 @@
-import 'package:aloka_mobile_app/src/modules/attendance/bloc/attendance_count/attendance_count_bloc.dart';
+import 'package:aloka_mobile_app/src/modules/tute/bloc/tute_bloc/tute_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'attendance_count_widget.dart';
+import 'build_tute_count_widget.dart';
 
-class ShowMonthSelectionDialog extends StatelessWidget {
+class BuildStudentTuteDialog extends StatelessWidget {
   final int? selectedYear;
   final int? selectMonth;
   final String? attendanceCount;
@@ -17,7 +17,7 @@ class ShowMonthSelectionDialog extends StatelessWidget {
   final VoidCallback? payBtn;
   final String actionTitle;
 
-  const ShowMonthSelectionDialog({
+  const BuildStudentTuteDialog({
     super.key,
     this.selectedYear,
     this.selectMonth,
@@ -55,15 +55,18 @@ class ShowMonthSelectionDialog extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           widget ?? const SizedBox.shrink(),
-          BlocBuilder<AttendanceCountBloc, AttendanceCountState>(
+          BlocBuilder<TuteBloc, TuteState>(
             builder: (context, state) {
-              if (state is AttendanceCountSuccess) {
-                return AttendanceCountWidget(
-                    attendanceCount: state.attendanceCount.toString());
-              } else if (state is AttendanceCountFailure) {
-                return const Text(
-                  'f',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              if (state is GetStudentTuteChackSuccessState) {
+                return BuildTuteCountWidget(
+                  paymentCount: state.paymentCount,
+                  tuteCount: state.tuteCount,
+                );
+              } else if (state is TuteFailureState) {
+                return Text(
+                  state.failureMessage,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 );
               } else {
                 return const SizedBox();
@@ -85,7 +88,7 @@ class ShowMonthSelectionDialog extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   iconColor: Colors.green,
                 ),
-                child:  Text(actionTitle),
+                child: Text(actionTitle),
               ),
             ],
           ),

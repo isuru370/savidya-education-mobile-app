@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:aloka_mobile_app/src/modules/payment/components/show_month_selection_dialog.dart';
+import 'package:aloka_mobile_app/src/res/color/app_color.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +49,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment Screen'),
-        backgroundColor: Colors.teal,
+        backgroundColor: ColorUtil.tealColor[10],
         actions: [
           IconButton(
               onPressed: () {

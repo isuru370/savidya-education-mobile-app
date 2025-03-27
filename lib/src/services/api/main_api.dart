@@ -2,21 +2,21 @@ class API {
   static String uploadImageAPI = "https://admin.savidyaeducation.com/api";
 
   //https://admin.coopcitycollege.com/api
-  //https://edu.alokait.lk/apiA
-  //https://savidya.alokait.lk/api
 
-  static String mainAPI = "https://api.savidyaeducation.com/api";
+
+  static String mainAPI = "http://192.168.43.73/Aloka-Mobile-App-Backend/Savidya-Education-Mobile-App-Backend/api";
 
   //https://api.savidyaeducation.com/api
-  //https://api.alokait.lk/api
   //http://192.168.1.101/Aloka-Mobile-App-Backend/Savidya-Education-Mobile-App-Backend/api
-  //http://192.168.43.73/Aloka-Mobile-App-Backend/savidya/api
 
   static String passwordForgot = "$mainAPI/forgot-password";
   static String passwordReset = "$mainAPI/reset-password";
 
   //User
   static String user = "$mainAPI/user";
+
+  //Dashbord
+  static String dashbord = "$mainAPI/dashbord";
 
   //Student
   static String studentImage = "$mainAPI/student_image";

@@ -30,6 +30,7 @@ import 'src/modules/tute/bloc/tute_bloc/tute_bloc.dart';
 import 'src/provider/bloc_provider/all_student_has_class/all_student_has_class_bloc.dart';
 import 'src/provider/bloc_provider/bank_details_bloc/bank_details_bloc.dart';
 import 'src/provider/bloc_provider/branch_details_bloc/branch_details_bloc.dart';
+import 'src/provider/bloc_provider/dashbord/dashbord/dashbord_bloc.dart';
 import 'src/provider/bloc_provider/date_picker_bloc/date_picker_bloc.dart';
 import 'src/provider/bloc_provider/pages_bloc/pages_bloc.dart';
 import 'src/provider/bloc_provider/permission_bloc/permission_bloc.dart';
@@ -68,6 +69,7 @@ class PrivateClassMobileApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => ThemeBloc()),
         BlocProvider(create: (_) => UserLoginBloc()),
+        BlocProvider(create: (_) => DashbordBloc()),
         BlocProvider(create: (_) => QuickCameraBloc()),
         BlocProvider(create: (_) => QrScannerCubit()),
         BlocProvider(create: (_) => CropImageBloc()),

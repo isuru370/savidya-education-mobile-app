@@ -352,9 +352,12 @@ class _NewAttendanceMarkScreenState extends State<NewAttendanceMarkScreen> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorUtil.whiteColor[10],
+                  backgroundColor: ColorUtil.tealColor[10],
                 ),
-                child: const Text('Mark'),
+                child: const Text(
+                  'Mark',
+                  style: TextStyle(color: Colors.white),
+                ),
               )
             : const SizedBox.shrink(),
       ],

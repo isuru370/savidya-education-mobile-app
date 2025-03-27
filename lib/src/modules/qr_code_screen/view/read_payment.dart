@@ -1,3 +1,4 @@
+import 'package:aloka_mobile_app/src/res/color/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -155,7 +156,7 @@ class _QRCodeReadPaymentScreenState extends State<QRCodeReadPaymentScreen> {
         onPressed: () => Navigator.of(context).pop(),
         icon: const Icon(Icons.arrow_back),
       ),
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: ColorUtil.tealColor[10],
       elevation: 0,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(130.0),

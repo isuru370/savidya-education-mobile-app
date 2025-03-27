@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../../../models/payment_model_class/last_payment_model_class.dart';
 import '../../../models/payment_model_class/payment_model_class.dart';
+import '../../../res/color/app_color.dart';
 import '../../attendance/bloc/attendance_count/attendance_count_bloc.dart';
 import '../bloc/student_payment/student_payment_bloc.dart';
 import '../bloc/student_payment/student_payment_state.dart';
@@ -49,7 +50,7 @@ class _PaymentCheckState extends State<PaymentCheck> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment Screen'),
-        backgroundColor: Colors.teal,
+        backgroundColor: ColorUtil.tealColor[10],
       ),
       body: BlocListener<StudentPaymentBloc, StudentPaymentState>(
         listener: (context, state) {

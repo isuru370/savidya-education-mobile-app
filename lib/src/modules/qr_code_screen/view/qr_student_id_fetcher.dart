@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../res/color/app_color.dart';
 import '../components/qr_read_search_bar_widget.dart';
 import '../components/build_scanner_body_widget.dart';
 
@@ -62,11 +63,15 @@ class _QRStudentIdFetcherState extends State<QRStudentIdFetcher> {
       setState(() {
         studentId = qrCode;
       });
-
-      context.read<GetStudentBloc>().add(
-            GetUniqueStudentEvent(studentCustomId: studentId!),
-          );
-
+      if (widget.screenName == "view_student" ||
+          widget.screenName == "student_add_class" ||
+          widget.screenName == "student_tute") {
+        context.read<GetStudentBloc>().add(
+              GetUniqueStudentEvent(studentCustomId: studentId!),
+            );
+      } else {
+        _showErrorDialog("Invalid screen name");
+      }
       Future.delayed(const Duration(seconds: 2), () {
         _isProcessing = false;
       });
@@ -150,6 +155,15 @@ class _QRStudentIdFetcherState extends State<QRStudentIdFetcher> {
           "is_bottom_nav_bar": false,
         },
       );
+    } else if (widget.screenName == "student_tute") {
+      Navigator.of(context, rootNavigator: true).pushNamed(
+        '/student_tute_screen',
+        arguments: {
+          "student_id": student.id,
+          "student_custom_id": student.cusId,
+          "student_initial_name": student.initialName,
+        },
+      );
     }
   }
 
@@ -160,7 +174,7 @@ class _QRStudentIdFetcherState extends State<QRStudentIdFetcher> {
         onPressed: () => Navigator.of(context).pop(),
         icon: const Icon(Icons.arrow_back),
       ),
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: ColorUtil.tealColor[10],
       elevation: 0,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(130.0),

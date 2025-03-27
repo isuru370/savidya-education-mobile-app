@@ -122,7 +122,6 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
                                       color: ColorUtil.whiteColor[10]),
                                 ),
                               ),
-                              
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pushNamed(
@@ -144,6 +143,92 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
                                 ),
                                 child: Text(
                                   'Class Details',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorUtil.whiteColor[10]),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  String? selectedDay;
+                                  List<String> days = [
+                                    "Sunday",
+                                    "Monday",
+                                    "Tuesday",
+                                    "Wednesday",
+                                    "Thursday",
+                                    "Friday",
+                                    "Saturday"
+                                  ];
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text("Select Day Name"),
+                                        content: StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return DropdownButton<String>(
+                                              value: selectedDay,
+                                              hint: const Text("Select a day"),
+                                              isExpanded: true,
+                                              items: days.map((String day) {
+                                                return DropdownMenuItem<String>(
+                                                  value: day,
+                                                  child: Text(day),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? newValue) {
+                                                setState(() {
+                                                  selectedDay = newValue;
+                                                });
+                                              },
+                                            );
+                                          },
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              if (selectedDay != null) {
+                                                Navigator.of(context)
+                                                    .pop(); // Close the dialog
+                                                Navigator.of(context).pushNamed(
+                                                  '/class_attendance_list_screen',
+                                                  arguments: {
+                                                    'classHasCatId':
+                                                        uniqueClassItem
+                                                            .classHasCatId!,
+                                                    'dayName':
+                                                        selectedDay, // Pass the selected day
+                                                  },
+                                                );
+                                              }
+                                            },
+                                            child: const Text("OK"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                            child: const Text("Cancel"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: ColorUtil.tealColor[10],
+                                  iconColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 8.0),
+                                ),
+                                child: Text(
+                                  'Class List Dalete',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: ColorUtil.whiteColor[10]),

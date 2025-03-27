@@ -23,6 +23,7 @@ import 'package:aloka_mobile_app/src/modules/class_screen/view/schedule_view_scr
 import 'package:aloka_mobile_app/src/modules/class_screen/view/select_class_view_screen.dart';
 import 'package:aloka_mobile_app/src/modules/class_screen/view/single_class_view_screen.dart';
 import 'package:aloka_mobile_app/src/modules/home_screen/arguments/student_editable.dart';
+import 'package:aloka_mobile_app/src/modules/home_screen/view/dashbord.dart';
 import 'package:aloka_mobile_app/src/modules/home_screen/view/home_page.dart';
 import 'package:aloka_mobile_app/src/modules/home_screen/view/today_class_screen.dart';
 import 'package:aloka_mobile_app/src/modules/payment/view/payment_check.dart';
@@ -44,9 +45,11 @@ import 'package:aloka_mobile_app/src/modules/teacher_screen/view/teacher_class_c
 import 'package:aloka_mobile_app/src/modules/teacher_screen/view/teacher_has_student_report.dart';
 import 'package:aloka_mobile_app/src/modules/teacher_screen/view/teacher_screen.dart';
 import 'package:aloka_mobile_app/src/modules/teacher_screen/view/teacher_view_screen.dart';
+import 'package:aloka_mobile_app/src/modules/tute/view/insert_student_tute.dart';
 import 'package:flutter/material.dart';
 
 import '../modules/auth_screen/view/login_page.dart';
+import '../modules/class_screen/view/class_attendance_list_update_screen.dart';
 import '../modules/class_screen/view/class_student_attendance.dart';
 import '../modules/home_screen/arguments/from_data.dart';
 import '../modules/payment/view/payment_monthly_report_screen.dart';
@@ -55,6 +58,7 @@ import '../modules/payment/view/student_half_payment_update_screen.dart';
 import '../modules/reports/view/print_screen.dart';
 import '../modules/reports/view/report_screen.dart';
 import '../modules/student_screen/view/change_grade_screen.dart';
+import '../modules/student_screen/view/student_tute.dart';
 import '../modules/student_screen/view/student_view_screen.dart';
 import '../modules/teacher_screen/view/teacher_paid_not_paid_report.dart';
 import '../modules/unknown_page/view/unknown_page.dart';
@@ -76,6 +80,10 @@ class AppRoutes {
           builder: (context) => ChangePasswordScreen(
             userName: userData['userName'],
           ),
+        );
+      case '/dashbord_screen':
+        return MaterialPageRoute(
+          builder: (context) => const Dashbord(),
         );
       case '/home':
         return MaterialPageRoute(
@@ -119,6 +127,15 @@ class AppRoutes {
             isBottomNavBar: studentIdData['is_bottom_nav_bar'],
           ),
         );
+      case '/student_tute_screen':
+        final studentIdData = setting.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => InsertStyudentTute(
+            studentId: studentIdData['student_id'],
+            cusStudentId: studentIdData['student_custom_id'],
+            studentInitialName: studentIdData['student_initial_name'],
+          ),
+        );
       case '/view_student_details':
         final studentIdData = setting.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
@@ -154,7 +171,7 @@ class AppRoutes {
             studentModel: studentViewData['student_model_class'],
           ),
         );
-        case '/cheng_grade':
+      case '/cheng_grade':
         return MaterialPageRoute(
           builder: (context) => const ChangeGradeScreen(),
         );
@@ -287,6 +304,14 @@ class AppRoutes {
             classId: classStatus['classId'],
           ),
         );
+      case '/class_attendance_list_screen':
+        final classStatus = setting.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => ClassAttendanceListUpdateScreen(
+            classHasCatId: classStatus['classHasCatId'],
+            dayName: classStatus['dayName'],
+          ),
+        );
       case '/today_classes':
         return MaterialPageRoute(
           builder: (context) => const TodayClassScreen(),
@@ -392,6 +417,15 @@ class AppRoutes {
                 studentData['class_category_has_student_class_id'],
           ),
         );
+      case '/student_tute':
+        final studentData = setting.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => StudentTute(
+            studentId: studentData['student_id'],
+            classCategoryHasStudentClassId:
+                studentData['class_category_has_student_class_id'],
+          ),
+        );
       case '/payment_monthly_report_screen':
         final studentData = setting.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
@@ -400,6 +434,15 @@ class AppRoutes {
             gradeName: studentData['garde_name'],
             className: studentData['class_name'],
             categoryName: studentData['category_name'],
+          ),
+        );
+      case '/view_student_tute':
+        final studentData = setting.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => StudentTute(
+            studentId: studentData['student_id'],
+            classCategoryHasStudentClassId:
+                studentData['class_category_has_student_class_id'],
           ),
         );
       case '/payment_monthly_paid_not_paid_report_screen':
@@ -432,7 +475,7 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (context) => const ReportScreen(),
         );
-        case '/print_screen':
+      case '/print_screen':
         return MaterialPageRoute(
           builder: (context) => const PrintScreen(),
         );

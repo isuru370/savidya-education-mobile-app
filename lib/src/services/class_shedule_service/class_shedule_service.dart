@@ -162,3 +162,27 @@ Future<Map<String, dynamic>> getHall() async {
     };
   }
 }
+
+Future<Map<String, dynamic>> getStudentClass(int studentId) async {
+  final url = Uri.parse('${API.studentClass}/get_student_class.php');
+
+  final response = await http.post(url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({"student_id": studentId}));
+
+  // ================= check php error =================================
+  // log("Response status: ${response.statusCode}");
+  // log("Response body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    final responseData = jsonDecode(response.body);
+    return responseData;
+  } else {
+    return {
+      "success": false,
+      "message": "Server error",
+    };
+  }
+}

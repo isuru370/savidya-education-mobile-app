@@ -35,8 +35,6 @@ class ClassScreen extends StatefulWidget {
 
 class _ClassScreenState extends State<ClassScreen> {
   final TextEditingController _className = TextEditingController();
-  final TextEditingController _classStart = TextEditingController();
-  final TextEditingController _classEnd = TextEditingController();
 
   String? classDayNames;
   int? subjectId;
@@ -54,10 +52,15 @@ class _ClassScreenState extends State<ClassScreen> {
     context.read<StudentGradeBloc>().add(GetStudentGrade());
     context.read<TeacherBloc>().add(GetTeacherData());
     if (widget.editMode) {
+      context.read<DropdownButtonCubit>().selectTeacher(null);
+      context.read<DropdownButtonCubit>().selectGrade(null);
+      context.read<DropdownButtonCubit>().selectSubject(null);
       _className.text = widget.classScheduleModelClass!.className!;
       subjectId = widget.classScheduleModelClass!.subjectId;
       gradeId = widget.classScheduleModelClass!.gradeId;
       teacherId = widget.classScheduleModelClass!.teacherId;
+      classActiveStatus = widget.classScheduleModelClass!.isActive;
+      classOnGoingStatus = widget.classScheduleModelClass!.isOngoing;
 
       if (widget.classScheduleModelClass!.isActive == 1) {
         context.read<CheckboxButtonCubit>().toggleClassActiveStatus(true);
@@ -165,6 +168,10 @@ class _ClassScreenState extends State<ClassScreen> {
                           BlocBuilder<CheckboxButtonCubit, CheckboxButtonState>(
                             builder: (context, state) {
                               if (state is CheckboxButtonInitial) {
+                                classActiveStatus =
+                                    state.isClassActiveStatus ? 1 : 0;
+                                classOnGoingStatus =
+                                    state.isOngoingStatus ? 1 : 0;
                                 return Column(
                                   children: [
                                     UserStatesWidget(
@@ -328,9 +335,7 @@ class _ClassScreenState extends State<ClassScreen> {
   }
 
   validateClassData() {
-    if (RegisterFrom.notEmpty(_className.text, "class name", context) &&
-        RegisterFrom.notEmpty(_classStart.text, "class start time", context) &&
-        RegisterFrom.notEmpty(_classEnd.text, "class end time", context)) {
+    if (RegisterFrom.notEmpty(_className.text, "class name", context)) {
       return true;
     }
     return false;
@@ -369,12 +374,13 @@ class _ClassScreenState extends State<ClassScreen> {
       ClassScheduleModelClass classModelClass = ClassScheduleModelClass(
         id: widget.classScheduleModelClass!.id,
         className: _className.text.capitalizeEachWord,
-        isActive: classActiveStatus ?? 0,
+        isActive: classActiveStatus ?? 1,
         isOngoing: classOnGoingStatus ?? 0,
         teacherId: teacherId,
         subjectId: subjectId,
         gradeId: gradeId,
       );
+      //print(classModelClass.toUpdateJson());
       context
           .read<ClassBlocBloc>()
           .add(UpdateClassDataEvent(studentClassModel: classModelClass));

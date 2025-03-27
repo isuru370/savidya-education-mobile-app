@@ -40,7 +40,8 @@ class _LoginPageState extends State<LoginPage> {
               );
             }
             if (state is SystemUserLoginSuccess) {
-              Navigator.of(context, rootNavigator: true).pushNamed('/home');
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed('/dashbord_screen');
             }
           },
           child: BlocBuilder<UserLoginBloc, UserLoginState>(

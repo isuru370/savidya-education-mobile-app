@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../res/color/app_color.dart';
+
 class QrReadSearchBarWidget extends StatelessWidget {
   final TextEditingController controller;
   final Function(String) onSearch; // Function to handle search
@@ -39,7 +41,7 @@ class QrReadSearchBarWidget extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(25),
             ),
-            backgroundColor: Colors.blueAccent,
+            backgroundColor: ColorUtil.tealColor[10],
           ),
           child: const Text(
             'Search',

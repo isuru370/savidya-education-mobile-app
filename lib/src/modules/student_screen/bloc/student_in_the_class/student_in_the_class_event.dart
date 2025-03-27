@@ -17,3 +17,12 @@ final class GetStudentInTheClassEvent extends StudentInTheClassEvent {
   @override
   List<Object?> get props => [studentClassId, studentHasCatId];
 }
+
+final class GetStudentAllClassEvent extends StudentInTheClassEvent {
+  final int studentId;
+
+  const GetStudentAllClassEvent({required this.studentId});
+
+  @override
+  List<Object?> get props => [studentId];
+}
